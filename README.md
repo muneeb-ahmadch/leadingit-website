@@ -22,7 +22,7 @@ npm run dev      # http://localhost:5173
 | `/brands` | Brands index, grouped by category (Architectural Interfaces, Cinema & AV) |
 | `/brands/:slug` | Brand page (templated — e.g. `/brands/crestron`) |
 | `/brands/:slug/:productSlug` | Product detail (e.g. `/brands/basalte/deseo`) |
-| `/brands/blacknova/designer` | Black Nova keypad designer (interactive configurator) |
+| `/brands/black-nova/keypad-designer` | Black Nova keypad designer (interactive configurator) |
 | `/lit-home` | LIT Home showcase with fully clickable interactive demo |
 | `/about` | About |
 | `/contact` | Contact |

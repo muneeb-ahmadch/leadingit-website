@@ -49,14 +49,14 @@ export const BRANDS: Brand[] = [
     accent: '#C9A961',
   },
   {
-    slug: 'blacknova',
+    slug: 'black-nova',
     name: 'Black Nova',
     wordmark: 'BLACK NOVA',
     tagline: 'Smart design keypads, made in Italy.',
     category: 'interfaces',
     story:
       'Black Nova is an Italian house in Milan crafting smart design keypads in metal and glass — a single tactile object that commands the entire room. Each collection is hand-finished through anodisation, galvanic bath plating and hand brushing, and engineered brand- and technology-agnostic for the projects where every detail is considered.',
-    heroImage: '/products/blacknova/alba-on.png',
+    heroImage: '/products/black-nova/alba-on.png',
     accent: '#E5DCC8',
   },
   {

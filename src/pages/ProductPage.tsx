@@ -238,7 +238,7 @@ export function ProductPage() {
       </section>
 
       {/* design your keypad (Black Nova) */}
-      {brand.slug === 'blacknova' && (
+      {brand.slug === 'black-nova' && (
         <section className="container-luxe pb-16">
           <Reveal>
             <div className="relative overflow-hidden border border-gold/20 bg-ink-900">
@@ -248,7 +248,7 @@ export function ProductPage() {
                   <Eyebrow>{t('designer.entryEyebrow')}</Eyebrow>
                   <h3 className="mt-4 font-serif text-3xl max-w-xl">{t('designer.productCta', { name: product.name })}</h3>
                 </div>
-                <ButtonLink to={`/brands/${brand.slug}/designer?c=${product.slug}`}>{t('designer.entryCta')}</ButtonLink>
+                <ButtonLink to={`/brands/${brand.slug}/keypad-designer?c=${product.slug}`}>{t('designer.entryCta')}</ButtonLink>
               </div>
             </div>
           </Reveal>

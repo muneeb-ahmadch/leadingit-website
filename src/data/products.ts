@@ -124,12 +124,12 @@ const AMT_TWEETER_SPEC: SpecGroup = {
 
 // ─── Black Nova helpers ─────────────────────────────────────────────────────
 // Official renders, layout SVGs and material swatches downloaded from
-// blacknova.co (never hotlinked) into public/products/blacknova/. Finish and
+// Black Nova's official site (never hotlinked) into public/products/black-nova/. Finish and
 // layout names were taken verbatim from each collection page's markup — no
 // invented data. Black Nova is an Italian company based in Milan; its Smart
 // Design keypads are hand-finished (anodisation, galvanic bath plating, hand
 // brushing) with the natural variation of a handcrafted product.
-const bn = (name: string) => `/products/blacknova/${name}`;
+const bn = (name: string) => `/products/black-nova/${name}`;
 
 // ─── Crestron helpers ───────────────────────────────────────────────────────
 // Product renders are official 2500px assets downloaded from crestron.com (never
@@ -1580,7 +1580,7 @@ export const PRODUCTS: Product[] = [
   // ─── Black Nova ───────────────────────────────────────────────────────────
   {
     slug: 'alba',
-    brandSlug: 'blacknova',
+    brandSlug: 'black-nova',
     name: 'ALBA',
     collection: 'ALBA Collection · Push-Button Keypads',
     tagline: 'The epitome of elegance and functionality.',
@@ -1630,7 +1630,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'aria',
-    brandSlug: 'blacknova',
+    brandSlug: 'black-nova',
     name: 'ARIA',
     collection: 'ARIA Collection · Glass Touch Keypads',
     tagline: 'A tribute to minimalist aesthetics.',
@@ -1671,7 +1671,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'any',
-    brandSlug: 'blacknova',
+    brandSlug: 'black-nova',
     name: 'ANY',
     collection: 'ANY · Smart Touch Panel',
     tagline: 'One control, any function, anywhere.',
@@ -1713,7 +1713,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'axes',
-    brandSlug: 'blacknova',
+    brandSlug: 'black-nova',
     name: 'AXES',
     collection: 'AXES Collection · Hospitality Touch Panels',
     tagline: 'A touch of the sublime.',
@@ -1757,7 +1757,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'black-jack',
-    brandSlug: 'blacknova',
+    brandSlug: 'black-nova',
     name: 'BLACK JACK',
     collection: 'BLACK JACK · Capsule Collection with Meljac',
     tagline: 'Italian innovation, French metalwork.',

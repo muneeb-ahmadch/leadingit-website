@@ -16,7 +16,7 @@ export const router = createBrowserRouter([
       { path: '/', element: <Home /> },
       { path: '/brands', element: <BrandsIndex /> },
       { path: '/brands/:slug', element: <BrandPage /> },
-      { path: '/brands/blacknova/designer', element: <KeypadDesignerPage /> },
+      { path: '/brands/black-nova/keypad-designer', element: <KeypadDesignerPage /> },
       { path: '/brands/:slug/:productSlug', element: <ProductPage /> },
       { path: '/lit-home', element: <LitHomePage /> },
       { path: '/about', element: <About /> },

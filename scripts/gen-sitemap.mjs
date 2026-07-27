@@ -19,7 +19,7 @@ const slugs = [...productsSrc.matchAll(/(?:^|\s)slug:\s*'([^']+)'/g)].map((m) =>
 const brandRefs = [...productsSrc.matchAll(/brandSlug:\s*'([^']+)'/g)].map((m) => m[1]);
 const products = slugs.map((slug, i) => ({ slug, brandSlug: brandRefs[i] })).filter((p) => p.brandSlug);
 
-const staticRoutes = ['/', '/brands', '/brands/blacknova/designer', '/lit-home', '/about', '/contact'];
+const staticRoutes = ['/', '/brands', '/brands/black-nova/keypad-designer', '/lit-home', '/about', '/contact'];
 const urls = [
   ...staticRoutes,
   ...brandSlugs.map((s) => `/brands/${s}`),

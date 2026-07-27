@@ -175,7 +175,7 @@ export function BrandPage() {
       )}
 
       {/* keypad designer (Black Nova only) */}
-      {brand.slug === 'blacknova' && (
+      {brand.slug === 'black-nova' && (
         <section className="bg-ink-900 py-24 grain">
           <div className="container-luxe">
             <Reveal>
@@ -189,12 +189,12 @@ export function BrandPage() {
                       {t('designer.entryBody')}
                     </p>
                     <div className="mt-9">
-                      <ButtonLink to={`/brands/${brand.slug}/designer`}>{t('designer.entryCta')}</ButtonLink>
+                      <ButtonLink to={`/brands/${brand.slug}/keypad-designer`}>{t('designer.entryCta')}</ButtonLink>
                     </div>
                   </div>
                   <div className="relative aspect-square hidden lg:block">
                     <img
-                      src="/products/blacknova/alba-design.png"
+                      src="/products/black-nova/alba-design.png"
                       alt=""
                       className="absolute inset-0 h-full w-full object-contain"
                       loading="lazy"

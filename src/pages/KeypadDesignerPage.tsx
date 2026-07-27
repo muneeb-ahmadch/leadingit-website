@@ -7,7 +7,7 @@ import { SITE_NAME, absoluteUrl } from '@/lib/site';
 
 export function KeypadDesignerPage() {
   const { t } = useTranslation();
-  const path = '/brands/blacknova/designer';
+  const path = '/brands/black-nova/keypad-designer';
   useSeo({
     title: t('designer.seoTitle'),
     description: t('designer.seoDescription'),
@@ -33,7 +33,7 @@ export function KeypadDesignerPage() {
           <div className="flex items-center gap-3 text-xs uppercase tracking-luxe text-bone-500">
             <a href="/brands" className="hover:text-gold">Brands</a>
             <span>·</span>
-            <a href="/brands/blacknova" className="hover:text-gold">Black Nova</a>
+            <a href="/brands/black-nova" className="hover:text-gold">Black Nova</a>
           </div>
         </Reveal>
         <Reveal delay={0.1}>

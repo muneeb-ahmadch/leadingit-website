@@ -4,7 +4,7 @@
  * Collection, layout and finish data derive from the verified Black Nova product
  * catalog (see src/data/products.ts) — the same official source, no invented
  * data. Layout names and their maximum addressable buttons/touch points are
- * taken verbatim from each blacknova.co collection page.
+ * taken verbatim from each collection page on Black Nova's official site.
  *
  * IMPORTANT: the *visual* button grid, the curated lucide icon set and the
  * backlight colour presets are illustrative — a re-skin of Black Nova's own
