@@ -9,8 +9,7 @@
     "prebuild": "node scripts/gen-sitemap.mjs",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "lint": "tsc -b --noEmit",
-    "deploy": "npm run build && cp dist/index.html dist/200.html && npx --yes surge dist leadingit-design.surge.sh"
+    "lint": "tsc -b --noEmit"
   },
   "dependencies": {
     "@fontsource/cormorant-garamond": "^5.1.0",

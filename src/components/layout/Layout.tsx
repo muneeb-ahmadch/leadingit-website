@@ -9,11 +9,11 @@ export function Layout() {
 
   useEffect(() => {
     const lenis = new Lenis({ duration: 1.1, smoothWheel: true });
-    function raf(time: number) {
+    // Track the latest handle so cleanup cancels the live frame, not just the first one.
+    let id = requestAnimationFrame(function raf(time: number) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    const id = requestAnimationFrame(raf);
+      id = requestAnimationFrame(raf);
+    });
     return () => {
       cancelAnimationFrame(id);
       lenis.destroy();

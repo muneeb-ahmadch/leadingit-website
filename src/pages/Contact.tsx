@@ -105,14 +105,6 @@ export function Contact() {
             </div>
 
             <div className="flex gap-4">
-              <MapPin size={18} className="mt-1 shrink-0 text-gold" />
-              <div>
-                <div className="text-sm uppercase tracking-luxe text-bone-500">{t('contact.officePakistanLabel')}</div>
-                <div className="mt-2 font-serif text-2xl">{t('contact.officePakistanCity')}</div>
-              </div>
-            </div>
-
-            <div className="flex gap-4">
               <Mail size={18} className="mt-1 shrink-0 text-gold" />
               <div>
                 <div className="text-sm uppercase tracking-luxe text-bone-500">{t('contact.emailLabel')}</div>

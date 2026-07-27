@@ -1,7 +1,5 @@
 // Site-wide constants used for SEO (canonical URLs, Open Graph, JSON-LD).
-// IMPORTANT: change SITE_URL to the real production domain once it is live.
-// It is currently set to the design-review URL on Surge.
-export const SITE_URL = 'https://leadingit-design.surge.sh';
+export const SITE_URL = 'https://leadingit.me';
 export const SITE_NAME = 'Leading IT';
 export const SITE_TAGLINE = 'Premium Automation Distribution · Gulf & Pakistan';
 

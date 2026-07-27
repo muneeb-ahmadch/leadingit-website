@@ -184,7 +184,7 @@
     "teamTitle": "The people behind Leading IT.",
     "roleManagingDirector": "Managing Director",
     "roleDirectorEngineering": "Director of Engineering",
-    "roleTerritoryDirector": "Territory Director · Pakistan",
+    "roleTerritoryDirector": "Territory Director",
     "ctaTitle": "Have a project in mind?",
     "ctaBody": "Tell us about the residence, development or installation you are planning. Our engineers will respond personally.",
     "ctaButton": "Begin a project"
@@ -201,10 +201,8 @@
     "formSuccessTitle": "Thank you.",
     "formSuccessBody": "Your enquiry has reached our team. We will be in touch shortly.",
     "detailsEyebrow": "Direct",
-    "officeGulfLabel": "Gulf",
-    "officeGulfCity": "United Arab Emirates",
-    "officePakistanLabel": "South Asia",
-    "officePakistanCity": "Pakistan",
+    "officeGulfLabel": "Showroom",
+    "officeGulfCity": "Dubai, United Arab Emirates",
     "emailLabel": "General enquiries",
     "email": "services@leadingit.me"
   },
