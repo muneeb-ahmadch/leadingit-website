@@ -41,6 +41,7 @@ npm run dev      # http://localhost:5173
 React 18 · Vite 5 · TypeScript · Tailwind CSS (RTL-ready) · Framer Motion · Lenis ·
 react-i18next · react-router-dom
 
-Fonts are self-hosted via `@fontsource`. Product imagery is downloaded from official manufacturer
-sources and processed through a build-time optimisation pipeline; source-resolution originals are
-kept outside version control.
+Fonts are self-hosted via `@fontsource`. Product renders are downloaded from official manufacturer
+sources and kept outside version control (some lifestyle imagery is temporary stock placeholder,
+being replaced with cleared official photography); a build-time image-optimisation pipeline is
+planned to emit the committed web assets.
