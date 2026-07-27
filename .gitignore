@@ -1,0 +1,48 @@
+# Dependencies & build output
+node_modules
+dist
+dist-ssr
+*.local
+*.tsbuildinfo
+
+# Editor / OS
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# Secrets — never commit
+.env*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# Deploy platform metadata
+.vercel
+
+# ─────────────────────────────────────────────────────────────
+# Internal planning, strategy and operations.
+# This repo is PUBLIC. Nothing below this line goes to GitHub.
+# These files stay on disk locally so Claude Code keeps working.
+# ─────────────────────────────────────────────────────────────
+/CLAUDE.md
+/CLAUDE-legacy-prototype.md
+/LEADING-IT-BUILD-PROMPT.md
+/DNS-EMAIL-RUNBOOK.md
+/.claude/
+/docs/
+/plans/
+
+# Source-resolution photography and unprocessed assets
+/raw/
+
+# TRANSITIONAL (lift for optimised output when the Phase 3 image pipeline lands):
+# un-optimised originals live in raw/; the copies here are local dev working files.
+# Only build-optimised AVIF/WebP derivatives ever get committed.
+/public/products/
+/public/brands/
+
+# Build-generated (emitted by scripts/gen-sitemap.mjs at prebuild)
+/public/sitemap.xml
+/public/robots.txt

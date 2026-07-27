@@ -1,0 +1,131 @@
+@import '@fontsource/cormorant-garamond/400.css';
+@import '@fontsource/cormorant-garamond/500.css';
+@import '@fontsource/cormorant-garamond/600.css';
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/noto-naskh-arabic/400.css';
+@import '@fontsource/noto-nastaliq-urdu/400.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --gold: #c9a961;
+    --gold-soft: rgba(201, 169, 97, 0.18);
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background: #0a0a0a;
+  }
+
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  body {
+    @apply bg-ink-950 text-bone-100 font-sans;
+    font-feature-settings: 'ss01', 'cv11';
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: var(--gold-soft);
+    color: var(--gold);
+  }
+
+  /* RTL font switching driven by <html lang> */
+  html[lang='ar'] body { @apply font-arabic; }
+  html[lang='ur'] body { @apply font-urdu; }
+}
+
+@layer components {
+  .container-luxe {
+    @apply mx-auto w-full max-w-[1440px] px-6 md:px-10 lg:px-16;
+  }
+
+  .eyebrow {
+    @apply text-eyebrow uppercase font-sans font-medium text-gold tracking-luxe;
+  }
+
+  .rule-gold {
+    @apply h-px w-full bg-gold-line opacity-60;
+  }
+
+  .btn-gold {
+    @apply inline-flex items-center gap-3 px-7 py-3.5 text-sm uppercase tracking-luxe
+      font-medium border border-gold/70 text-bone-100
+      transition-all duration-500 ease-out-luxe
+      hover:bg-gold hover:text-ink-950 hover:shadow-glow;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 text-sm uppercase tracking-luxe text-bone-500
+      hover:text-gold transition-colors duration-300;
+  }
+
+  .glass-panel {
+    @apply bg-ink-800/70 backdrop-blur-md border border-white/5;
+  }
+
+  .field-label {
+    @apply block text-eyebrow uppercase tracking-luxe text-bone-500 mb-3;
+  }
+
+  .input-luxe {
+    @apply w-full bg-transparent border-b border-white/15 py-3 text-bone-100
+      placeholder:text-bone-500/50 transition-colors duration-300
+      focus:outline-none focus:border-gold;
+  }
+}
+
+/* LIT Home demo slider */
+.lit-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 2px;
+  background: rgba(255,255,255,0.08);
+  outline: none;
+}
+.lit-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #C9A961;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(201,169,97,0.55);
+  transition: transform 0.2s ease;
+}
+.lit-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+.lit-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #C9A961;
+  border: none;
+  cursor: pointer;
+}
+
+/* Grain overlay used on full-bleed hero images */
+.grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>");
+}

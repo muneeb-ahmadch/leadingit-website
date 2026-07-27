@@ -1,0 +1,43 @@
+{
+  "name": "leadingit-website",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "sitemap": "node scripts/gen-sitemap.mjs",
+    "prebuild": "node scripts/gen-sitemap.mjs",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "tsc -b --noEmit",
+    "deploy": "npm run build && cp dist/index.html dist/200.html && npx --yes surge dist leadingit-design.surge.sh"
+  },
+  "dependencies": {
+    "@fontsource/cormorant-garamond": "^5.1.0",
+    "@fontsource/inter": "^5.1.0",
+    "@fontsource/jetbrains-mono": "^5.1.0",
+    "@fontsource/noto-naskh-arabic": "^5.1.0",
+    "@fontsource/noto-nastaliq-urdu": "^5.1.0",
+    "framer-motion": "^11.11.17",
+    "i18next": "^23.16.8",
+    "lenis": "^1.1.18",
+    "lucide-react": "^0.460.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-i18next": "^15.1.3",
+    "react-router-dom": "^6.28.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.15",
+    "tailwindcss-rtl": "^0.9.0",
+    "typescript": "^5.6.3",
+    "vercel": "^54.1.0",
+    "vite": "^5.4.11"
+  }
+}
