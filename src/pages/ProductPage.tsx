@@ -7,6 +7,7 @@ import { BRAND_BY_SLUG } from '@/data/brands';
 import { Reveal } from '@/components/primitives/Reveal';
 import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { ButtonLink } from '@/components/primitives/Button';
+import { useHydrated } from '@/lib/hydration';
 import { useSeo } from '@/lib/useSeo';
 import { SITE_NAME, absoluteUrl } from '@/lib/site';
 
@@ -24,6 +25,9 @@ export function ProductPage() {
   const product = PRODUCT_BY_SLUG[productSlug];
   const brand = BRAND_BY_SLUG[slug];
   const [finishId, setFinishId] = useState(product?.finishes[0]?.id ?? '');
+  // The product shot is part of the prerendered HTML, so it ships fully
+  // visible; the cross-fade only applies to finish swaps after hydration.
+  const hydrated = useHydrated();
 
   const path = `/brands/${slug}/${productSlug}`;
   const seoName = product && brand ? `${brand.name} ${product.name}` : SITE_NAME;
@@ -100,7 +104,7 @@ export function ProductPage() {
                   key={activeFinish.id}
                   src={activeFinish.productImage}
                   alt={`${product.name} in ${activeFinish.name}`}
-                  initial={{ opacity: 0, scale: 1.04 }}
+                  initial={hydrated ? { opacity: 0, scale: 1.04 } : false}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
@@ -174,7 +178,7 @@ export function ProductPage() {
                   key={activeFinish.id}
                   src={activeFinish.productImage}
                   alt={activeFinish.name}
-                  initial={{ opacity: 0, scale: 1.04 }}
+                  initial={hydrated ? { opacity: 0, scale: 1.04 } : false}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}

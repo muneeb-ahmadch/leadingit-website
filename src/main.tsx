@@ -1,12 +1,11 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { RouterProvider } from 'react-router-dom';
+import { ViteReactSSG } from 'vite-react-ssg';
 import './i18n';
 import './styles/globals.css';
-import { router } from './router';
+import { routes } from './router';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>,
-);
+/**
+ * SSG entry. `vite-react-ssg` owns the root: at build time it walks `routes`,
+ * renders every path to static HTML, and in the browser it hydrates that same
+ * markup with a react-router browser router.
+ */
+export const createRoot = ViteReactSSG({ routes });

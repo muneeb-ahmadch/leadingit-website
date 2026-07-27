@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
+import { useHydrated } from '@/lib/hydration';
 import { ROOMS, type LitAction, type LitState, type RoomId } from '../state';
 import {
   QuickActionsTile,
@@ -20,6 +21,7 @@ type Props = { state: LitState; dispatch: (a: LitAction) => void; compact: boole
 export function SuiteView({ state, dispatch, compact }: Props) {
   const { t } = useTranslation();
   const room = state.rooms[state.activeRoom];
+  const hydrated = useHydrated();
 
   return (
     <div className={compact ? 'px-4 py-4' : 'px-7 py-6'}>
@@ -48,9 +50,11 @@ export function SuiteView({ state, dispatch, compact }: Props) {
       </div>
 
       {/* Tile grid */}
+      {/* The opening room grid is prerendered, so it must not ship hidden; the
+          cross-fade applies to room switches after hydration. */}
       <motion.div
         key={state.activeRoom}
-        initial={{ opacity: 0, y: 6 }}
+        initial={hydrated ? { opacity: 0, y: 6 } : false}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
         className={`mt-4 grid gap-2.5 ${compact ? 'grid-cols-2' : 'grid-cols-3'}`}

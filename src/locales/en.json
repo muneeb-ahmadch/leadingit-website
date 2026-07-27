@@ -212,6 +212,16 @@
     "languageLabel": "Language",
     "comingSoon": "coming soon"
   },
+  "notFound": {
+    "seoTitle": "Page not found",
+    "eyebrow": "Error 404",
+    "title": "This page could not be found.",
+    "body": "The address you followed may be out of date, mistyped, or the page may have been moved. Everything else is still where you left it — start again from the homepage or the brand catalogue.",
+    "homeCta": "Return home",
+    "brandsCta": "Browse brands",
+    "contactPrompt": "Looking for something specific?",
+    "contactLink": "Talk to our team."
+  },
   "common": {
     "back": "Back",
     "inquire": "Inquire",

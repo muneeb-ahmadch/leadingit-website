@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
@@ -12,8 +12,15 @@ export function Contact() {
   const { t } = useTranslation();
   const [sent, setSent] = useState(false);
   const [params] = useSearchParams();
-  // A design serialised from the keypad designer arrives here as ?message=…
-  const prefilledMessage = params.get('message') ?? '';
+  // A design serialised from the keypad designer arrives here as ?message=… .
+  // The page is prerendered without a query string, so the field starts empty and
+  // adopts the incoming message after mount — identical first render either side
+  // of hydration.
+  const [message, setMessage] = useState('');
+  useEffect(() => {
+    const incoming = params.get('message');
+    if (incoming) setMessage(incoming);
+  }, [params]);
   useSeo({
     title: 'Contact — Begin a Project',
     description:
@@ -77,9 +84,10 @@ export function Contact() {
                   <textarea
                     id="message"
                     name="message"
-                    rows={prefilledMessage ? 10 : 4}
+                    rows={message ? 10 : 4}
                     required
-                    defaultValue={prefilledMessage}
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
                     className="input-luxe resize-none"
                   />
                 </div>

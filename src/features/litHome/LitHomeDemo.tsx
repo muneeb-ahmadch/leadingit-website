@@ -1,6 +1,7 @@
 import { useReducer } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useHydrated } from '@/lib/hydration';
 import { INITIAL_STATE, ROOMS, litReducer } from './state';
 import { ShowRoomView } from './views/ShowRoomView';
 import { SuiteView } from './views/SuiteView';
@@ -19,6 +20,7 @@ type Props = {
 export function LitHomeDemo({ surface = 'ipad', className = '' }: Props) {
   const { t } = useTranslation();
   const [state, dispatch] = useReducer(litReducer, INITIAL_STATE);
+  const hydrated = useHydrated();
   const compact = surface === 'panel';
 
   const room = state.rooms[state.activeRoom];
@@ -26,9 +28,11 @@ export function LitHomeDemo({ surface = 'ipad', className = '' }: Props) {
 
   return (
     <div className={`relative h-full w-full flex flex-col bg-ink-950 text-bone-100 overflow-hidden ${className}`}>
+      {/* The opening view is prerendered, so it must not ship hidden; the
+          cross-fade applies to view switches after hydration. */}
       <motion.div
         key={state.view}
-        initial={{ opacity: 0, y: 6 }}
+        initial={hydrated ? { opacity: 0, y: 6 } : false}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         className="flex-1 min-h-0 overflow-y-auto"

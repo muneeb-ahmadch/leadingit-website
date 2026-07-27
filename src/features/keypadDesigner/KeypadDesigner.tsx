@@ -16,13 +16,15 @@ import {
 } from 'lucide-react';
 import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { Button } from '@/components/primitives/Button';
+import { useHydrated } from '@/lib/hydration';
 import { WHATSAPP_NUMBER } from '@/lib/site';
 import {
   COLLECTIONS, COLLECTION_BY_ID, BACKLIGHTS, ICONS, ICON_BY_ID,
   finishesFor, layoutById, buttonCount,
 } from './catalog';
 import {
-  designerReducer, fromParams, toQueryString, STEPS, type Step, type DesignConfig, type DesignerAction,
+  designerReducer, fromParams, initialConfig, toQueryString, STEPS,
+  type Step, type DesignConfig, type DesignerAction,
 } from './state';
 import { KeypadPreview } from './KeypadPreview';
 
@@ -30,15 +32,32 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 
 export function KeypadDesigner() {
   const { t } = useTranslation();
+  const hydrated = useHydrated();
   const [params, setParams] = useSearchParams();
-  const [config, dispatch] = useReducer(designerReducer, params, fromParams);
+  // The page is prerendered without a query string, so the reducer always starts
+  // from the default design — server and first client render are identical. A
+  // shared `?c=…` link is adopted right after mount instead of during render,
+  // which keeps hydration free of mismatches.
+  const [config, dispatch] = useReducer(designerReducer, undefined, () => initialConfig());
   const [stepIndex, setStepIndex] = useState(0);
+  const [urlRead, setUrlRead] = useState(false);
 
-  // Keep the URL in sync so any shared / bookmarked link restores the design.
   useEffect(() => {
+    if (Array.from(params.keys()).length > 0) {
+      dispatch({ type: 'hydrate', config: fromParams(params) });
+    }
+    setUrlRead(true);
+    // Runs once, on mount: `params` is read from the real browser URL there.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Keep the URL in sync so any shared / bookmarked link restores the design —
+  // but never before the incoming link has been read.
+  useEffect(() => {
+    if (!urlRead) return;
     setParams(new URLSearchParams(toQueryString(config)), { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [config]);
+  }, [config, urlRead]);
 
   const step: Step = STEPS[stepIndex];
   const collection = COLLECTION_BY_ID[config.collection];
@@ -89,9 +108,11 @@ export function KeypadDesigner() {
 
         <div className="mt-10 min-h-[360px]">
           <AnimatePresence mode="wait">
+            {/* The first step panel is part of the prerendered HTML, so it must
+                not carry a hidden initial state; step changes animate normally. */}
             <motion.div
               key={step}
-              initial={{ opacity: 0, y: 16 }}
+              initial={hydrated ? { opacity: 0, y: 16 } : false}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.5, ease: EASE }}

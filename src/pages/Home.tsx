@@ -8,6 +8,7 @@ import { Parallax } from '@/components/primitives/Parallax';
 import { BRANDS } from '@/data/brands';
 import { DeviceFrame } from '@/features/litHome/DeviceFrame';
 import { LitHomeDemo } from '@/features/litHome/LitHomeDemo';
+import { useHydrated } from '@/lib/hydration';
 import { useSeo } from '@/lib/useSeo';
 import { SITE_NAME, SITE_TAGLINE, SITE_URL, absoluteUrl } from '@/lib/site';
 
@@ -40,6 +41,7 @@ export function Home() {
     },
   });
   const heroRef = useRef<HTMLDivElement>(null);
+  const hydrated = useHydrated();
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
   const heroY = useTransform(scrollYProgress, [0, 1], [0, 120]);
   const heroScale = useTransform(scrollYProgress, [0, 1], [1.05, 1.15]);
@@ -49,9 +51,12 @@ export function Home() {
     <>
       {/* HERO */}
       <section ref={heroRef} className="relative h-[100svh] min-h-[680px] overflow-hidden grain">
+        {/* Scroll transforms attach after hydration so the prerendered hero ships
+            without inline opacity/transform state. `scale-105` keeps the resting
+            frame identical either side of that hand-off. */}
         <motion.div
-          style={{ y: heroY, scale: heroScale, opacity: heroFade }}
-          className="absolute inset-0"
+          style={hydrated ? { y: heroY, scale: heroScale, opacity: heroFade } : undefined}
+          className="absolute inset-0 scale-105"
         >
           <img
             src={HERO_IMAGE}
