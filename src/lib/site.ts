@@ -5,9 +5,8 @@ export const SITE_URL = 'https://leadingit-design.surge.sh';
 export const SITE_NAME = 'Leading IT';
 export const SITE_TAGLINE = 'Premium Automation Distribution · Gulf & Pakistan';
 
-// Primary WhatsApp lead channel for PK/UAE. PLACEHOLDER — replace with the real
-// business number (international format, digits only, no +) once provided.
-export const WHATSAPP_NUMBER = '971500000000';
+// Primary WhatsApp lead channel for PK/UAE (international format, digits only, no +).
+export const WHATSAPP_NUMBER = '971585865222';
 
 /** Build an absolute URL from a site-relative path. */
 export function absoluteUrl(path: string): string {
