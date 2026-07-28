@@ -1,0 +1,320 @@
+/**
+ * The route manifest — the single source of truth for every URL the site emits.
+ *
+ * Three consumers, no fourth:
+ *   1. `scripts/gen-sitemap.mjs` (Node, prebuild) — sitemap.xml + robots.txt.
+ *   2. `src/router.tsx`'s `getStaticPaths` — which files the prerender writes.
+ *   3. The Phase 2 validation harness.
+ * Page components must NOT import this module; they import `./meta` and are
+ * handed their own record. Adding a fourth consumer is how a route list drifts.
+ *
+ * ## Bundle rule (Phase 1 spent real effort on this — do not regress it)
+ *
+ * `src/data/products.ts` is ~3,500 lines. It must never reach the browser entry
+ * chunk just so the build can enumerate URLs. Therefore:
+ *   - the static route table below is a plain literal with no data import;
+ *   - brand/product routes come from async functions that `await import()` the
+ *     catalog, so Rollup keeps it in the split chunk the product pages already
+ *     load;
+ *   - nothing at this module's top level touches `@/data/*` at runtime — the
+ *     `Brand`/`Product` imports are `import type` and are erased.
+ * `getStaticPaths` only ever runs in Node during the prerender, so the dynamic
+ * imports cost nothing at runtime.
+ *
+ * ## Scope
+ *
+ * This manifest describes routes that emit HTML **today**. `docs/05-URL-TAXONOMY.md`
+ * locks several paths that are not built yet (`/solutions/*`, `/locations/dubai/`,
+ * `/trade/`, `/journal/*`, `/brands/<brand>/pakistan/`, and the disabled
+ * `/projects/*`). They are deliberately absent: a sitemap entry for a URL that
+ * 404s is worse than no entry. Adding them later is purely additive.
+ */
+import type { Brand } from '@/data/brands';
+import type { Product } from '@/data/products';
+import {
+  DESCRIPTION_MAX_LENGTH,
+  DESCRIPTION_MIN_LENGTH,
+  TITLE_MAX_LENGTH,
+  aboutMeta,
+  brandMeta,
+  brandsIndexMeta,
+  contactMeta,
+  homeMeta,
+  keypadDesignerMeta,
+  litHomeMeta,
+  notFoundMeta,
+  productMeta,
+  type PageMeta,
+} from './meta';
+import { RANGE_ROUTE_KEYS, isRangeProduct, rangeKey } from './ranges';
+
+export type RouteKind =
+  | 'home'
+  | 'brands-index'
+  | 'brand'
+  | 'product'
+  | 'range'
+  | 'tool'
+  | 'lit-home'
+  | 'about'
+  | 'contact'
+  | 'not-found';
+
+export type RouteEntry = {
+  /** Site-relative, lowercase, no trailing slash except the root `'/'`. */
+  readonly path: string;
+  readonly kind: RouteKind;
+  /**
+   * `false` only for `/404`, which is prerendered (Apache needs a real file for
+   * `ErrorDocument`) and `noindex`, and must never enter the sitemap.
+   */
+  readonly indexable: boolean;
+  readonly meta: PageMeta;
+  /** Present on brand hubs, product/range pages and brand-scoped tools. */
+  readonly brandSlug?: string;
+  /** Present on product/range pages only. */
+  readonly productSlug?: string;
+};
+
+/**
+ * Static tool route inside the Black Nova brand namespace. React Router ranks
+ * static segments above dynamic ones, so it always wins over
+ * `/brands/:slug/:productSlug`; `keypad-designer` is additionally a reserved
+ * child slug below, so no product can ever be authored at the same path.
+ */
+export const KEYPAD_DESIGNER_PATH = '/brands/black-nova/keypad-designer';
+
+/**
+ * Words reserved inside the `/brands/<brand>/` namespace — `docs/05-URL-TAXONOMY.md`
+ * §3d. A product using one of these as its slug would silently shadow a real
+ * page (a product slugged `keypad-designer` takes out the configurator with no
+ * error anywhere), so the manifest build fails on collision instead.
+ *
+ * **New reserved words go in this one list and nowhere else.**
+ */
+export const RESERVED_BRAND_CHILD_SLUGS: readonly string[] = [
+  'pakistan',
+  'keypad-designer',
+  'dubai',
+  'uae',
+  'pk',
+  'support',
+  'downloads',
+  'contact',
+  'trade',
+];
+
+/**
+ * Lowercase, hyphen-separated, at most three segments, no trailing slash, no
+ * extension, no query — the formatting rules from `docs/05` §1 expressed as a
+ * pattern so a typo cannot reach the sitemap.
+ */
+const PATH_PATTERN = /^\/[a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-9]+)*){0,2}$/;
+
+/** Routes that need no catalog data. Order here is the order in the sitemap. */
+export const STATIC_ROUTES: readonly RouteEntry[] = [
+  { path: '/', kind: 'home', indexable: true, meta: homeMeta() },
+  { path: '/brands', kind: 'brands-index', indexable: true, meta: brandsIndexMeta() },
+  {
+    path: KEYPAD_DESIGNER_PATH,
+    kind: 'tool',
+    indexable: true,
+    meta: keypadDesignerMeta(),
+    brandSlug: 'black-nova',
+  },
+  { path: '/lit-home', kind: 'lit-home', indexable: true, meta: litHomeMeta() },
+  { path: '/about', kind: 'about', indexable: true, meta: aboutMeta() },
+  { path: '/contact', kind: 'contact', indexable: true, meta: contactMeta() },
+  { path: '/404', kind: 'not-found', indexable: false, meta: notFoundMeta() },
+];
+
+/** One prefix so every manifest failure is greppable in CI output. */
+function manifestError(message: string): Error {
+  return new Error(`route manifest: ${message}`);
+}
+
+async function loadBrands(): Promise<Brand[]> {
+  const { BRANDS } = await import('@/data/brands');
+  return BRANDS;
+}
+
+async function loadProducts(): Promise<Product[]> {
+  const { PRODUCTS } = await import('@/data/products');
+  return PRODUCTS;
+}
+
+/** One entry per brand hub. */
+export async function brandRoutes(): Promise<RouteEntry[]> {
+  const brands = await loadBrands();
+  return brands.map(
+    (brand): RouteEntry => ({
+      path: `/brands/${brand.slug}`,
+      kind: 'brand',
+      indexable: true,
+      meta: brandMeta(brand),
+      brandSlug: brand.slug,
+    }),
+  );
+}
+
+/**
+ * One entry per product route. `kind` is `'range'` for the nine records that
+ * describe a family rather than a SKU (see `./ranges`) — those must never
+ * receive `Product` JSON-LD.
+ */
+export async function productRoutes(): Promise<RouteEntry[]> {
+  const [brands, products] = await Promise.all([loadBrands(), loadProducts()]);
+  const brandBySlug = new Map(brands.map((brand) => [brand.slug, brand]));
+
+  return products.map((product): RouteEntry => {
+    const brand = brandBySlug.get(product.brandSlug);
+    if (!brand) {
+      throw manifestError(
+        `product "${product.slug}" references unknown brand "${product.brandSlug}" — ` +
+          `add the brand to src/data/brands.ts or correct the brandSlug`,
+      );
+    }
+    if (RESERVED_BRAND_CHILD_SLUGS.includes(product.slug)) {
+      throw manifestError(
+        `product "${product.brandSlug}/${product.slug}" uses the reserved child slug ` +
+          `"${product.slug}". Reserved words in the /brands/<brand>/ namespace ` +
+          `(docs/05-URL-TAXONOMY.md §3d) are: ${RESERVED_BRAND_CHILD_SLUGS.join(', ')}. ` +
+          `Rename the product slug — a collision here silently shadows a real page.`,
+      );
+    }
+    return {
+      path: `/brands/${product.brandSlug}/${product.slug}`,
+      kind: isRangeProduct(product.brandSlug, product.slug) ? 'range' : 'product',
+      indexable: true,
+      meta: productMeta(product, brand),
+      brandSlug: product.brandSlug,
+      productSlug: product.slug,
+    };
+  });
+}
+
+/**
+ * Every invariant that must hold across the whole manifest. It runs inside
+ * `allRoutes()`, so both consumers (prerender and sitemap) inherit it and there
+ * is no way to build the site around it.
+ *
+ * Throws rather than warns: a duplicate URL, an overflowing title or a
+ * duplicated meta description is a defect that must break the build, not appear
+ * in a log nobody reads.
+ */
+export function assertManifest(entries: readonly RouteEntry[]): void {
+  const seenPath = new Set<string>();
+  const titleOwner = new Map<string, string>();
+  const descriptionOwner = new Map<string, string>();
+
+  // Every declared range key must name a product route that actually exists.
+  // Without this, a typo in `./ranges` (`uandksound/m8series`) fails silently in
+  // the worst possible direction: the route stays `kind: 'product'`, the page
+  // receives `Product` JSON-LD, and a product range is published to Google as a
+  // purchasable SKU. Nothing else in the build would notice.
+  const productRouteKeys = new Set(
+    entries
+      .filter((entry) => entry.brandSlug && entry.productSlug)
+      .map((entry) => rangeKey(entry.brandSlug!, entry.productSlug!)),
+  );
+  const orphanedRangeKeys = RANGE_ROUTE_KEYS.filter((key) => !productRouteKeys.has(key));
+  if (orphanedRangeKeys.length > 0) {
+    throw manifestError(
+      `src/seo/ranges.ts declares ${orphanedRangeKeys.length} range key(s) with no matching ` +
+        `product route: ${orphanedRangeKeys.join(', ')}. A range key that matches nothing ` +
+        `silently leaves that page typed as a product, which ships Product JSON-LD for a ` +
+        `range. Fix the key or remove it.`,
+    );
+  }
+
+  for (const entry of entries) {
+    const { path, meta } = entry;
+
+    if (path !== '/' && !PATH_PATTERN.test(path)) {
+      throw manifestError(
+        `"${path}" is not a legal path — lowercase, hyphen-separated, at most three ` +
+          `segments, leading slash, no trailing slash (docs/05-URL-TAXONOMY.md §1)`,
+      );
+    }
+    if (seenPath.has(path)) throw manifestError(`duplicate path "${path}"`);
+    seenPath.add(path);
+
+    if (meta.path !== path) {
+      throw manifestError(`"${path}" carries metadata for a different path ("${meta.path}")`);
+    }
+
+    if (meta.title.length === 0) throw manifestError(`"${path}" has an empty title`);
+    if (meta.title.length > TITLE_MAX_LENGTH) {
+      throw manifestError(
+        `"${path}" title is ${meta.title.length} chars (max ${TITLE_MAX_LENGTH}): ` +
+          `"${meta.title}" — change the formula in src/seo/meta.ts, never truncate`,
+      );
+    }
+    const titleTwin = titleOwner.get(meta.title);
+    if (titleTwin) {
+      throw manifestError(`"${path}" and "${titleTwin}" share the title "${meta.title}"`);
+    }
+    titleOwner.set(meta.title, path);
+
+    if (meta.description.length > DESCRIPTION_MAX_LENGTH) {
+      throw manifestError(
+        `"${path}" description is ${meta.description.length} chars ` +
+          `(max ${DESCRIPTION_MAX_LENGTH}): "${meta.description}"`,
+      );
+    }
+    if (meta.description.length < DESCRIPTION_MIN_LENGTH) {
+      throw manifestError(
+        `"${path}" description is ${meta.description.length} chars ` +
+          `(min ${DESCRIPTION_MIN_LENGTH}): "${meta.description}"`,
+      );
+    }
+    const descriptionTwin = descriptionOwner.get(meta.description);
+    if (descriptionTwin) {
+      throw manifestError(`"${path}" and "${descriptionTwin}" share a meta description`);
+    }
+    descriptionOwner.set(meta.description, path);
+  }
+}
+
+let manifest: Promise<RouteEntry[]> | null = null;
+
+async function buildManifest(): Promise<RouteEntry[]> {
+  const entries = [...STATIC_ROUTES, ...(await brandRoutes()), ...(await productRoutes())];
+  assertManifest(entries);
+  return entries;
+}
+
+/**
+ * The whole manifest, validated. Memoised because both `getStaticPaths` calls
+ * and the sitemap generator ask for it within one process.
+ */
+export function allRoutes(): Promise<RouteEntry[]> {
+  if (!manifest) manifest = buildManifest();
+  return manifest;
+}
+
+/** Everything that belongs in sitemap.xml: indexable routes only, so no `/404`. */
+export async function sitemapRoutes(): Promise<RouteEntry[]> {
+  return (await allRoutes()).filter((route) => route.indexable);
+}
+
+/** Brand hub paths for the router's `getStaticPaths`. */
+export async function brandPaths(): Promise<string[]> {
+  return (await allRoutes()).filter((route) => route.kind === 'brand').map((route) => route.path);
+}
+
+/**
+ * Product and range paths for the router's `getStaticPaths`.
+ *
+ * The keypad designer is filtered out explicitly: it is a static route that
+ * wins over `/brands/:slug/:productSlug`, and emitting it from both route
+ * records would have two of them writing the same file. The reserved-slug guard
+ * in `productRoutes()` already makes that collision impossible — this filter is
+ * belt-and-braces, and both stay.
+ */
+export async function productPaths(): Promise<string[]> {
+  return (await allRoutes())
+    .filter((route) => route.kind === 'product' || route.kind === 'range')
+    .map((route) => route.path)
+    .filter((path) => path !== KEYPAD_DESIGNER_PATH);
+}
