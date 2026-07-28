@@ -1,0 +1,16 @@
+/**
+ * Arabic (Noto Naskh Arabic) + Urdu (Noto Nastaliq Urdu) display faces.
+ *
+ * Not part of `globals.css` on purpose: `ENABLED_LOCALES` in `src/i18n.ts`
+ * only ships `en` today, so these two families (~30 woff/woff2 files) are
+ * dead weight on every page load until `ar`/`ur` are enabled. This file is
+ * imported dynamically — and only then fetched — by `src/main.tsx`, gated on
+ * `ENABLED_LOCALES`. To restore the faces, add `'ar'` and/or `'ur'` to
+ * `ENABLED_LOCALES` in `src/i18n.ts`; no change needed here.
+ *
+ * The Tailwind `font-arabic` / `font-urdu` families (tailwind.config.ts) and
+ * the `html[lang='ar'|'ur']` selectors (globals.css) stay wired regardless —
+ * only the font *payload* is conditional.
+ */
+@import '@fontsource/noto-naskh-arabic/400.css';
+@import '@fontsource/noto-nastaliq-urdu/400.css';
