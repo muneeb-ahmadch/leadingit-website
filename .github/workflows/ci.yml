@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run lint
+
+      - name: Build (prerender all routes)
+        run: npm run build
+
+      - name: "Gate: every emitted page has a real h1"
+        run: |
+          missing=$(grep -rL '<h1' dist --include='*.html' || true)
+          if [ -n "$missing" ]; then
+            echo "Pages missing <h1>:" && echo "$missing"
+            exit 1
+          fi
+          echo "OK: $(find dist -name '*.html' | wc -l) HTML files, all with <h1>"
+
+      - name: "Gate: no stale blacknova slug in output"
+        run: |
+          if grep -rl 'blacknova' dist; then
+            echo "Stale 'blacknova' references found in dist" && exit 1
+          fi
+          echo "OK: no stale slug references"
+
+      # TODO(Phase 1 deploy leg / Phase 2): Lighthouse CI budget gate against a served
+      # build — mobile Performance >= 95, SEO = 100, Accessibility >= 95, plus CWV
+      # budget (LCP <= 2.0s, INP <= 200ms, CLS <= 0.05). Not wired yet: no deploy URL
+      # exists and serving+auditing in CI needs the deploy story settled first.
+
+      # NOTE: no deploy job by design. Deployment to HostGator (SFTP/FTPS + Cloudflare
+      # purge) lands once the cPanel docroot question is answered and secrets exist in
+      # the repo settings — never hardcoded here.

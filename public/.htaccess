@@ -1,0 +1,123 @@
+# leadingit.me — Apache 2.4 / cPanel (HostGator shared, addon domain, behind Cloudflare)
+# Owned by deploy-engineer. Vite copies this file into dist/ verbatim (public/ passthrough).
+# NO SPA catch-all: every route is a real prerendered file (vite-react-ssg, dirStyle: nested).
+# There is deliberately no `RewriteRule ^ /index.html` anywhere in this file.
+
+# ─────────────────────────────────────────────────────────────
+# Canonicalisation: HTTPS + apex host, single hop, addon-domain-safe
+# ─────────────────────────────────────────────────────────────
+# Cloudflare (SSL mode Full/strict) always connects to this origin over HTTPS, so %{HTTPS}
+# alone would never see plain http from behind the proxy — X-Forwarded-Proto carries the
+# client's real scheme. Both conditions must be true (AND, the default — no [OR] flag) before
+# redirecting, otherwise a Flexible-SSL-style proxy hop (HTTPS off at origin, XFP: https from
+# the edge) would bounce forever.
+#
+# Target host is hardcoded to the literal string "leadingit.me" (never %{HTTP_HOST}) and the
+# path comes from the RewriteRule's own capture ($1), never %{REQUEST_URI}. This matters
+# because leadingit.me is a cPanel ADDON domain whose docroot is a subdirectory inside the
+# primary account's docroot tree, so this same .htaccess is also reached when someone requests
+# the primary domain with a "/leadingit.me/<path>" prefix (the duplicate-content trap). In that
+# case mod_rewrite strips the physical per-directory prefix before matching the RewriteRule
+# pattern, so $1 is already the correct bare path ("about/"), while %{REQUEST_URI} would still
+# carry the leaked "/leadingit.me/" prefix and produce a broken double-prefixed redirect target.
+RewriteEngine On
+
+# Force HTTPS (proxy-aware, loop-safe)
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+RewriteRule ^(.*)$ https://leadingit.me/$1 [R=301,L,QSA]
+
+# Canonical host: apex only. Catches "www.", the addon-domain duplicate-content path
+# (any HTTP_HOST that isn't the apex — including the primary domain's tree), and any other
+# host/IP this vhost happens to answer for.
+RewriteCond %{HTTP_HOST} !^leadingit\.me$ [NC]
+RewriteRule ^(.*)$ https://leadingit.me/$1 [R=301,L,QSA]
+
+# ─────────────────────────────────────────────────────────────
+# Trailing slash / directory index
+# ─────────────────────────────────────────────────────────────
+# Canonical URLs always carry a trailing slash (docs/05-URL-TAXONOMY.md). dirStyle "nested"
+# emits one real file per route as <route>/index.html. For the canonical slashed URL
+# (e.g. /about/) DirectoryIndex resolves the file with NO redirect at all — zero rules needed.
+# For the non-slash form (e.g. /about), Apache's own mod_dir DirectorySlash issues exactly one
+# 301 straight to the slashed URL — this is native behaviour, not something we re-implement, so
+# it can never chain with itself. (It can only ever add a second hop on top of the scheme/host
+# rules above, and only for the edge case of a non-canonical host/scheme requested WITHOUT a
+# trailing slash in the same request — not a path any real link on the site produces.)
+DirectoryIndex index.html
+Options -Indexes -MultiViews
+
+# ─────────────────────────────────────────────────────────────
+# Real 404
+# ─────────────────────────────────────────────────────────────
+ErrorDocument 404 /404.html
+
+# Deny access to dotfiles (.env, .git*, etc.) and any stray source maps if ever emitted.
+<FilesMatch "^\.|\.map$">
+  Require all denied
+</FilesMatch>
+
+# ─────────────────────────────────────────────────────────────
+# Compression
+# ─────────────────────────────────────────────────────────────
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml text/javascript
+  AddOutputFilterByType DEFLATE application/javascript application/json application/xml
+  AddOutputFilterByType DEFLATE application/xhtml+xml image/svg+xml font/ttf font/otf
+  AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+  # Not deflating: woff2/avif/webp/jpg/png — already compressed, deflate wastes CPU on these.
+</IfModule>
+
+# ─────────────────────────────────────────────────────────────
+# Cache headers
+# ─────────────────────────────────────────────────────────────
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresDefault "access plus 1 week"
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  # Flag hashed Vite build output (/assets/*) for the immutable long-cache rule below.
+  # Only /assets/* is content-hashed; unhashed static files (e.g. product/brand imagery,
+  # pending the Phase 3 pipeline) must NOT get an immutable 1-year TTL.
+  RewriteRule ^assets/ - [E=ASSET_CACHE:1]
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header set Cache-Control "public, max-age=31536000, immutable" env=ASSET_CACHE
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+  # Fonts are served with crossorigin="anonymous" in the HTML (see app CSS/JS preloads);
+  # without an explicit ACAO the browser can silently refuse the cached copy.
+  <FilesMatch "\.(woff2?|ttf|otf|eot)$">
+    Header set Access-Control-Allow-Origin "https://leadingit.me"
+  </FilesMatch>
+</IfModule>
+
+# ─────────────────────────────────────────────────────────────
+# Security headers
+# ─────────────────────────────────────────────────────────────
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  # Modest max-age while HSTS is newly rolled out; ramp up over time. Deliberately NO
+  # includeSubDomains and NO preload: the DNS zone carries non-web CNAMEs (grey-clouded
+  # Crestron remote-access endpoints) on subdomains that must never be forced to HTTPS-only.
+  Header always set Strict-Transport-Security "max-age=86400" env=HTTPS
+  Header always set X-Frame-Options "SAMEORIGIN"
+  # ── TEMPORARY — REMOVE IN PHASE 3 ──────────────────────────────────────────────────
+  # img-src includes https://images.unsplash.com because ~24 hero/section images still
+  # hotlink Unsplash pending the Phase 3 local image pipeline (CLAUDE.md asset rules /
+  # ORCHESTRATOR-BRIEF.md §5). Delete that origin from img-src the moment nothing under
+  # src/ references images.unsplash.com any more.
+  # script-src/style-src include 'unsafe-inline': vite-react-ssg injects small inline
+  # <script> hydration-data tags and Tailwind/framer-motion emit inline styles — both are
+  # build output, not user input, but this is a known CSP weakening. A stricter nonce- or
+  # hash-based policy needs a build-time change (out of scope here; app code) — flagged for
+  # frontend-engineer / Phase 2.
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://images.unsplash.com; font-src 'self'; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'"
+  # ─────────────────────────────────────────────────────────────────────────────────
+  Header unset X-Powered-By
+</IfModule>
