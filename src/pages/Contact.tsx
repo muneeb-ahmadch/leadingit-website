@@ -29,9 +29,17 @@ export function Contact() {
     keywords: 'contact Leading IT, home automation enquiry Gulf Pakistan, custom cinema consultation',
   });
 
-  // Front-end only for the design phase — wired to a backend in the build phase.
+  // No backend yet (Phase 5 ships the hardened PHP endpoint). Until then the
+  // form composes a real email draft — never a fake "message sent" state.
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    const name = String(data.get('name') ?? '').trim();
+    const company = String(data.get('company') ?? '').trim();
+    const message = String(data.get('message') ?? '').trim();
+    const subject = `Website enquiry${name ? ` — ${name}` : ''}${company ? ` (${company})` : ''}`;
+    const body = `${message}\n\n— ${name}${company ? `, ${company}` : ''}`;
+    window.location.href = `mailto:${t('contact.email')}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     setSent(true);
   };
 
