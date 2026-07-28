@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Menu, X } from 'lucide-react';
+import { href } from '@/seo/paths';
 
 export function Header() {
   const { t } = useTranslation();
@@ -15,6 +16,10 @@ export function Header() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // Nav targets render in the canonical trailing-slash form via `href()`
+  // (`src/seo/paths.ts`). `NavLink`'s `isActive` handles that explicitly — it
+  // looks for the separating slash at `to.length - 1` when `to` already ends in
+  // one — so "Brands" still highlights on `/brands/marantz/` exactly as before.
   const linkCls = ({ isActive }: { isActive: boolean }) =>
     `text-sm uppercase tracking-luxe transition-colors duration-300 ${
       isActive ? 'text-gold' : 'text-bone-100 hover:text-gold'
@@ -26,17 +31,17 @@ export function Header() {
         ${scrolled ? 'bg-ink-950/85 backdrop-blur-md border-b border-white/5' : 'bg-transparent'}`}
     >
       <div className="container-luxe flex items-center justify-between py-5">
-        <Link to="/" className="flex items-baseline gap-2 group">
+        <Link to={href('/')} className="flex items-baseline gap-2 group">
           <span className="font-serif text-2xl tracking-wider2 text-bone-100 group-hover:text-gold transition-colors">
             Leading <span className="text-gold">IT</span>
           </span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-10">
-          <NavLink to="/brands" className={linkCls}>{t('nav.brands')}</NavLink>
-          <NavLink to="/lit-home" className={linkCls}>{t('nav.litHome')}</NavLink>
-          <NavLink to="/about" className={linkCls}>{t('nav.about')}</NavLink>
-          <NavLink to="/contact" className={linkCls}>{t('nav.contact')}</NavLink>
+          <NavLink to={href('/brands')} className={linkCls}>{t('nav.brands')}</NavLink>
+          <NavLink to={href('/lit-home')} className={linkCls}>{t('nav.litHome')}</NavLink>
+          <NavLink to={href('/about')} className={linkCls}>{t('nav.about')}</NavLink>
+          <NavLink to={href('/contact')} className={linkCls}>{t('nav.contact')}</NavLink>
         </nav>
 
         <button
@@ -51,10 +56,10 @@ export function Header() {
       {open && (
         <div className="md:hidden border-t border-white/5 bg-ink-950/95 backdrop-blur-md">
           <div className="container-luxe flex flex-col gap-5 py-6">
-            <NavLink to="/brands" onClick={() => setOpen(false)} className={linkCls}>{t('nav.brands')}</NavLink>
-            <NavLink to="/lit-home" onClick={() => setOpen(false)} className={linkCls}>{t('nav.litHome')}</NavLink>
-            <NavLink to="/about" onClick={() => setOpen(false)} className={linkCls}>{t('nav.about')}</NavLink>
-            <NavLink to="/contact" onClick={() => setOpen(false)} className={linkCls}>{t('nav.contact')}</NavLink>
+            <NavLink to={href('/brands')} onClick={() => setOpen(false)} className={linkCls}>{t('nav.brands')}</NavLink>
+            <NavLink to={href('/lit-home')} onClick={() => setOpen(false)} className={linkCls}>{t('nav.litHome')}</NavLink>
+            <NavLink to={href('/about')} onClick={() => setOpen(false)} className={linkCls}>{t('nav.about')}</NavLink>
+            <NavLink to={href('/contact')} onClick={() => setOpen(false)} className={linkCls}>{t('nav.contact')}</NavLink>
           </div>
         </div>
       )}

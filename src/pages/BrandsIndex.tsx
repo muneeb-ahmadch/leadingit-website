@@ -6,6 +6,7 @@ import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { ArrowRight } from 'lucide-react';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { Seo } from '@/seo/Seo';
+import { href } from '@/seo/paths';
 import { brandsIndexMeta } from '@/seo/meta';
 import { simplePageCrumbs } from '@/seo/breadcrumbs';
 import { buildBreadcrumbList } from '@/seo/jsonld/breadcrumbList';
@@ -80,7 +81,7 @@ export function BrandsIndex() {
               {items.map((b, i) => (
                 <Reveal key={b.slug} delay={i * 0.06}>
                   <Link
-                    to={`/brands/${b.slug}`}
+                    to={href(`/brands/${b.slug}`)}
                     className="group relative block bg-ink-900 aspect-[4/5] overflow-hidden"
                   >
                     <img

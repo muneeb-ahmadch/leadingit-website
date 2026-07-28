@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import type { Crumb } from '@/seo/breadcrumbs';
+import { href } from '@/seo/paths';
 
 /**
  * The visible breadcrumb trail.
@@ -10,6 +11,11 @@ import type { Crumb } from '@/seo/breadcrumbs';
  * the whole mechanism: Google requires the visible trail and the
  * `BreadcrumbList` markup to agree, and two arrays built from the same data by
  * two different pieces of code eventually disagree. One array, two consumers.
+ *
+ * Each `Crumb.path` is in the internal, slashless form, so the anchors are
+ * rendered through `href()` — the same trailing-slash rule `pageUrl()` applies
+ * to the JSON-LD `item` URLs. Without it the visible trail links one URL and the
+ * `BreadcrumbList` claims another, and every crumb click costs a 301.
  *
  * Contract, from `src/seo/breadcrumbs.ts`:
  * - the **last crumb is the current page** and renders as plain text, never a
@@ -42,7 +48,7 @@ export function Breadcrumbs({ crumbs, className = '' }: { crumbs: Crumb[]; class
                   {crumb.name}
                 </span>
               ) : (
-                <Link to={crumb.path} className="hover:text-gold transition-colors">
+                <Link to={href(crumb.path)} className="hover:text-gold transition-colors">
                   {crumb.name}
                 </Link>
               )}

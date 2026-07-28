@@ -8,7 +8,8 @@
  *    arrive as `import type` (erased at compile time); the *records* are passed
  *    in by whoever already loaded them.
  * 2. **No import from `./routes`.** The dependency runs the other way: the route
- *    manifest calls these builders, never the reverse.
+ *    manifest calls these builders, never the reverse. (`./paths` is fine — it
+ *    is a zero-import string module, deliberately the browser-safe half.)
  * 3. **No `<meta name="keywords">`.** It has had zero ranking value since 2009
  *    and publishes the target-query list to competitors. The keyword map lives
  *    in `docs/04-KEYWORD-MAP.md` and stays there.
@@ -34,6 +35,7 @@
 import type { Brand } from '@/data/brands';
 import type { Product } from '@/data/products';
 import { SITE_NAME } from '@/lib/site';
+import { KEYPAD_DESIGNER_PATH } from './paths';
 import { isRangeProduct } from './ranges';
 
 export type PageMeta = {
@@ -168,7 +170,7 @@ export function keypadDesignerMeta(): PageMeta {
     // 139 chars. Describes only what the tool actually does today.
     description:
       'Design a Black Nova keypad online — choose the ALBA, ARIA, ANY, AXES or Black Jack collection, layout, finish, engraving and RGB backlight.',
-    path: '/brands/black-nova/keypad-designer',
+    path: KEYPAD_DESIGNER_PATH,
     ogImage: DEFAULT_OG_IMAGE,
     ogType: 'website',
   };

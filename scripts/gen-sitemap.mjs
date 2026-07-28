@@ -23,21 +23,15 @@ import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { createServer } from 'vite';
+import { AI_CRAWLERS } from './lib/ai-crawlers.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 // AI/answer-engine crawlers are explicitly allowed (user-ratified: being cited
 // is a first-class channel). /api/ is reserved for the Phase 5 PHP endpoint.
-const AI_CRAWLERS = [
-  'GPTBot',
-  'ClaudeBot',
-  'Claude-User',
-  'PerplexityBot',
-  'Google-Extended',
-  'Bingbot',
-  'Amazonbot',
-  'Applebot-Extended',
-];
+// The list itself lives in scripts/lib/ai-crawlers.mjs — shared with
+// scripts/validate-seo.mjs so the generated robots.txt and the harness that
+// checks it can never silently disagree.
 
 function fail(message) {
   console.error(`gen-sitemap: ${message}`);

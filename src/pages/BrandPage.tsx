@@ -10,6 +10,7 @@ import { ArrowRight } from 'lucide-react';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { InternalLinks, type InternalLink } from '@/components/InternalLinks';
 import { Seo } from '@/seo/Seo';
+import { KEYPAD_DESIGNER_PATH, href } from '@/seo/paths';
 import { brandMeta } from '@/seo/meta';
 import { brandHubCrumbs } from '@/seo/breadcrumbs';
 import { buildBrand } from '@/seo/jsonld/brand';
@@ -23,7 +24,7 @@ function ProductCard({ brandSlug, product, delay }: { brandSlug: string; product
   return (
     <Reveal delay={delay}>
       <Link
-        to={`/brands/${brandSlug}/${product.slug}`}
+        to={href(`/brands/${brandSlug}/${product.slug}`)}
         className="group block bg-ink-800/60 border border-white/5 hover:border-gold/30 transition-all duration-700"
       >
         <div className="relative aspect-[4/3] overflow-hidden bg-ink-900">
@@ -56,7 +57,7 @@ export function BrandPage() {
   const { t } = useTranslation();
   const brand = BRAND_BY_SLUG[slug];
 
-  if (!brand) return <Navigate to="/brands" replace />;
+  if (!brand) return <Navigate to={href('/brands')} replace />;
 
   const products = productsForBrand(brand.slug);
   const categories = CATEGORIES_BY_BRAND[brand.slug];
@@ -221,7 +222,7 @@ export function BrandPage() {
                       {t('designer.entryBody')}
                     </p>
                     <div className="mt-9">
-                      <ButtonLink to={`/brands/${brand.slug}/keypad-designer`}>{t('designer.entryCta')}</ButtonLink>
+                      <ButtonLink to={KEYPAD_DESIGNER_PATH}>{t('designer.entryCta')}</ButtonLink>
                     </div>
                   </div>
                   <div className="relative aspect-square hidden lg:block">

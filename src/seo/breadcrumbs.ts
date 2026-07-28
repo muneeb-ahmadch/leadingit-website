@@ -14,12 +14,15 @@
  * UI layer renders that same last entry as plain, non-link text instead of an
  * `<a>`/`<Link>` — never link a breadcrumb to the page the user is already on.
  *
- * `path` is a site-relative router path with no trailing slash (matching the
- * existing internal-link convention in this codebase, e.g.
- * `<Link to={\`/brands/${brand.slug}\`}>` in `src/pages/BrandPage.tsx`) —
- * `pageUrl()` in `jsonld/ids.ts` is what adds the trailing slash for the
- * canonical/JSON-LD URL form.
+ * `path` is a site-relative router path in the **internal form** — no trailing
+ * slash (`src/seo/paths.ts`). It is never rendered as-is: `buildBreadcrumbList()`
+ * turns it into an absolute `item` URL with `pageUrl()`, and `<Breadcrumbs>`
+ * turns it into an anchor with `href()`. Both add the same trailing slash, which
+ * is why the visible trail and the JSON-LD agree URL-for-URL as well as
+ * name-for-name.
  */
+import { KEYPAD_DESIGNER_PATH } from './paths';
+
 export type Crumb = { name: string; path: string };
 
 const HOME: Crumb = { name: 'Home', path: '/' };
@@ -54,7 +57,7 @@ export function productCrumbs(
 
 /** Home → Brands → Black Nova → Keypad Designer. */
 export function keypadDesignerCrumbs(): Crumb[] {
-  return [HOME, BRANDS, BLACK_NOVA, { name: 'Keypad Designer', path: '/brands/black-nova/keypad-designer' }];
+  return [HOME, BRANDS, BLACK_NOVA, { name: 'Keypad Designer', path: KEYPAD_DESIGNER_PATH }];
 }
 
 /**

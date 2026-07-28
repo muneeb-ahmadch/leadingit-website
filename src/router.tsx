@@ -1,6 +1,35 @@
 import type { RouteRecord } from 'vite-react-ssg';
 import { Layout } from '@/components/layout/Layout';
-import { KEYPAD_DESIGNER_PATH, brandPaths, productPaths } from '@/seo/routes';
+import { KEYPAD_DESIGNER_PATH } from '@/seo/paths';
+
+/**
+ * `getStaticPaths` decides which files the prerender writes. It is called in
+ * exactly one place — `vite-react-ssg`'s Node build — and never in a browser.
+ *
+ * That matters because the only way to enumerate URLs is the manifest, and the
+ * manifest reaches `src/data/products.ts` (~3,500 lines). `vite-react-ssg` runs
+ * two separate Rollup builds off this one file, so `import.meta.env.SSR` is a
+ * compile-time constant in both: `true` for the SSR build that prerenders,
+ * `false` for the client build. In the client build these ternaries fold to
+ * `undefined` and Rollup drops the `import()` with them, so neither the manifest
+ * nor the catalog it pulls in can reach the entry chunk. A plain top-level
+ * `import` of `@/seo/routes` here — which is what this file used to do — put
+ * `STATIC_ROUTES`, `RESERVED_BRAND_CHILD_SLUGS` and the manifest's assertion
+ * prose in front of every visitor.
+ *
+ * The dynamic import keeps one source of truth: the paths still come from the
+ * same manifest the sitemap and the validation harness read. Do not replace it
+ * with a second, hand-kept path list.
+ */
+type StaticPaths = RouteRecord['getStaticPaths'];
+
+const brandStaticPaths: StaticPaths = import.meta.env.SSR
+  ? async () => (await import('@/seo/routes')).brandPaths()
+  : undefined;
+
+const productStaticPaths: StaticPaths = import.meta.env.SSR
+  ? async () => (await import('@/seo/routes')).productPaths()
+  : undefined;
 
 /**
  * Route records consumed by `ViteReactSSG`: the same tree drives the build-time
@@ -8,10 +37,13 @@ import { KEYPAD_DESIGNER_PATH, brandPaths, productPaths } from '@/seo/routes';
  *
  * The URL set itself is not defined here — it comes from the typed manifest in
  * `src/seo/routes.ts`, which also feeds `scripts/gen-sitemap.mjs` and the
- * metadata layer. This file only maps patterns to components. `getStaticPaths`
- * runs exclusively in Node during the prerender, and the manifest reaches the
- * catalog through `await import()`, so `src/data/*` stays out of the browser
- * entry chunk (Phase 1 decision — do not inline the path logic back in here).
+ * metadata layer. This file only maps patterns to components.
+ *
+ * Route patterns are declared in the manifest's **internal form** — no trailing
+ * slash (`/brands/:slug`). Anchors render the slashed form via `href()`; React
+ * Router's `compilePath()` appends `\/*$` when matching to the end, so
+ * `/brands/marantz/` matches `/brands/:slug` with identical params. See
+ * `src/seo/paths.ts` for the whole convention.
  *
  * `KEYPAD_DESIGNER_PATH` is a static segment inside the Black Nova namespace.
  * React Router ranks static segments above dynamic ones, so it always wins over
@@ -38,7 +70,7 @@ export const routes: RouteRecord[] = [
       {
         path: '/brands/:slug',
         lazy: async () => ({ Component: (await import('@/pages/BrandPage')).BrandPage }),
-        getStaticPaths: brandPaths,
+        getStaticPaths: brandStaticPaths,
       },
       {
         path: KEYPAD_DESIGNER_PATH,
@@ -49,7 +81,7 @@ export const routes: RouteRecord[] = [
       {
         path: '/brands/:slug/:productSlug',
         lazy: async () => ({ Component: (await import('@/pages/ProductPage')).ProductPage }),
-        getStaticPaths: productPaths,
+        getStaticPaths: productStaticPaths,
       },
       {
         path: '/lit-home',

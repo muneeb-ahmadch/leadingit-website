@@ -3,6 +3,7 @@ import { Reveal } from '@/components/primitives/Reveal';
 import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { ButtonLink } from '@/components/primitives/Button';
 import { Seo } from '@/seo/Seo';
+import { href } from '@/seo/paths';
 import { notFoundMeta } from '@/seo/meta';
 
 /**
@@ -43,7 +44,7 @@ export function NotFound() {
         <Reveal delay={0.45}>
           <p className="mt-14 text-sm text-bone-500">
             {t('notFound.contactPrompt')}{' '}
-            <a href="/contact" className="text-gold hover:underline underline-offset-4">
+            <a href={href('/contact')} className="text-gold hover:underline underline-offset-4">
               {t('notFound.contactLink')}
             </a>
           </p>

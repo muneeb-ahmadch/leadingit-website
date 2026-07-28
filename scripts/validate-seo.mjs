@@ -32,6 +32,7 @@ import {
 import { analyzeGraph, collectPages } from './lib/jsonld-scan.mjs';
 import { withViteSsr } from './lib/vite-ssr.mjs';
 import { checkGoogleRichResults } from './lib/google-rich-results.mjs';
+import { AI_CRAWLERS } from './lib/ai-crawlers.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(here, '..');
@@ -110,6 +111,30 @@ const allTypedOccurrences = []; // { type, node, file, urlPath }
 
 function relFileOf(page) {
   return relative(repoRoot, page.file);
+}
+
+/**
+ * The text a reader (or Google's spam-policy reviewer) actually sees: `<head>`
+ * is dropped, `<script>`/`<style>` contents are dropped (a JSON-LD payload or
+ * a stylesheet is not "visible copy"), remaining tags are stripped and
+ * entities decoded. Shared by every check below that scans for claims in
+ * prose rather than in structured data or markup attributes.
+ */
+function visibleBodyText(html) {
+  const bodyMatch = /<body[^>]*>([\s\S]*)<\/body>/i.exec(html);
+  const body = bodyMatch ? bodyMatch[1] : html;
+  const withoutEmbedded = body
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, ' ');
+  return textOf(withoutEmbedded);
+}
+
+/** Resolves a site-relative `href` (e.g. `/brands/marantz/`) against `ref.SITE_URL`
+ * so it can be compared, byte-for-byte, against a `BreadcrumbList` `item` URL —
+ * both of which are absolute. Already-absolute hrefs pass through unchanged. */
+function resolveSiteHref(href) {
+  if (/^https?:\/\//i.test(href)) return href;
+  return `${ref.SITE_URL}${href.startsWith('/') ? href : `/${href}`}`;
 }
 
 // ---------------------------------------------------------------- per-page --
@@ -208,6 +233,55 @@ function checkH1(page, relFile) {
     return;
   }
   if (textOf(h1s[0].inner).length === 0) error('h1-empty', relFile, 'h1 is empty.');
+}
+
+/**
+ * "A logical h2/h3 outline" (a stated Phase 2 exit criterion) expressed as a
+ * defensible, mechanical definition — the minimum a real outline requires,
+ * checked in actual document order across all six levels:
+ *
+ *   1. the first heading on the page is the h1 (nothing outranks it);
+ *   2. no heading is empty, at any level (an empty h1 is already caught by
+ *      `checkH1`; this extends the same rule to h2–h6);
+ *   3. no level is skipped going deeper (h2 -> h4 with no h3 between is
+ *      invalid; h4 -> h2 -> h3, moving back up then down one level at a
+ *      time, is a normal, valid outline and must not be flagged).
+ *
+ * `checkH1` already asserts exactly one h1 exists at all; this function does
+ * not repeat that count check, only the ordering/emptiness/skip rules above.
+ */
+function checkHeadingOutline(page, relFile) {
+  const headings = [];
+  for (let level = 1; level <= 6; level += 1) {
+    for (const h of findElements(page.html, `h${level}`)) {
+      headings.push({ level, text: textOf(h.inner), index: h.index });
+    }
+  }
+  if (headings.length === 0) return; // checkH1 already reports the missing h1.
+  headings.sort((a, b) => a.index - b.index);
+
+  if (headings[0].level !== 1) {
+    error(
+      'heading-outline',
+      relFile,
+      `the first heading on the page is h${headings[0].level} ("${headings[0].text}"), not h1 — the page must open with its h1.`,
+    );
+  }
+
+  let previousLevel = null;
+  for (const h of headings) {
+    if (h.level > 1 && h.text.length === 0) {
+      error('heading-outline', relFile, `h${h.level} is empty.`);
+    }
+    if (previousLevel !== null && h.level > previousLevel + 1) {
+      error(
+        'heading-outline',
+        relFile,
+        `heading level jumps from h${previousLevel} to h${h.level} ("${h.text}") with no h${previousLevel + 1} between them — no level may be skipped.`,
+      );
+    }
+    previousLevel = h.level;
+  }
 }
 
 function checkNoindex(page, relFile, indexable) {
@@ -329,6 +403,27 @@ function checkBreadcrumbParity(page, relFile) {
     );
   }
 
+  // Name parity alone does not satisfy the exit criterion ("match exactly") —
+  // it previously let every crumb link to the wrong (non-canonical) URL while
+  // its name matched perfectly. Compare each linked crumb's resolved href
+  // against its BreadcrumbList `item` URL, one-for-one by position. Only
+  // meaningful when the two arrays are the same length; a length mismatch is
+  // already reported above and would misalign the indices here.
+  if (visible.length === items.length) {
+    visible.forEach((crumb, i) => {
+      if (!crumb.isLink) return; // the current-page crumb carries no href to compare.
+      const resolvedHref = resolveSiteHref(decodeEntities(crumb.href ?? ''));
+      const jsonUrl = items[i].item;
+      if (resolvedHref !== jsonUrl) {
+        error(
+          'breadcrumb-parity',
+          relFile,
+          `breadcrumb #${i + 1} ("${crumb.name}") links to "${resolvedHref}" but its BreadcrumbList item URL is "${jsonUrl}" — the visible breadcrumb and the JSON-LD must match exactly, not just by name.`,
+        );
+      }
+    });
+  }
+
   const last = visible[visible.length - 1];
   if (last?.isLink) {
     error('breadcrumb-parity', relFile, `the last breadcrumb ("${last.name}") is rendered as a link — the current page must not link to itself.`);
@@ -388,6 +483,52 @@ function checkNoPricing() {
   }
 }
 
+/**
+ * Only ever assert a first-party image in JSON-LD, sitewide, regardless of
+ * which builder emitted it. `src/seo/jsonld/itemList.ts`'s `firstPartyImage()`
+ * fixed the one live defect an audit found (Unsplash stock photos asserted,
+ * machine-readably, as the Crestron/Blustream/Basalte/JVC `Brand` entity's own
+ * photograph) — but that was a per-builder fix. `src/seo/jsonld/product.ts`,
+ * for one, builds `Product.image` straight through `absoluteUrl()` with no
+ * such guard at all; it is first-party today only because every current
+ * catalog record happens to use a first-party `hero`/`finishes[].productImage`
+ * (docs/OPEN-QUESTIONS.md #4 tracks the ones that are still Unsplash — those
+ * are used for `inUse` galleries only, never `hero`/`finishes`, today). That
+ * is a fact about the current data, not a guarantee the code enforces. This
+ * check is the sitewide regression gate that guarantee is missing: it inspects
+ * every typed JSON-LD node this site emits, not just the ones a specific
+ * builder happens to gate.
+ *
+ * `ImageObject.url`/`.contentUrl` is scoped to `@type: 'ImageObject'` only
+ * (the shape `webpage.ts`'s `primaryImageOfPage` emits) — `url` is far too
+ * common a property name on unrelated types (`WebPage.url`, `Organization.url`,
+ * `Product.url`, …) to treat generically as an image assertion.
+ */
+const IMAGE_BEARING_PROPS = ['image', 'logo', 'thumbnailUrl', 'screenshot'];
+
+function checkOnlyFirstPartyImages() {
+  for (const o of allTypedOccurrences) {
+    const props = o.type === 'ImageObject' ? ['url', 'contentUrl'] : IMAGE_BEARING_PROPS;
+    for (const prop of props) {
+      const raw = o.node[prop];
+      if (raw === undefined) continue;
+      const values = Array.isArray(raw) ? raw : [raw];
+      for (const value of values) {
+        if (typeof value !== 'string') continue;
+        if (!value.startsWith(`${ref.SITE_URL}/`)) {
+          error(
+            'non-first-party-image',
+            o.file,
+            `${o.type}.${prop} is "${value}" — not a first-party URL under ${ref.SITE_URL}. JSON-LD may never ` +
+              'assert a non-first-party photograph as depicting an entity; omit the property instead of pointing ' +
+              'it at a stock/hotlinked image.',
+          );
+        }
+      }
+    }
+  }
+}
+
 function checkNoRangeProduct() {
   for (const o of allTypedOccurrences) {
     if (o.type === 'Product' && rangeUrlPaths.has(o.urlPath)) {
@@ -423,17 +564,136 @@ function checkNoPakistanPlace() {
   }
 }
 
-function checkNoDealerClaims() {
-  const PHRASES = ['authorized dealer', 'authorised dealer', 'authorized distributor', 'authorised distributor'];
+/**
+ * `checkNoPakistanPlace()` above only inspects typed JSON-LD nodes — it has
+ * zero coverage of visible body copy, even though the site's loudest
+ * prohibition (CLAUDE.md: "No Karachi GBP/address/location page ever") is
+ * about exactly that surface. A bare mention of "Pakistan" is legitimate
+ * supply/distribution-intent copy used throughout this site's real,
+ * user-approved wording ("for the UAE and Pakistan") — it is never flagged
+ * here. Naming an actual Pakistani *city*, or linking to a location-shaped
+ * path for one, has no legitimate use on this site at all, ever, so any
+ * occurrence is an error with no allow-list.
+ */
+const PAKISTAN_CITY_PATTERN = /\b(karachi|lahore|islamabad|rawalpindi|faisalabad|peshawar|multan|quetta)\b/gi;
+const PAKISTAN_CITY_TEST = /\b(karachi|lahore|islamabad|rawalpindi|faisalabad|peshawar|multan|quetta)\b/i;
+const PAKISTAN_LOCATION_PATH = /\/locations?\/(karachi|lahore|islamabad|rawalpindi|faisalabad|peshawar|multan|quetta)\b/i;
+
+function checkNoPakistanPlaceInBodyCopy() {
   for (const page of pages) {
-    const lower = page.html.toLowerCase();
-    for (const phrase of PHRASES) {
-      if (lower.includes(phrase)) {
+    const relFile = relFileOf(page);
+    const text = visibleBodyText(page.html);
+    const found = new Set([...text.matchAll(PAKISTAN_CITY_PATTERN)].map((m) => m[0].toLowerCase()));
+    for (const city of found) {
+      error(
+        'no-pakistan-place-body',
+        relFile,
+        `visible body copy names the Pakistani city "${city}" — Dubai is this site's only physical location, ever (CLAUDE.md); Pakistan may appear only as country-level supply/distribution intent, never a named city, address or premises.`,
+      );
+    }
+
+    for (const a of findVoidTags(page.html, 'a')) {
+      const href = a.attrs.href ?? '';
+      if (PAKISTAN_CITY_TEST.test(href) || PAKISTAN_LOCATION_PATH.test(href)) {
         error(
-          'dealer-claim',
-          relFileOf(page),
-          `found the gated phrase "${phrase}" in emitted HTML — dealer authorisation wording is gated on docs/OPEN-QUESTIONS.md #3 until written per-brand confirmation exists.`,
+          'no-pakistan-place-body',
+          relFile,
+          `an <a href="${href}"> references a Pakistani city/location path — no such page exists in src/seo/routes.ts and none may ever be linked.`,
         );
+      }
+    }
+  }
+}
+
+/** A PK-country-code telephone is a legal JSON-LD value (`ContactPoint.telephone`,
+ * `LocalBusiness.telephone`, etc.) — nothing about its shape is wrong, so no
+ * generic check anywhere else catches it. Dubai-only means every telephone
+ * this site ever emits must be the UAE (+971) number.
+ */
+function checkNoPakistanPhone() {
+  for (const o of allTypedOccurrences) {
+    const tel = o.node.telephone;
+    if (typeof tel !== 'string') continue;
+    const digits = tel.replace(/[^\d+]/g, '');
+    if (!digits.startsWith('+971')) {
+      error(
+        'no-pakistan-phone',
+        o.file,
+        `"${o.type}.telephone" is "${tel}" — every telephone number this site emits in JSON-LD must be a +971 (UAE, Dubai-only) number; CLAUDE.md forbids a Pakistan contact point, ever.`,
+      );
+    }
+  }
+}
+
+/**
+ * Dealer/distributor-authorisation wording is gated behind written, per-brand
+ * confirmation (docs/OPEN-QUESTIONS.md #3) — expressed as a qualifier+role
+ * pattern rather than a hand-typed literal list, so "official dealer",
+ * "authorised reseller", "exclusive distributor", "sole distributor",
+ * "certified partner" and "official partner" are all caught by the same rule
+ * that catches "authorized dealer", not four more entries someone has to
+ * remember to add.
+ */
+const DEALER_CLAIM_PATTERN = /\b(authorized|authorised|official|exclusive|sole|certified|appointed|approved)\s+(dealer|distributor|reseller|partner)s?\b/gi;
+
+function checkNoDealerClaims() {
+  for (const page of pages) {
+    const found = new Set([...page.html.matchAll(DEALER_CLAIM_PATTERN)].map((m) => m[0].toLowerCase()));
+    for (const phrase of found) {
+      error(
+        'dealer-claim',
+        relFileOf(page),
+        `found the gated phrase "${phrase}" in emitted HTML — dealer authorisation wording is gated on docs/OPEN-QUESTIONS.md #3 until written per-brand confirmation exists.`,
+      );
+    }
+  }
+}
+
+/**
+ * The shape of an unverifiable superlative claim — not its truth (unscriptable),
+ * but the pattern CLAUDE.md's "every on-site claim must be defensible" rule is
+ * actually about: a specific year/experience count, an installation/project/
+ * client count, or any award claim. docs/OPEN-QUESTIONS.md #12 is the real,
+ * tracked example (the prototype's "60+ years of combined experience" line
+ * that must not ship without confirmation). A hit here is not proof a claim is
+ * false — it is proof it is *unsourced in this codebase*; fix it by sourcing
+ * the claim and adding an exact-text entry to `CLAIM_ALLOWLIST` below, citing
+ * where it was confirmed. Never by loosening a pattern.
+ */
+const EXPERIENCE_CLAIM_PATTERN = /\b[\d,]+\+?\s*years?\s+(of\s+)?experience\b/gi;
+const COUNT_CLAIM_PATTERN =
+  /\b[\d,]+\+?\s*(installations?|projects?|systems?|clients?|homes?|customers?)\b\s+(completed|delivered|installed|served|finished|executed|and counting|to date|worldwide)\b/gi;
+const AWARD_CLAIM_PATTERN = /\b(award-winning|awards?|winner of|awarded)\b/gi;
+const CLAIM_PATTERNS = [EXPERIENCE_CLAIM_PATTERN, COUNT_CLAIM_PATTERN, AWARD_CLAIM_PATTERN];
+
+/**
+ * Claims that ARE sourced and confirmed — empty today, since none is.
+ * `{ phrase, ref }`: `phrase` must equal the exact matched claim text
+ * (case-sensitive, as it appears on the page) and `ref` must cite a
+ * `docs/OPEN-QUESTIONS.md #<n>` entry or `CLAUDE.md`. An entry that doesn't
+ * exactly match what is actually on the page does not suppress anything —
+ * a rewritten claim must be re-confirmed, not grandfathered in by a stale
+ * allow-list line.
+ */
+const CLAIM_ALLOWLIST = [];
+
+function checkNoUnverifiableClaims() {
+  for (const page of pages) {
+    const relFile = relFileOf(page);
+    const text = visibleBodyText(page.html);
+    for (const pattern of CLAIM_PATTERNS) {
+      for (const m of text.matchAll(pattern)) {
+        const claim = m[0];
+        const allowed = CLAIM_ALLOWLIST.some((entry) => entry.phrase === claim);
+        if (!allowed) {
+          error(
+            'unverifiable-claim',
+            relFile,
+            `found an unsourced award/experience/count claim "${claim}" in visible copy — CLAUDE.md requires every ` +
+              'on-site claim to be defensible before it ships. Remove it, or (once a real source exists) add an ' +
+              'exact-text entry citing docs/OPEN-QUESTIONS.md/CLAUDE.md to CLAIM_ALLOWLIST in scripts/validate-seo.mjs.',
+          );
+        }
       }
     }
   }
@@ -462,6 +722,121 @@ function checkVocabulary() {
             'type. Regenerate via "npm run gen:schema-vocab" if intentional, else check for a typo.',
         );
       }
+    }
+  }
+}
+
+/**
+ * The block of directives following a `User-agent: <agent>` line, up to the
+ * next blank line or end of file — the standard robots.txt grouping this
+ * generator (`scripts/gen-sitemap.mjs`) always produces. Returns `null` if no
+ * group for `agent` exists at all.
+ */
+function robotsGroupFor(text, agent) {
+  const escaped = agent.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const re = new RegExp(`User-agent:\\s*${escaped}\\s*\\n([\\s\\S]*?)(?:\\n\\s*\\n|$)`, 'i');
+  const m = re.exec(text);
+  return m ? m[1] : null;
+}
+
+/**
+ * Neither exit criterion 3 ("robots.txt allows AI crawlers") nor 4 (sitemap
+ * correctness) had any regression gate at all before this — a `dist/`
+ * replaced wholesale with `Disallow: /` passed a green build. `AI_CRAWLERS` is
+ * imported from `scripts/lib/ai-crawlers.mjs`, the same list
+ * `scripts/gen-sitemap.mjs` writes from, so this can never drift into a
+ * second, hand-typed copy of the crawler list.
+ */
+function checkRobotsTxt() {
+  const path = resolve(distDir, 'robots.txt');
+  if (!existsSync(path)) {
+    error('robots-txt', 'dist/robots.txt', 'file not found in dist/ — every build must ship a robots.txt.');
+    return;
+  }
+  const text = readText(path);
+
+  for (const agent of [...AI_CRAWLERS, '*']) {
+    const group = robotsGroupFor(text, agent);
+    if (group === null) {
+      error(
+        'robots-txt',
+        'dist/robots.txt',
+        `no "User-agent: ${agent}" group found — every crawler in scripts/lib/ai-crawlers.mjs, plus the wildcard "*", must have its own group.`,
+      );
+      continue;
+    }
+    if (!/^Allow:\s*\/\s*$/im.test(group)) {
+      error('robots-txt', 'dist/robots.txt', `"User-agent: ${agent}" group does not grant "Allow: /".`);
+    }
+    if (/^Disallow:\s*\/\s*$/im.test(group)) {
+      error(
+        'robots-txt',
+        'dist/robots.txt',
+        `"User-agent: ${agent}" group contains a blanket "Disallow: /" — this would block the entire site from this crawler.`,
+      );
+    }
+  }
+
+  const expectedSitemapLine = `Sitemap: ${ref.SITE_URL}/sitemap.xml`;
+  if (!text.includes(expectedSitemapLine)) {
+    error('robots-txt', 'dist/robots.txt', `missing "${expectedSitemapLine}".`);
+  }
+}
+
+/**
+ * Ties every `<loc>` in `dist/sitemap.xml` to `src/seo/routes.ts`'s manifest —
+ * the same living source of truth every other check in this file reads —
+ * rather than merely checking the file is present. Catches both directions:
+ * a bogus/foreign URL that shouldn't be there, and a real indexable route
+ * that's silently missing.
+ */
+function checkSitemapXml() {
+  const path = resolve(distDir, 'sitemap.xml');
+  if (!existsSync(path)) {
+    error('sitemap-xml', 'dist/sitemap.xml', 'file not found in dist/ — every build must ship a sitemap.xml.');
+    return;
+  }
+  const text = readText(path);
+  if (!/<urlset\b/.test(text)) {
+    error('sitemap-xml', 'dist/sitemap.xml', 'missing an <urlset> root element — this is not a sitemap.');
+    return;
+  }
+
+  const locs = [...text.matchAll(/<loc>([^<]*)<\/loc>/g)].map((m) => decodeEntities(m[1]));
+  if (locs.length === 0) {
+    error('sitemap-xml', 'dist/sitemap.xml', 'contains zero <loc> entries.');
+    return;
+  }
+
+  for (const loc of locs) {
+    if (!loc.startsWith(`${ref.SITE_URL}/`)) {
+      error(
+        'sitemap-xml',
+        'dist/sitemap.xml',
+        `<loc>${loc}</loc> is not an absolute URL under ${ref.SITE_URL} — every sitemap entry must be a real, first-party site URL.`,
+      );
+    }
+  }
+
+  const expectedPaths = new Set(
+    ref.routes.filter((route) => route.indexable).map((route) => (route.path === '/' ? '/' : `${route.path}/`)),
+  );
+  const sitemapPaths = new Set(
+    locs.filter((loc) => loc.startsWith(ref.SITE_URL)).map((loc) => loc.slice(ref.SITE_URL.length) || '/'),
+  );
+
+  for (const path of expectedPaths) {
+    if (!sitemapPaths.has(path)) {
+      error('sitemap-xml', 'dist/sitemap.xml', `indexable route "${path}" (src/seo/routes.ts) is missing from the sitemap.`);
+    }
+  }
+  for (const path of sitemapPaths) {
+    if (!expectedPaths.has(path)) {
+      error(
+        'sitemap-xml',
+        'dist/sitemap.xml',
+        `sitemap contains "${path}", which is not an indexable route in src/seo/routes.ts's manifest.`,
+      );
     }
   }
 }
@@ -496,6 +871,7 @@ for (const page of pages) {
   checkCanonical(page, relFile);
   checkHreflang(page, relFile, indexable);
   checkH1(page, relFile);
+  checkHeadingOutline(page, relFile);
   checkNoindex(page, relFile, indexable);
   checkNoKeywords(page, relFile);
   checkJsonLdShape(page, relFile, indexable);
@@ -512,11 +888,17 @@ for (const [manifestPath] of manifestByPath) {
 checkTitleUniqueness();
 checkDescriptionUniqueness();
 checkNoPricing();
+checkOnlyFirstPartyImages();
 checkNoRangeProduct();
 checkNoPakistanPlace();
+checkNoPakistanPlaceInBodyCopy();
+checkNoPakistanPhone();
 checkNoDealerClaims();
+checkNoUnverifiableClaims();
 checkVocabulary();
 checkGoogleRichResults(allTypedOccurrences, ref, { error, warn, gap });
+checkRobotsTxt();
+checkSitemapXml();
 
 // ---------------------------------------------------------------- report --
 

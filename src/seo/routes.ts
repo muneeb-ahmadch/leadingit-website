@@ -5,8 +5,13 @@
  *   1. `scripts/gen-sitemap.mjs` (Node, prebuild) — sitemap.xml + robots.txt.
  *   2. `src/router.tsx`'s `getStaticPaths` — which files the prerender writes.
  *   3. The Phase 2 validation harness.
- * Page components must NOT import this module; they import `./meta` and are
- * handed their own record. Adding a fourth consumer is how a route list drifts.
+ * All three run in Node only. Page components must NOT import this module; they
+ * import `./meta` and are handed their own record. Adding a fourth consumer is
+ * how a route list drifts.
+ *
+ * The router reaches this module through an `import.meta.env.SSR`-guarded
+ * dynamic `import()`, never a top-level one — a static import here is what put
+ * the whole manifest in the browser entry chunk once already.
  *
  * ## Bundle rule (Phase 1 spent real effort on this — do not regress it)
  *
@@ -46,6 +51,7 @@ import {
   productMeta,
   type PageMeta,
 } from './meta';
+import { KEYPAD_DESIGNER_PATH } from './paths';
 import { RANGE_ROUTE_KEYS, isRangeProduct, rangeKey } from './ranges';
 
 export type RouteKind =
@@ -75,14 +81,6 @@ export type RouteEntry = {
   /** Present on product/range pages only. */
   readonly productSlug?: string;
 };
-
-/**
- * Static tool route inside the Black Nova brand namespace. React Router ranks
- * static segments above dynamic ones, so it always wins over
- * `/brands/:slug/:productSlug`; `keypad-designer` is additionally a reserved
- * child slug below, so no product can ever be authored at the same path.
- */
-export const KEYPAD_DESIGNER_PATH = '/brands/black-nova/keypad-designer';
 
 /**
  * Words reserved inside the `/brands/<brand>/` namespace — `docs/05-URL-TAXONOMY.md`
@@ -182,6 +180,35 @@ export async function productRoutes(): Promise<RouteEntry[]> {
           `Rename the product slug — a collision here silently shadows a real page.`,
       );
     }
+    // Derived range signal, checked against the hand-maintained registry.
+    //
+    // `./ranges` is an allow-list, and `assertManifest()` only validates it in
+    // one direction: it catches a key that names no product. Nothing caught the
+    // opposite and more dangerous case — a product that IS a range but was never
+    // added to the list, which then ships `Product` JSON-LD for a family with no
+    // single model, MPN or offer. A QA audit found exactly that on
+    // `basalte/aalto`, which had been emitting Product markup while declaring a
+    // `Range` spec table listing four form factors and a separate flagship.
+    //
+    // A `Range`-labelled spec group is the catalog's own way of saying "this
+    // record describes a family". Treat it as authoritative and fail the build
+    // when it disagrees with the registry, so the next range that gets authored
+    // cannot silently skip registration. This asserts one direction only: a
+    // range need not carry a `Range` spec group (the six uandksound series do
+    // not), it just may not carry one while going unregistered.
+    const declaresRangeSpecGroup = product.specs.some(
+      (group) => group.label.trim().toLowerCase() === 'range',
+    );
+    if (declaresRangeSpecGroup && !isRangeProduct(product.brandSlug, product.slug)) {
+      throw manifestError(
+        `product "${product.brandSlug}/${product.slug}" declares a "Range" spec group but is ` +
+          `not registered in src/seo/ranges.ts. A record describing a family of models must be ` +
+          `listed there, or it will be published to Google as a single purchasable SKU. Add ` +
+          `"${product.brandSlug}/${product.slug}" to RANGE_ROUTE_KEYS, or rename the spec group ` +
+          `if this record really is one model.`,
+      );
+    }
+
     return {
       path: `/brands/${product.brandSlug}/${product.slug}`,
       kind: isRangeProduct(product.brandSlug, product.slug) ? 'range' : 'product',

@@ -11,6 +11,7 @@ import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { InternalLinks, type InternalLink } from '@/components/InternalLinks';
 import { useHydrated } from '@/lib/hydration';
 import { Seo } from '@/seo/Seo';
+import { KEYPAD_DESIGNER_PATH, href } from '@/seo/paths';
 import { productMeta } from '@/seo/meta';
 import { productCrumbs } from '@/seo/breadcrumbs';
 import { isRangeProduct } from '@/seo/ranges';
@@ -46,7 +47,7 @@ export function ProductPage() {
   // visible; the cross-fade only applies to finish swaps after hydration.
   const hydrated = useHydrated();
 
-  if (!product || !brand) return <Navigate to="/brands" replace />;
+  if (!product || !brand) return <Navigate to={href('/brands')} replace />;
 
   const activeFinish = product.finishes.find((f) => f.id === finishId) ?? product.finishes[0];
 
@@ -278,7 +279,7 @@ export function ProductPage() {
                   <Eyebrow>{t('designer.entryEyebrow')}</Eyebrow>
                   <h3 className="mt-4 font-serif text-3xl max-w-xl">{t('designer.productCta', { name: product.name })}</h3>
                 </div>
-                <ButtonLink to={`/brands/${brand.slug}/keypad-designer?c=${product.slug}`}>{t('designer.entryCta')}</ButtonLink>
+                <ButtonLink to={`${KEYPAD_DESIGNER_PATH}?c=${product.slug}`}>{t('designer.entryCta')}</ButtonLink>
               </div>
             </div>
           </Reveal>

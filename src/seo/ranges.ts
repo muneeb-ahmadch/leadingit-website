@@ -21,6 +21,14 @@
  * To add a range: add its `<brandSlug>/<productSlug>` key here. Nothing else.
  */
 export const RANGE_ROUTE_KEYS: readonly string[] = [
+  // Basalte's Aalto is a speaker *collection*, not a model: its own spec table
+  // is a `Range` table listing four form factors (in-wall, on-wall, freestanding,
+  // soundbars) plus a separate flagship, `Aalto F5`. That is the identical shape
+  // to `blustream/dante` below — those two records are the only ones in the
+  // catalog carrying a `label: 'Range'` spec group. It was emitting `Product`
+  // JSON-LD for a family with no single model, MPN or offer until a QA audit
+  // caught it.
+  'basalte/aalto',
   // Blustream sells these three as ranges of encoders/decoders/matrices, not as
   // one orderable unit — the records' own spec tables are "Range" tables.
   'blustream/dante',

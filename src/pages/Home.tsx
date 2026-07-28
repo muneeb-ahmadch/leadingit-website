@@ -10,6 +10,7 @@ import { DeviceFrame } from '@/features/litHome/DeviceFrame';
 import { LitHomeDemo } from '@/features/litHome/LitHomeDemo';
 import { useHydrated } from '@/lib/hydration';
 import { Seo } from '@/seo/Seo';
+import { href } from '@/seo/paths';
 import { homeMeta } from '@/seo/meta';
 import { buildWebPage } from '@/seo/jsonld/webpage';
 
@@ -21,11 +22,8 @@ const LIFESTYLE_IMAGE =
 
 export function Home() {
   const { t } = useTranslation();
-  // The site's identity graph is anchored here: `Organization` and `WebSite` are
-  // sitewide nodes every other page references by `@id`, and the home page is
-  // where they are actually defined. No `BreadcrumbList` — a breadcrumb on the
-  // root of the site is a single-item trail, which is not a trail
-  // (`src/seo/breadcrumbs.ts`).
+  // No `BreadcrumbList` here — a breadcrumb on the root of the site is a
+  // single-item trail, which is not a trail (`src/seo/breadcrumbs.ts`).
   const meta = homeMeta();
   const heroRef = useRef<HTMLDivElement>(null);
   const hydrated = useHydrated();
@@ -116,7 +114,7 @@ export function Home() {
           {BRANDS.map((b, i) => (
             <Reveal key={b.slug} delay={i * 0.04}>
               <a
-                href={`/brands/${b.slug}`}
+                href={href(`/brands/${b.slug}`)}
                 className="group block bg-ink-900 aspect-[5/3] flex items-center justify-center p-8 relative overflow-hidden transition-colors duration-700 hover:bg-ink-800"
               >
                 <span className="font-serif text-2xl tracking-wider2 text-bone-300 group-hover:text-gold transition-colors duration-500">
@@ -188,7 +186,7 @@ export function Home() {
         <div className="mt-12 grid md:grid-cols-3 gap-8">
           {BRANDS.slice(0, 3).map((b, i) => (
             <Reveal key={b.slug} delay={i * 0.1}>
-              <a href={`/brands/${b.slug}`} className="group block">
+              <a href={href(`/brands/${b.slug}`)} className="group block">
                 <div className="aspect-[4/5] bg-ink-800 overflow-hidden">
                   <img
                     src={b.heroImage}

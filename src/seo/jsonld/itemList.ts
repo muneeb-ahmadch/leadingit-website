@@ -14,6 +14,22 @@ export type ItemListEntry = {
 };
 
 /**
+ * Only ever assert a first-party image in JSON-LD — the same rule
+ * `src/seo/meta.ts`'s `ownImage()` applies to `og:image` (a site-relative path
+ * is genuinely ours; anything else is not) mirrored here rather than
+ * reinvented. Unlike `ownImage()`, there is no "fall back to a default": a
+ * `ListItem` with no `image` is a valid, safe entry; a stock photo (several
+ * `Brand.heroImage` values in `src/data/brands.ts` are still Unsplash
+ * hotlinks — docs/OPEN-QUESTIONS.md #4) asserted, machine-readably, as a
+ * photograph of the Crestron/Blustream/Basalte/JVC entity is not — that is
+ * fabricating a value to fill a schema property, which CLAUDE.md forbids
+ * outright. An absent `image` is safe; a borrowed one is a liability.
+ */
+function firstPartyImage(src: string | undefined): string | undefined {
+  return src && src.startsWith('/') ? src : undefined;
+}
+
+/**
  * Generic `ItemList` node. Returns `null` for an empty list rather than
  * emitting `itemListElement: []` — an empty list is a Rich Results warning
  * waiting to happen, and every current caller has a real, non-empty set of
@@ -32,13 +48,16 @@ export function buildItemList(id: string, entries: ItemListEntry[], name?: strin
     '@id': id,
     ...(name ? { name } : {}),
     numberOfItems: entries.length,
-    itemListElement: entries.map((entry, i) => ({
-      '@type': 'ListItem',
-      position: i + 1,
-      name: entry.name,
-      url: pageUrl(entry.url),
-      ...(entry.image ? { image: absoluteUrl(entry.image) } : {}),
-    })),
+    itemListElement: entries.map((entry, i) => {
+      const image = firstPartyImage(entry.image);
+      return {
+        '@type': 'ListItem',
+        position: i + 1,
+        name: entry.name,
+        url: pageUrl(entry.url),
+        ...(image ? { image: absoluteUrl(image) } : {}),
+      };
+    }),
   };
 }
 

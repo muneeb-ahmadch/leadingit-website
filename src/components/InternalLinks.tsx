@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Eyebrow } from '@/components/primitives/Eyebrow';
+import { href } from '@/seo/paths';
 
 /**
  * One destination in a hub-and-spoke cross-link block.
@@ -11,7 +12,11 @@ import { Eyebrow } from '@/components/primitives/Eyebrow';
  * so it never dilutes it.
  */
 export type InternalLink = {
-  /** Site-relative router path, no trailing slash — same convention as `Crumb.path`. */
+  /**
+   * Site-relative router path in the internal, slashless form — same convention
+   * as `Crumb.path`. This component renders it through `href()`
+   * (`src/seo/paths.ts`), so callers never write the trailing slash themselves.
+   */
   to: string;
   label: string;
   hint?: string;
@@ -53,7 +58,7 @@ export function InternalLinks({
         {links.map((link) => (
           <li key={link.to} className="border-b border-white/5">
             <Link
-              to={link.to}
+              to={href(link.to)}
               className="group flex flex-col gap-1 py-4 text-bone-300 hover:text-gold transition-colors duration-500"
             >
               <span className="font-serif text-xl">{link.label}</span>

@@ -119,15 +119,18 @@ export function extractBreadcrumbNav(html) {
 
 /**
  * The visible breadcrumb trail from a `<nav aria-label="Breadcrumb">` inner
- * block: one `{ name, isLink }` per `<li>`, in document order. `isLink` is
- * `false` for the current-page entry, which `src/components/Breadcrumbs.tsx`
- * renders as `<span aria-current="page">` rather than a link.
+ * block: one `{ name, isLink, href? }` per `<li>`, in document order. `isLink`
+ * is `false` for the current-page entry, which `src/components/Breadcrumbs.tsx`
+ * renders as `<span aria-current="page">` rather than a link — it carries no
+ * `href`. `href` is the raw attribute value (entities undecoded — callers
+ * comparing it against a URL should run it through `decodeEntities()` first,
+ * same as `name` already is via `textOf()`).
  */
 export function parseVisibleBreadcrumbs(navInner) {
   return findElements(navInner, 'li').map(({ inner }) => {
     const withoutSeparator = inner.replace(/<span[^>]*aria-hidden="true"[^>]*>[\s\S]*?<\/span>/i, '');
     const link = findElements(withoutSeparator, 'a')[0];
-    if (link) return { name: textOf(link.inner), isLink: true };
+    if (link) return { name: textOf(link.inner), isLink: true, href: link.attrs.href ?? '' };
     const span = findElements(withoutSeparator, 'span')[0];
     return { name: textOf(span ? span.inner : withoutSeparator), isLink: false };
   });

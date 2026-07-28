@@ -44,6 +44,12 @@ RewriteRule ^(.*)$ https://leadingit.me/$1 [R=301,L,QSA]
 # it can never chain with itself. (It can only ever add a second hop on top of the scheme/host
 # rules above, and only for the edge case of a non-canonical host/scheme requested WITHOUT a
 # trailing slash in the same request — not a path any real link on the site produces.)
+#
+# That last claim is enforced in the app, not assumed: every <a href>/<Link to> renders through
+# href() in src/seo/paths.ts, which emits the slashed form, so no internal link on the site ever
+# lands on DirectorySlash. Only external links and typed URLs reach the 301. If a future change
+# starts emitting slashless internal hrefs, this comment becomes false and ~2,000 internal
+# clicks per crawl become redirect hops — the fix belongs in href(), never in a rewrite here.
 DirectoryIndex index.html
 Options -Indexes -MultiViews
 
