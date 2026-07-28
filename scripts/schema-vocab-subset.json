@@ -1,0 +1,221 @@
+{
+  "note": "Compact excerpt of https://schema.org — only the @types and properties this site's JSON-LD builders (src/seo/jsonld/*) actually emit, each one verified against the real schema.org rdfs:domainIncludes/rdfs:subClassOf graph. Regenerate with \"npm run gen:schema-vocab\" (needs network) after adding a new @type or property — scripts/validate-seo.mjs fails loudly, not silently, on anything emitted that is absent from this file.",
+  "source": "https://schema.org/version/latest/schemaorg-current-https.jsonld",
+  "generatedAt": "2026-07-28T14:16:42.935Z",
+  "types": {
+    "AboutPage": {
+      "ancestors": [
+        "AboutPage",
+        "CreativeWork",
+        "Thing",
+        "WebPage"
+      ],
+      "properties": [
+        "breadcrumb",
+        "description",
+        "inLanguage",
+        "isPartOf",
+        "name",
+        "url"
+      ]
+    },
+    "Brand": {
+      "ancestors": [
+        "Brand",
+        "Intangible",
+        "Thing",
+        "cmns-cls:Classifier"
+      ],
+      "properties": [
+        "description",
+        "name",
+        "slogan",
+        "url"
+      ]
+    },
+    "BreadcrumbList": {
+      "ancestors": [
+        "BreadcrumbList",
+        "Intangible",
+        "ItemList",
+        "Thing"
+      ],
+      "properties": [
+        "itemListElement"
+      ]
+    },
+    "CollectionPage": {
+      "ancestors": [
+        "CollectionPage",
+        "CreativeWork",
+        "Thing",
+        "WebPage"
+      ],
+      "properties": [
+        "breadcrumb",
+        "description",
+        "inLanguage",
+        "isPartOf",
+        "mainEntity",
+        "name",
+        "primaryImageOfPage",
+        "url"
+      ]
+    },
+    "ContactPage": {
+      "ancestors": [
+        "ContactPage",
+        "CreativeWork",
+        "Thing",
+        "WebPage"
+      ],
+      "properties": [
+        "breadcrumb",
+        "description",
+        "inLanguage",
+        "isPartOf",
+        "name",
+        "url"
+      ]
+    },
+    "ContactPoint": {
+      "ancestors": [
+        "ContactPoint",
+        "Intangible",
+        "StructuredValue",
+        "Thing"
+      ],
+      "properties": [
+        "areaServed",
+        "availableLanguage",
+        "contactType",
+        "email",
+        "telephone"
+      ]
+    },
+    "ImageObject": {
+      "ancestors": [
+        "CreativeWork",
+        "ImageObject",
+        "MediaObject",
+        "Thing"
+      ],
+      "properties": [
+        "url"
+      ]
+    },
+    "ItemList": {
+      "ancestors": [
+        "Intangible",
+        "ItemList",
+        "Thing"
+      ],
+      "properties": [
+        "itemListElement",
+        "name",
+        "numberOfItems"
+      ]
+    },
+    "ListItem": {
+      "ancestors": [
+        "Intangible",
+        "ListItem",
+        "Thing"
+      ],
+      "properties": [
+        "image",
+        "item",
+        "name",
+        "position",
+        "url"
+      ]
+    },
+    "Organization": {
+      "ancestors": [
+        "Organization",
+        "Thing"
+      ],
+      "properties": [
+        "areaServed",
+        "contactPoint",
+        "description",
+        "name",
+        "url"
+      ]
+    },
+    "Product": {
+      "ancestors": [
+        "Product",
+        "Thing"
+      ],
+      "properties": [
+        "additionalProperty",
+        "brand",
+        "category",
+        "color",
+        "description",
+        "image",
+        "manufacturer",
+        "name",
+        "url"
+      ]
+    },
+    "PropertyValue": {
+      "ancestors": [
+        "Intangible",
+        "PropertyValue",
+        "StructuredValue",
+        "Thing"
+      ],
+      "properties": [
+        "name",
+        "value"
+      ]
+    },
+    "WebApplication": {
+      "ancestors": [
+        "CreativeWork",
+        "SoftwareApplication",
+        "Thing",
+        "WebApplication"
+      ],
+      "properties": [
+        "applicationCategory",
+        "browserRequirements",
+        "description",
+        "isAccessibleForFree",
+        "name",
+        "url"
+      ]
+    },
+    "WebPage": {
+      "ancestors": [
+        "CreativeWork",
+        "Thing",
+        "WebPage"
+      ],
+      "properties": [
+        "breadcrumb",
+        "description",
+        "inLanguage",
+        "isPartOf",
+        "name",
+        "primaryImageOfPage",
+        "url"
+      ]
+    },
+    "WebSite": {
+      "ancestors": [
+        "CreativeWork",
+        "Thing",
+        "WebSite"
+      ],
+      "properties": [
+        "inLanguage",
+        "name",
+        "publisher",
+        "url"
+      ]
+    }
+  }
+}
