@@ -58,7 +58,14 @@ export function buildProduct(product: Product, brand: Brand): JsonLdNode | null 
     image: images,
     url: pageUrl(`/brands/${product.brandSlug}/${product.slug}`),
     category: product.collection,
-    brand: { '@id': brandId(brand.slug) },
+    // Inline `@type` + `name` alongside the `@id`, rather than a bare `@id`
+    // reference. Cross-page `@id` merging is correct linked data, but the
+    // `Brand` node itself only exists in the brand hub's graph — and Google's
+    // Rich Results Test evaluates one page in isolation, so a bare pointer
+    // reads as a `brand` with no `name` and earns a warning on all 90 product
+    // pages. The `@id` is kept so the reference still resolves to the hub's
+    // node for consumers that do merge graphs.
+    brand: { '@type': 'Brand', '@id': brandId(brand.slug), name: brand.name },
     // A distinct inline stub, not a reference to the Brand node: schema.org's
     // `Brand` type is an `Intangible`, not an `Organization`, so pointing
     // `manufacturer` (range `Organization`) at the same `@id` as `brand`

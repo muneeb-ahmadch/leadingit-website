@@ -9,8 +9,9 @@ import { BRANDS } from '@/data/brands';
 import { DeviceFrame } from '@/features/litHome/DeviceFrame';
 import { LitHomeDemo } from '@/features/litHome/LitHomeDemo';
 import { useHydrated } from '@/lib/hydration';
-import { useSeo } from '@/lib/useSeo';
-import { SITE_NAME, SITE_TAGLINE, SITE_URL, absoluteUrl } from '@/lib/site';
+import { Seo } from '@/seo/Seo';
+import { homeMeta } from '@/seo/meta';
+import { buildWebPage } from '@/seo/jsonld/webpage';
 
 const HERO_IMAGE =
   'https://images.unsplash.com/photo-1758915753332-cab59126742c?auto=format&fit=crop&w=2400&q=85';
@@ -20,26 +21,12 @@ const LIFESTYLE_IMAGE =
 
 export function Home() {
   const { t } = useTranslation();
-  useSeo({
-    title: `${SITE_NAME} — ${SITE_TAGLINE}`,
-    rawTitle: true,
-    description:
-      'Leading IT is a value-added distributor of premium home and cinema automation across the Gulf and Pakistan — Crestron, Marantz, Denon, Basalte, Polk Audio, JVC and more, unified by LIT Home.',
-    path: '/',
-    keywords:
-      'home automation Pakistan, home automation UAE, Crestron distributor, Marantz dealer, luxury smart home Gulf, custom cinema, LIT Home',
-    jsonLd: {
-      '@context': 'https://schema.org',
-      '@type': 'Organization',
-      name: SITE_NAME,
-      url: SITE_URL,
-      logo: absoluteUrl('/og-default.jpg'),
-      description:
-        'Value-added distributor of premium home and cinema automation across the Gulf and Pakistan.',
-      areaServed: ['United Arab Emirates', 'Pakistan'],
-      brand: BRANDS.map((b) => b.name),
-    },
-  });
+  // The site's identity graph is anchored here: `Organization` and `WebSite` are
+  // sitewide nodes every other page references by `@id`, and the home page is
+  // where they are actually defined. No `BreadcrumbList` — a breadcrumb on the
+  // root of the site is a single-item trail, which is not a trail
+  // (`src/seo/breadcrumbs.ts`).
+  const meta = homeMeta();
   const heroRef = useRef<HTMLDivElement>(null);
   const hydrated = useHydrated();
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
@@ -49,6 +36,15 @@ export function Home() {
 
   return (
     <>
+      {/* Organization and WebSite are prepended to every page's graph by
+          <Seo>, so the home page does not restate them. */}
+      <Seo
+        meta={meta}
+        jsonLd={[
+          buildWebPage({ path: meta.path, name: meta.title, description: meta.description }),
+        ]}
+      />
+
       {/* HERO */}
       <section ref={heroRef} className="relative h-[100svh] min-h-[680px] overflow-hidden grain">
         {/* Scroll transforms attach after hydration so the prerendered hero ships

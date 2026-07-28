@@ -1,0 +1,176 @@
+/**
+ * The one head component. Every route renders exactly one `<Seo>`, and `<Seo>`
+ * is the only place in the app allowed to write to `<head>`.
+ *
+ * ## Why this exists at all
+ *
+ * The head used to be a client-only `useEffect` (`src/lib/useSeo.ts`, deleted
+ * with this change) that mutated `document.head` after hydration. Effects do
+ * not run during the `vite-react-ssg` prerender, so *none* of the 116 static
+ * pages carried a title, description, canonical, Open Graph tag or JSON-LD —
+ * the entire SEO surface only existed for clients that execute JavaScript, and
+ * AI answer engines largely do not. `<Head>` (vite-react-ssg's re-export of
+ * react-helmet-async) is serialised into the prerendered HTML at build time, so
+ * everything below is present with JavaScript disabled.
+ *
+ * ## Rules baked in here, do not relax them
+ *
+ * - **`meta.title` is emitted verbatim.** The builders in `./meta` already
+ *   applied the site-name suffix where one belongs (and deliberately omitted it
+ *   where it would overflow the 60-char budget). Appending anything here would
+ *   silently break every length assertion in `./routes`.
+ * - **Canonicals go through `pageUrl()`**, never `absoluteUrl()` — absolute,
+ *   apex (no `www`), `https`, trailing slash (`docs/05-URL-TAXONOMY.md` §1).
+ *   That rule is implemented once, in `./jsonld/ids`, and is not restated here.
+ * - **Exactly one `<script type="application/ld+json">` per page**, containing
+ *   one `@context` and one `@graph` whose nodes cross-reference each other by
+ *   `@id`. Callers pass nodes, not a graph — `buildGraph()` is called here so a
+ *   page physically cannot emit two script tags.
+ * - **No `<meta name="keywords">`.** Dropped deliberately (see `./meta`); it has
+ *   no ranking value and publishes the target-query list to competitors.
+ */
+import { Head } from 'vite-react-ssg';
+import { ENABLED_LOCALES, type Locale } from '@/lib/locales';
+import { SITE_NAME, absoluteUrl } from '@/lib/site';
+import { DEFAULT_OG_IMAGE, type PageMeta } from './meta';
+import { buildGraph } from './jsonld/graph';
+import { buildOrganization } from './jsonld/organization';
+import { buildWebSite } from './jsonld/website';
+import { pageUrl } from './jsonld/ids';
+import type { JsonLdNode } from './jsonld/types';
+
+/**
+ * `<link>` descriptors handed to `<Head>` through its `link` prop rather than as
+ * JSX children, for one specific reason: react-helmet-async maps *child* element
+ * props through React's camelCase attribute names, so `<link hrefLang="en">`
+ * serialises as `hrefLang="en"` in the static HTML. HTML parses that correctly
+ * (attribute names are ASCII case-insensitive), but the emitted markup should
+ * read `hreflang="en"` — the prop path passes keys through verbatim and does.
+ *
+ * Consequence to respect: helmet merges children over props per tag type, so a
+ * `<link>` element added as a child of `<Head>` below would replace this whole
+ * array. **All `<link>` tags for a page belong in `buildLinks()`.**
+ */
+type HeadLink = { rel: 'canonical' | 'alternate'; href: string; hreflang?: string };
+
+/**
+ * The locale served at the unprefixed path, and the target of `x-default`.
+ * `ENABLED_LOCALES` is EN-only today (`src/lib/locales.ts`).
+ */
+const DEFAULT_LOCALE: Locale = 'en';
+
+/** Open Graph wants `language_TERRITORY`. Per-locale values arrive with `/ar/` and `/ur/`. */
+const OG_LOCALE = 'en_US';
+
+/**
+ * Canonical URL for `path` in `locale`. The default locale is served at the
+ * bare path; every other locale is a `/{locale}/` path prefix (the locked
+ * i18n URL shape — `docs/05-URL-TAXONOMY.md`). Enabling `ar` or `ur` in
+ * `ENABLED_LOCALES` is therefore the *only* edit hreflang needs.
+ */
+function localeUrl(locale: Locale, path: string): string {
+  if (locale === DEFAULT_LOCALE) return pageUrl(path);
+  return pageUrl(path === '/' ? `/${locale}` : `/${locale}${path}`);
+}
+
+/**
+ * Self-referencing `hreflang` set: one tag per enabled locale plus `x-default`
+ * pointing at the default locale. With one enabled locale that is two tags, both
+ * pointing at this page — which is correct and required, not redundant: an
+ * `en` + `x-default` pair on a single-language site is what tells Google the set
+ * is complete rather than missing.
+ */
+function alternateLinks(path: string): HeadLink[] {
+  const perLocale = ENABLED_LOCALES.map(
+    (locale): HeadLink => ({ rel: 'alternate', hreflang: locale, href: localeUrl(locale, path) }),
+  );
+  return [
+    ...perLocale,
+    { rel: 'alternate', hreflang: 'x-default', href: localeUrl(DEFAULT_LOCALE, path) },
+  ];
+}
+
+/**
+ * A literal `</script>` inside a JSON string value would end the script element
+ * early, so every `<` is replaced with its JSON unicode escape. `<` only ever
+ * occurs inside string literals in this payload, so the result is still valid
+ * JSON and parses to an identical object — this is the standard defence for
+ * inline JSON-LD, not a cosmetic touch.
+ */
+function serialiseJsonLd(graph: unknown): string {
+  return JSON.stringify(graph).replace(/</g, '\\u003c');
+}
+
+export type SeoProps = {
+  /** The route's `PageMeta`, straight from its builder in `./meta`. */
+  meta: PageMeta;
+  /**
+   * Nodes for this page's single `@graph`. Falsy entries are dropped by
+   * `buildGraph()`, so a conditional builder result (`buildBreadcrumbList()`
+   * returning `null` on the home page, `buildProduct()` refusing a range) can be
+   * passed inline without an `if` at the call site.
+   */
+  jsonLd?: Array<JsonLdNode | null | undefined | false>;
+  /** `/404` only. Emits `noindex,follow` and suppresses the hreflang set. */
+  noindex?: boolean;
+};
+
+export function Seo({ meta, jsonLd, noindex = false }: SeoProps) {
+  const canonical = pageUrl(meta.path);
+  const image = absoluteUrl(meta.ogImage ?? DEFAULT_OG_IMAGE);
+
+  // A noindexed URL keeps its self-referencing canonical (harmless, and it still
+  // consolidates any stray inbound link), but advertises no hreflang alternates:
+  // an alternate set is a claim about indexable equivalents, and this page is not
+  // one.
+  const links: HeadLink[] = [
+    { rel: 'canonical', href: canonical },
+    ...(noindex ? [] : alternateLinks(meta.path)),
+  ];
+
+  // Every page's graph opens with the sitewide identity nodes, so each page is
+  // self-describing when read in isolation. That is the normal case for us, not
+  // an edge case: Google's Rich Results Test evaluates a single page, and AI
+  // answer engines — a first-class channel for this project — routinely ingest
+  // one URL without ever fetching the home page. Without these, `WebPage
+  // .isPartOf` and `WebSite.publisher` on 113 pages pointed at nodes defined
+  // nowhere in the document. `buildGraph()` de-duplicates by `@id`, so a page
+  // that also builds them explicitly stays correct.
+  //
+  // A page passing no nodes at all (the 404 template) still emits no script.
+  const graph =
+    jsonLd && jsonLd.length > 0
+      ? buildGraph([buildOrganization(), buildWebSite(), ...jsonLd])
+      : null;
+
+  return (
+    <Head link={links}>
+      <title>{meta.title}</title>
+      {/* The encoding declaration lives here, not in `index.html`. helmet's block
+          is spliced in immediately after `<head>`, so a template-level `<meta
+          charset>` would sit a couple of kilobytes into the document — outside
+          the first 1024 bytes, which is the only window a parser looks in.
+          Emitted from here it follows the title, ~100 bytes in. */}
+      <meta charSet="UTF-8" />
+      <meta name="description" content={meta.description} />
+      {noindex && <meta name="robots" content="noindex,follow" />}
+
+      <meta property="og:title" content={meta.title} />
+      <meta property="og:description" content={meta.description} />
+      <meta property="og:type" content={meta.ogType ?? 'website'} />
+      <meta property="og:url" content={canonical} />
+      <meta property="og:image" content={image} />
+      <meta property="og:site_name" content={SITE_NAME} />
+      <meta property="og:locale" content={OG_LOCALE} />
+
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={meta.title} />
+      <meta name="twitter:description" content={meta.description} />
+      <meta name="twitter:image" content={image} />
+
+      {graph && (
+        <script type="application/ld+json">{serialiseJsonLd(graph)}</script>
+      )}
+    </Head>
+  );
+}

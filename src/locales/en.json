@@ -6,6 +6,17 @@
     "contact": "Contact",
     "blog": "Journal"
   },
+  "breadcrumbs": {
+    "ariaLabel": "Breadcrumb"
+  },
+  "internalLinks": {
+    "moreFromBrand": "More from {{brand}}",
+    "otherBrands": "Other brands we distribute",
+    "allBrandProducts": "All {{brand}} products",
+    "allBrandProductsHint": "Brand overview and full product range",
+    "browseAllBrands": "Every brand we distribute",
+    "browseAllBrandsHint": "Architectural interfaces, cinema and AV"
+  },
   "home": {
     "eyebrow": "Premium Automation · Gulf & Pakistan",
     "headline": "Greater than the sum of its parts.",

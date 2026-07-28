@@ -4,7 +4,13 @@ import { BRANDS, type BrandCategory } from '@/data/brands';
 import { Reveal } from '@/components/primitives/Reveal';
 import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { ArrowRight } from 'lucide-react';
-import { useSeo } from '@/lib/useSeo';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { Seo } from '@/seo/Seo';
+import { brandsIndexMeta } from '@/seo/meta';
+import { simplePageCrumbs } from '@/seo/breadcrumbs';
+import { buildBreadcrumbList } from '@/seo/jsonld/breadcrumbList';
+import { buildBrandsItemList, buildCollectionPage } from '@/seo/jsonld/itemList';
+import { breadcrumbNodeId, pageUrl } from '@/seo/jsonld/ids';
 
 const CATEGORIES: { id: BrandCategory; titleKey: string }[] = [
   { id: 'interfaces', titleKey: 'brands.categoryInterfaces' },
@@ -13,20 +19,36 @@ const CATEGORIES: { id: BrandCategory; titleKey: string }[] = [
 
 export function BrandsIndex() {
   const { t } = useTranslation();
-  useSeo({
-    title: 'Brands We Represent — Premium Automation, Cinema & AV',
-    description:
-      'The brands distributed by Leading IT across the Gulf and Pakistan: Crestron, Blustream, Basalte, Black Nova, Marantz, Denon, U&K Sound, Polk Audio and JVC.',
-    path: '/brands',
-    keywords:
-      'Crestron, Basalte, Marantz, Denon, Polk Audio, JVC, Black Nova, Blustream, automation brands Pakistan UAE',
-  });
+  const meta = brandsIndexMeta();
+  const crumbs = simplePageCrumbs(t('nav.brands'), meta.path);
+  // The `ItemList` `@id` is minted inside `buildBrandsItemList()`; the
+  // `CollectionPage` has to point `mainEntity` at the same string, so it is
+  // derived once here rather than retyped.
+  const brandListId = `${pageUrl(meta.path)}#brand-list`;
 
   return (
     <>
+      <Seo
+        meta={meta}
+        jsonLd={[
+          buildCollectionPage(
+            {
+              path: meta.path,
+              name: meta.title,
+              description: meta.description,
+              breadcrumbId: breadcrumbNodeId(meta.path),
+            },
+            brandListId,
+          ),
+          buildBrandsItemList(BRANDS),
+          buildBreadcrumbList(crumbs, meta.path),
+        ]}
+      />
+
       {/* hero */}
       <section className="relative pt-44 pb-24 container-luxe">
         <Reveal>
+          <Breadcrumbs crumbs={crumbs} className="mb-8" />
           <Eyebrow>{t('brands.indexEyebrow')}</Eyebrow>
           <h1 className="mt-5 font-serif text-display">{t('brands.indexTitle')}</h1>
         </Reveal>

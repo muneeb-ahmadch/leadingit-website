@@ -5,7 +5,14 @@ import { Parallax } from '@/components/primitives/Parallax';
 import { DeviceFrame } from '@/features/litHome/DeviceFrame';
 import { LitHomeDemo } from '@/features/litHome/LitHomeDemo';
 import { BRANDS } from '@/data/brands';
-import { useSeo } from '@/lib/useSeo';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { Seo } from '@/seo/Seo';
+import { litHomeMeta } from '@/seo/meta';
+import { simplePageCrumbs } from '@/seo/breadcrumbs';
+import { buildWebApplication } from '@/seo/jsonld/webApplication';
+import { buildWebPage } from '@/seo/jsonld/webpage';
+import { buildBreadcrumbList } from '@/seo/jsonld/breadcrumbList';
+import { breadcrumbNodeId } from '@/seo/jsonld/ids';
 
 const FEATURES = [
   {
@@ -35,19 +42,34 @@ const LIFESTYLE =
 
 export function LitHomePage() {
   const { t } = useTranslation();
-  useSeo({
-    title: 'LIT Home — One Interface for the Entire Residence',
-    description:
-      'LIT Home unifies lighting, climate, shading, audio, cinema and security into a single elegant control surface. Bespoke home control for the Gulf and Pakistan.',
-    path: '/lit-home',
-    keywords:
-      'LIT Home, smart home interface, home control system Pakistan UAE, lighting climate audio control, luxury home automation software',
-  });
+  const meta = litHomeMeta();
+  const crumbs = simplePageCrumbs(t('nav.litHome'), meta.path);
+
   return (
     <>
+      <Seo
+        meta={meta}
+        jsonLd={[
+          buildWebApplication({
+            path: meta.path,
+            name: t('litHome.eyebrow'),
+            description: meta.description,
+            applicationCategory: 'HomeApplication',
+          }),
+          buildWebPage({
+            path: meta.path,
+            name: meta.title,
+            description: meta.description,
+            breadcrumbId: breadcrumbNodeId(meta.path),
+          }),
+          buildBreadcrumbList(crumbs, meta.path),
+        ]}
+      />
+
       {/* hero */}
       <section className="relative pt-44 pb-20 container-luxe">
         <Reveal>
+          <Breadcrumbs crumbs={crumbs} className="mb-8" />
           <Eyebrow>{t('litHome.eyebrow')}</Eyebrow>
           <h1 className="mt-5 font-serif text-display max-w-5xl">{t('litHome.title')}</h1>
         </Reveal>
