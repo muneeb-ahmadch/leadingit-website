@@ -26,6 +26,7 @@ npm run dev      # http://localhost:5173
 | `/lit-home` | LIT Home showcase with fully clickable interactive demo |
 | `/about` | About |
 | `/contact` | Contact |
+| anything else | Custom 404 (real 404 status via Apache `ErrorDocument`) |
 
 ## Scripts
 
@@ -34,7 +35,7 @@ npm run dev      # http://localhost:5173
 | `npm run dev` | Vite dev server with HMR |
 | `npm run build` | Type-check + production build into `dist/` |
 | `npm run preview` | Preview the production build |
-| `npm run lint` | Type-check only (`tsc -b --noEmit`) |
+| `npm run lint` | Type-check + ESLint (`tsc -b --noEmit && eslint .`) |
 
 ## Stack
 

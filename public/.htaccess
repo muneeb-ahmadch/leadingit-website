@@ -103,8 +103,8 @@ ErrorDocument 404 /404.html
   Header always set X-Content-Type-Options "nosniff"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
   # Modest max-age while HSTS is newly rolled out; ramp up over time. Deliberately NO
-  # includeSubDomains and NO preload: the DNS zone carries non-web CNAMEs (grey-clouded
-  # Crestron remote-access endpoints) on subdomains that must never be forced to HTTPS-only.
+  # includeSubDomains and NO preload: the zone carries non-web subdomain records that
+  # must never be forced to HTTPS-only.
   Header always set Strict-Transport-Security "max-age=86400" env=HTTPS
   Header always set X-Frame-Options "SAMEORIGIN"
   # ── TEMPORARY — REMOVE IN PHASE 3 ──────────────────────────────────────────────────

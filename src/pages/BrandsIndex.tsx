@@ -16,10 +16,10 @@ export function BrandsIndex() {
   useSeo({
     title: 'Brands We Represent — Premium Automation, Cinema & AV',
     description:
-      'The brands distributed by Leading IT across the Gulf and Pakistan: Crestron, Blustream, Basalte, BlackNova, Marantz, Denon, U&K Sound, Polk Audio and JVC.',
+      'The brands distributed by Leading IT across the Gulf and Pakistan: Crestron, Blustream, Basalte, Black Nova, Marantz, Denon, U&K Sound, Polk Audio and JVC.',
     path: '/brands',
     keywords:
-      'Crestron, Basalte, Marantz, Denon, Polk Audio, JVC, BlackNova, Blustream, automation brands Pakistan UAE',
+      'Crestron, Basalte, Marantz, Denon, Polk Audio, JVC, Black Nova, Blustream, automation brands Pakistan UAE',
   });
 
   return (

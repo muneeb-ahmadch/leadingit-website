@@ -49,12 +49,13 @@ const urls = [
 const duplicate = urls.find((u, i) => urls.indexOf(u) !== i);
 if (duplicate) fail(`duplicate URL generated: ${duplicate}`);
 
-const today = new Date().toISOString().slice(0, 10);
+// Canonical URLs carry a trailing slash (docs/05 taxonomy; Apache DirectorySlash
+// 301s the bare form) — the root is already '/'. No <lastmod> (a build-time stamp
+// is not truthful per-URL) and no <changefreq>/<priority> (ignored by Google,
+// noise for everyone else).
+const canonical = (u) => (u === '/' ? `${SITE_URL}/` : `${SITE_URL}${u}/`);
 const body = urls
-  .map(
-    (u) =>
-      `  <url>\n    <loc>${SITE_URL}${u}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n  </url>`,
-  )
+  .map((u) => `  <url>\n    <loc>${canonical(u)}</loc>\n  </url>`)
   .join('\n');
 
 writeFileSync(
@@ -62,10 +63,28 @@ writeFileSync(
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`,
 );
 
-writeFileSync(
-  resolve(root, 'public/robots.txt'),
-  `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`,
-);
+// AI/answer-engine crawlers are explicitly allowed (user-ratified: being cited
+// is a first-class channel). /api/ is reserved for the Phase 5 PHP endpoint.
+const AI_CRAWLERS = [
+  'GPTBot',
+  'ClaudeBot',
+  'Claude-User',
+  'PerplexityBot',
+  'Google-Extended',
+  'Bingbot',
+  'Amazonbot',
+  'Applebot-Extended',
+];
+const robots = [
+  ...AI_CRAWLERS.flatMap((ua) => [`User-agent: ${ua}`, 'Allow: /', '']),
+  'User-agent: *',
+  'Allow: /',
+  'Disallow: /api/',
+  '',
+  `Sitemap: ${SITE_URL}/sitemap.xml`,
+  '',
+].join('\n');
+writeFileSync(resolve(root, 'public/robots.txt'), robots);
 
 console.log(
   `sitemap.xml: ${urls.length} URLs (${brandSlugs.length} brands · ${products.length} products) · robots.txt written (${SITE_URL})`,

@@ -24,18 +24,27 @@ jobs:
       - name: Build (prerender all routes)
         run: npm run build
 
-      - name: "Gate: every emitted page has a real h1"
+      # NOTE: CI validates MARKUP only. Product/brand imagery is deliberately absent
+      # from the repo (originals live outside version control until the Phase 3
+      # pipeline commits optimised derivatives), so image references in this build
+      # would 404 — a green run is NOT a deployable artefact until Phase 3.
+      - name: "Gate: every emitted page has a real, non-empty h1"
         run: |
           missing=$(grep -rL '<h1' dist --include='*.html' || true)
           if [ -n "$missing" ]; then
             echo "Pages missing <h1>:" && echo "$missing"
             exit 1
           fi
-          echo "OK: $(find dist -name '*.html' | wc -l) HTML files, all with <h1>"
+          empty=$(grep -rlE '<h1[^>]*>\s*</h1>' dist --include='*.html' || true)
+          if [ -n "$empty" ]; then
+            echo "Pages with EMPTY <h1>:" && echo "$empty"
+            exit 1
+          fi
+          echo "OK: $(find dist -name '*.html' | wc -l) HTML files, all with non-empty <h1>"
 
       - name: "Gate: no stale blacknova slug in output"
         run: |
-          if grep -rl 'blacknova' dist; then
+          if grep -rli 'blacknova' dist; then
             echo "Stale 'blacknova' references found in dist" && exit 1
           fi
           echo "OK: no stale slug references"
