@@ -75,8 +75,13 @@ function ownImage(src: string | undefined): string {
  */
 const PRODUCT_SUPPLY_SENTENCE = `Supplied and installed by ${SITE_NAME}, Dubai, for the UAE and Pakistan.`;
 
-/** Same claim for a whole range. 87 characters. */
-const RANGE_SUPPLY_SENTENCE = `A complete range supplied and installed by ${SITE_NAME}, Dubai, for the UAE and Pakistan.`;
+/**
+ * Same claim for a whole range. 76 characters — deliberately close to the
+ * product sentence's 70. The earlier 87-char phrasing pushed the longest range
+ * description (`black-nova/black-jack`) to 156, one over the cap, and
+ * `assertManifest()` broke the build rather than let it truncate in the SERP.
+ */
+const RANGE_SUPPLY_SENTENCE = `Supplied as a complete range by ${SITE_NAME}, Dubai, for the UAE and Pakistan.`;
 
 /** Same claim for a brand hub. 72 characters. */
 const BRAND_SUPPLY_SENTENCE = `Supplied and installed by ${SITE_NAME} in Dubai, for the UAE and Pakistan.`;

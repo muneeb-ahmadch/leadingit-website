@@ -34,6 +34,22 @@ export const RANGE_ROUTE_KEYS: readonly string[] = [
   'blustream/dante',
   'blustream/wireless-byod',
   'blustream/video-over-ip',
+  // Four of the five Black Nova pages are collections, not models. The
+  // manufacturer's own pages carry a "<COLLECTION> | Product Layouts" section
+  // (ALBA 2/4/6/8/M1, ARIA M1/12/Slider, AXES TT/9/CH/DR/KN/N3, Black Jack
+  // 2/4/6/8/M1 × ROUND/SQUARE), and its downloads layer publishes 37 separate
+  // per-model datasheets with distinct dimensions, weights, button counts and
+  // finish sets. One `Product` node cannot honestly describe 17 ALBA models.
+  // No order code, SKU or MPN is published anywhere on blacknova.co, so there
+  // is nothing to identify a single unit with either.
+  //
+  // `any` is deliberately NOT here: it is the one Black Nova page with no
+  // layouts section on the manufacturer's site and a single spec set, so it is
+  // a genuine single product and keeps its `Product` node.
+  'black-nova/alba',
+  'black-nova/aria',
+  'black-nova/axes',
+  'black-nova/black-jack',
   // Every uandksound entry is a loudspeaker series; individual models within a
   // series are not catalogued as separate routes.
   'uandksound/reference-series',
