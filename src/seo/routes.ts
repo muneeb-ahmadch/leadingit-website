@@ -52,7 +52,13 @@ import {
   type PageMeta,
 } from './meta';
 import { KEYPAD_DESIGNER_PATH } from './paths';
-import { RANGE_ROUTE_KEYS, isRangeProduct, rangeKey } from './ranges';
+import {
+  RANGE_ROUTE_KEYS,
+  SINGLE_PRODUCT_ACKNOWLEDGED,
+  isFamilySpecLabel,
+  isRangeProduct,
+  rangeKey,
+} from './ranges';
 
 export type RouteKind =
   | 'home'
@@ -196,16 +202,20 @@ export async function productRoutes(): Promise<RouteEntry[]> {
     // cannot silently skip registration. This asserts one direction only: a
     // range need not carry a `Range` spec group (the six uandksound series do
     // not), it just may not carry one while going unregistered.
-    const declaresRangeSpecGroup = product.specs.some(
-      (group) => group.label.trim().toLowerCase() === 'range',
-    );
-    if (declaresRangeSpecGroup && !isRangeProduct(product.brandSlug, product.slug)) {
+    const familyLabel = product.specs.find((group) => isFamilySpecLabel(group.label))?.label;
+    const key = rangeKey(product.brandSlug, product.slug);
+    if (
+      familyLabel &&
+      !isRangeProduct(product.brandSlug, product.slug) &&
+      !(key in SINGLE_PRODUCT_ACKNOWLEDGED)
+    ) {
       throw manifestError(
-        `product "${product.brandSlug}/${product.slug}" declares a "Range" spec group but is ` +
-          `not registered in src/seo/ranges.ts. A record describing a family of models must be ` +
-          `listed there, or it will be published to Google as a single purchasable SKU. Add ` +
-          `"${product.brandSlug}/${product.slug}" to RANGE_ROUTE_KEYS, or rename the spec group ` +
-          `if this record really is one model.`,
+        `product "${key}" declares a "${familyLabel}" spec group — the catalog's own way of ` +
+          `saying this record covers more than one model — but it is neither registered in ` +
+          `RANGE_ROUTE_KEYS nor listed in SINGLE_PRODUCT_ACKNOWLEDGED (both in ` +
+          `src/seo/ranges.ts). Left unresolved it publishes a family of models to Google as one ` +
+          `purchasable SKU. Either add it to RANGE_ROUTE_KEYS, or add it to ` +
+          `SINGLE_PRODUCT_ACKNOWLEDGED with the reason it really is a single product.`,
       );
     }
 

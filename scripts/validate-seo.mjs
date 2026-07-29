@@ -22,6 +22,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, relative, resolve } from 'node:path';
 import {
   decodeEntities,
+  extractAttributeValues,
   extractBreadcrumbNav,
   findElements,
   findVoidTags,
@@ -78,13 +79,14 @@ if (!existsSync(subsetFile)) {
 const subset = JSON.parse(readText(subsetFile));
 
 const ref = await withViteSsr(repoRoot, async (load) => {
-  const [routesMod, rangesMod, localBusinessMod, metaMod, idsMod, siteMod] = await Promise.all([
+  const [routesMod, rangesMod, localBusinessMod, metaMod, idsMod, siteMod, brandsMod] = await Promise.all([
     load('/src/seo/routes.ts'),
     load('/src/seo/ranges.ts'),
     load('/src/seo/jsonld/localBusiness.ts'),
     load('/src/seo/meta.ts'),
     load('/src/seo/jsonld/ids.ts'),
     load('/src/lib/site.ts'),
+    load('/src/data/brands.ts'),
   ]);
   return {
     routes: await routesMod.allRoutes(),
@@ -96,6 +98,7 @@ const ref = await withViteSsr(repoRoot, async (load) => {
     ORG_ID: idsMod.ORG_ID,
     WEBSITE_ID: idsMod.WEBSITE_ID,
     SITE_URL: siteMod.SITE_URL,
+    BRANDS: brandsMod.BRANDS,
   };
 });
 
@@ -127,6 +130,28 @@ function visibleBodyText(html) {
     .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ' ')
     .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, ' ');
   return textOf(withoutEmbedded);
+}
+
+/** The handful of HTML attributes that can carry a reader-visible claim
+ * (an address, an award, a dealer phrase) without appearing anywhere in
+ * prose — an `<img alt>`, a `title`, an `aria-label`. */
+const CLAIM_ATTRS = ['alt', 'title', 'aria-label'];
+
+/**
+ * `visibleBodyText()` plus every `CLAIM_ATTRS` value on the page, space-
+ * joined. A confirmed false negative: `<img alt="Leading IT showroom in
+ * Karachi, Pakistan">` passed `checkNoPakistanPlaceInBodyCopy()` clean,
+ * because attribute text is invisible to `visibleBodyText()` by
+ * construction (`stripTags()` drops an element's opening tag — attributes
+ * included — entirely). Every rule that consumes this only ever searches
+ * for a pattern's presence anywhere on the page, never depends on document
+ * order or on two adjacent claims being in the same sentence, so joining
+ * unrelated attribute values onto the end of the visible text with a plain
+ * space is safe — it can only add matches, never corrupt an existing one.
+ */
+function claimSurfaceText(html) {
+  const attrs = extractAttributeValues(html, CLAIM_ATTRS).join(' ');
+  return `${visibleBodyText(html)} ${attrs}`;
 }
 
 /** Resolves a site-relative `href` (e.g. `/brands/marantz/`) against `ref.SITE_URL`
@@ -568,10 +593,13 @@ function checkNoPakistanPlace() {
  * `checkNoPakistanPlace()` above only inspects typed JSON-LD nodes — it has
  * zero coverage of visible body copy, even though the site's loudest
  * prohibition (CLAUDE.md: "No Karachi GBP/address/location page ever") is
- * about exactly that surface. A bare mention of "Pakistan" is legitimate
- * supply/distribution-intent copy used throughout this site's real,
- * user-approved wording ("for the UAE and Pakistan") — it is never flagged
- * here. Naming an actual Pakistani *city*, or linking to a location-shaped
+ * about exactly that surface. Scans `claimSurfaceText()` (visible text plus
+ * `alt`/`title`/`aria-label`), not just prose — a stat tile, badge or image
+ * caption is exactly as much a "Karachi, Pakistan" assertion as a sentence.
+ * A bare mention of "Pakistan" is legitimate supply/distribution-intent copy
+ * used throughout this site's real, user-approved wording ("for the UAE and
+ * Pakistan") — it is never flagged here. Naming an actual Pakistani *city*,
+ * or linking to a location-shaped
  * path for one, has no legitimate use on this site at all, ever, so any
  * occurrence is an error with no allow-list.
  */
@@ -582,7 +610,7 @@ const PAKISTAN_LOCATION_PATH = /\/locations?\/(karachi|lahore|islamabad|rawalpin
 function checkNoPakistanPlaceInBodyCopy() {
   for (const page of pages) {
     const relFile = relFileOf(page);
-    const text = visibleBodyText(page.html);
+    const text = claimSurfaceText(page.html);
     const found = new Set([...text.matchAll(PAKISTAN_CITY_PATTERN)].map((m) => m[0].toLowerCase()));
     for (const city of found) {
       error(
@@ -626,6 +654,51 @@ function checkNoPakistanPhone() {
 }
 
 /**
+ * `checkNoPakistanPhone()` above only reads `node.telephone` inside parsed
+ * JSON-LD — a confirmed false negative: a Pakistan (+92) number written
+ * straight into visible prose (`<p>Call our Pakistan office on +92 300
+ * 1234567</p>`), or into a `tel:` href, was invisible to every check in this
+ * file. Targets the Pakistan country code specifically — not "any number
+ * that isn't +971" — because the real, correct UAE number
+ * (+971 58 586 5222) legitimately appears throughout this site's copy and
+ * hrefs and must keep passing; "+92" can never appear as a substring of a
+ * correctly-formed "+971…" number, so there is no ambiguity between them.
+ */
+const PK_PHONE_TEXT_PATTERN = /(?:\+92|0092)[\s().-]*\d(?:[\s().-]*\d){6,11}/g;
+
+function normalizePhoneDigits(raw) {
+  const cleaned = raw.replace(/[^\d+]/g, '');
+  return cleaned.startsWith('00') ? `+${cleaned.slice(2)}` : cleaned;
+}
+
+function checkNoPakistanPhoneInBodyCopy() {
+  for (const page of pages) {
+    const relFile = relFileOf(page);
+    const text = claimSurfaceText(page.html);
+    const found = new Set([...text.matchAll(PK_PHONE_TEXT_PATTERN)].map((m) => m[0].trim()));
+    for (const number of found) {
+      error(
+        'no-pakistan-phone-body',
+        relFile,
+        `visible copy contains a Pakistan (+92) phone number "${number}" — every telephone number this site publishes must be the +971 (UAE, Dubai-only) number; CLAUDE.md forbids a Pakistan contact point, ever.`,
+      );
+    }
+
+    for (const a of findVoidTags(page.html, 'a')) {
+      const href = decodeEntities(a.attrs.href ?? '');
+      if (!href.toLowerCase().startsWith('tel:')) continue;
+      if (normalizePhoneDigits(href.slice('tel:'.length)).startsWith('+92')) {
+        error(
+          'no-pakistan-phone-body',
+          relFile,
+          `<a href="${href}"> is a tel: link to a Pakistan (+92) number — every telephone number this site publishes must be the +971 (UAE, Dubai-only) number.`,
+        );
+      }
+    }
+  }
+}
+
+/**
  * Dealer/distributor-authorisation wording is gated behind written, per-brand
  * confirmation (docs/OPEN-QUESTIONS.md #3) — expressed as a qualifier+role
  * pattern rather than a hand-typed literal list, so "official dealer",
@@ -633,8 +706,18 @@ function checkNoPakistanPhone() {
  * "certified partner" and "official partner" are all caught by the same rule
  * that catches "authorized dealer", not four more entries someone has to
  * remember to add.
+ *
+ * The qualifier and role are not required to be adjacent: a confirmed false
+ * negative — "Authorized Crestron Dealer in Dubai." — put exactly the brand
+ * name between them, the single most idiomatic phrasing of this claim, and
+ * a pattern requiring `\s+` (nothing else) between the two words missed it
+ * entirely. `(?:\s+[\p{L}\p{N}&'-]+){0,3}?` allows up to three intervening
+ * word-shaped tokens (a brand name, "the", "for", …) — capped, and each token
+ * barred from containing sentence-ending punctuation, specifically so the
+ * match can never stretch across a full stop or into an unrelated sentence.
  */
-const DEALER_CLAIM_PATTERN = /\b(authorized|authorised|official|exclusive|sole|certified|appointed|approved)\s+(dealer|distributor|reseller|partner)s?\b/gi;
+const DEALER_CLAIM_PATTERN =
+  /\b(authorized|authorised|official|exclusive|sole|certified|appointed|approved)\b(?:\s+[\p{L}\p{N}&'-]+){0,3}?\s+(dealer|distributor|reseller|partner)s?\b/giu;
 
 function checkNoDealerClaims() {
   for (const page of pages) {
@@ -659,8 +742,16 @@ function checkNoDealerClaims() {
  * false — it is proof it is *unsourced in this codebase*; fix it by sourcing
  * the claim and adding an exact-text entry to `CLAIM_ALLOWLIST` below, citing
  * where it was confirmed. Never by loosening a pattern.
+ *
+ * `years?['’]?` in `EXPERIENCE_CLAIM_PATTERN`: a confirmed false negative —
+ * "over 60 years' experience" (the idiomatic possessive form, decoded from
+ * whatever entity the build emitted for the apostrophe by the time this
+ * pattern runs — see `claimSurfaceText()`/`textOf()`) — slipped through a
+ * pattern that required `\s+` immediately after "years", which a possessive
+ * apostrophe (straight `'` or curly `’`) sitting directly against the word
+ * breaks. "60 years of experience" (no possessive) must keep matching too.
  */
-const EXPERIENCE_CLAIM_PATTERN = /\b[\d,]+\+?\s*years?\s+(of\s+)?experience\b/gi;
+const EXPERIENCE_CLAIM_PATTERN = /\b[\d,]+\+?\s*years?['’]?\s*(of\s+)?experience\b/gi;
 const COUNT_CLAIM_PATTERN =
   /\b[\d,]+\+?\s*(installations?|projects?|systems?|clients?|homes?|customers?)\b\s+(completed|delivered|installed|served|finished|executed|and counting|to date|worldwide)\b/gi;
 const AWARD_CLAIM_PATTERN = /\b(award-winning|awards?|winner of|awarded)\b/gi;
@@ -680,7 +771,7 @@ const CLAIM_ALLOWLIST = [];
 function checkNoUnverifiableClaims() {
   for (const page of pages) {
     const relFile = relFileOf(page);
-    const text = visibleBodyText(page.html);
+    const text = claimSurfaceText(page.html);
     for (const pattern of CLAIM_PATTERNS) {
       for (const m of text.matchAll(pattern)) {
         const claim = m[0];
@@ -841,6 +932,72 @@ function checkSitemapXml() {
   }
 }
 
+/**
+ * The About page's "09 Premium brands represented" stat (`src/locales/
+ * en.json`'s `about.stat2Value`/`stat2Label`) is a hand-typed count with
+ * nothing in the codebase tying it to `src/data/brands.ts`'s `BRANDS`
+ * array — add or remove a brand and the page silently keeps asserting the
+ * old count forever. This round owns `scripts/*` only, so the hardcoding
+ * itself cannot be fixed here; this instead stops it from drifting
+ * *silently* — it reads the same label text the page renders straight out
+ * of `en.json` (never hand-retyped here, so a reworded label is still
+ * found), locates the number rendered immediately before that label in the
+ * actual built `/about/` page, and requires it to equal `BRANDS.length`.
+ * Deliberately matched by *label content* ("mentions brand(s)"), not by the
+ * `stat2` key name, so this survives the stat being reordered to a
+ * different slot.
+ */
+function checkBrandCountMatchesManifest() {
+  let locale;
+  try {
+    locale = JSON.parse(readText(resolve(repoRoot, 'src/locales/en.json')));
+  } catch (e) {
+    error('brand-count', 'src/locales/en.json', `failed to parse: ${e instanceof Error ? e.message : String(e)}`);
+    return;
+  }
+  const about = locale?.about ?? {};
+  const brandLabelKeys = Object.keys(about).filter(
+    (k) => /^stat\dLabel$/.test(k) && typeof about[k] === 'string' && /\bbrands?\b/i.test(about[k]),
+  );
+  if (brandLabelKeys.length !== 1) {
+    error(
+      'brand-count',
+      'src/locales/en.json',
+      `expected exactly one about.statNLabel mentioning "brand" to cross-check against src/data/brands.ts's ` +
+        `BRANDS.length, found ${brandLabelKeys.length} ([${brandLabelKeys.join(', ')}]) — update this check if ` +
+        'the About page stat wording or shape changed.',
+    );
+    return;
+  }
+
+  const label = about[brandLabelKeys[0]];
+  const aboutPage = pages.find((page) => page.urlPath === '/about/');
+  if (!aboutPage) return; // no About page in this build — nothing to cross-check.
+
+  const escapedLabel = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const match = new RegExp(`(\\d+)\\s+${escapedLabel}`, 'i').exec(visibleBodyText(aboutPage.html));
+  if (!match) {
+    error(
+      'brand-count',
+      relFileOf(aboutPage),
+      `could not find the rendered "<number> ${label}" stat on /about/ — src/pages/About.tsx may have changed ` +
+        'shape; update this check, or confirm the stat still renders.',
+    );
+    return;
+  }
+
+  const rendered = Number.parseInt(match[1], 10);
+  const expected = ref.BRANDS.length;
+  if (rendered !== expected) {
+    error(
+      'brand-count',
+      relFileOf(aboutPage),
+      `/about/ renders "${match[1]} ${label}" but src/data/brands.ts's BRANDS array has ${expected} entries — the ` +
+        'hardcoded src/locales/en.json stat has drifted from the real brand count.',
+    );
+  }
+}
+
 // ------------------------------------------------------------------- main --
 
 let orphanCount = 0;
@@ -893,12 +1050,14 @@ checkNoRangeProduct();
 checkNoPakistanPlace();
 checkNoPakistanPlaceInBodyCopy();
 checkNoPakistanPhone();
+checkNoPakistanPhoneInBodyCopy();
 checkNoDealerClaims();
 checkNoUnverifiableClaims();
 checkVocabulary();
 checkGoogleRichResults(allTypedOccurrences, ref, { error, warn, gap });
 checkRobotsTxt();
 checkSitemapXml();
+checkBrandCountMatchesManifest();
 
 // ---------------------------------------------------------------- report --
 

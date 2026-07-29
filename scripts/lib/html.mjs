@@ -81,9 +81,23 @@ export function findElements(html, tagName) {
   return out;
 }
 
-/** Strip nested tags, leaving only text content. */
+/**
+ * Strip nested tags, leaving only text content. Replaces each tag with a
+ * *space*, not the empty string: two adjacent elements with no whitespace
+ * between them in the source (`<div>01</div><div>Karachi showroom</div>`,
+ * the shape every stat tile/badge/chip/list-item in this codebase actually
+ * emits) previously concatenated into one run-on word — `01Karachi
+ * showroom` — at exactly the element boundary, which silently defeated every
+ * `\b`-anchored word-boundary regex that scans `textOf()`/`visibleBodyText()`
+ * output for a claim (a confirmed false negative: a Karachi-renamed stat
+ * tile passed the Pakistan-place scan clean). `textOf()` already collapses
+ * runs of whitespace via `.replace(/\s+/g, ' ')`, so the extra spaces this
+ * introduces at ordinary tag boundaries (nested inline tags, self-closing
+ * tags, etc.) are invisible in the final text — they only matter, and only
+ * help, at the boundary this bug lived in.
+ */
 export function stripTags(s) {
-  return s.replace(/<[^>]*>/g, '');
+  return s.replace(/<[^>]*>/g, ' ');
 }
 
 const ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", '#39': "'" };
@@ -98,6 +112,28 @@ export function decodeEntities(s) {
 
 export function textOf(inner) {
   return decodeEntities(stripTags(inner)).replace(/\s+/g, ' ').trim();
+}
+
+/**
+ * Every value of the given attribute name(s), anywhere in the document,
+ * entity-decoded. `alt`/`title`/`aria-label` can carry exactly the same
+ * reputational claim a reader sees in prose (a Karachi address in an `<img
+ * alt>`, an award claim in a `title`) — a confirmed false negative found no
+ * rule anywhere ever looked inside an attribute value. This is a flat,
+ * whole-document regex scan (not scoped per-tag), deliberately: callers that
+ * want these values folded into a "claim surface" alongside visible body
+ * text don't care which element carried which attribute, only whether the
+ * pattern they're checking for appears anywhere in it.
+ */
+export function extractAttributeValues(html, attrNames) {
+  const names = attrNames.map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+  const re = new RegExp(`\\b(?:${names})\\s*=\\s*("([^"]*)"|'([^']*)')`, 'gi');
+  const out = [];
+  let m;
+  while ((m = re.exec(html))) {
+    out.push(decodeEntities(m[2] !== undefined ? m[2] : (m[3] ?? '')));
+  }
+  return out;
 }
 
 /** Every `<script type="application/ld+json">` block's raw JSON text. */

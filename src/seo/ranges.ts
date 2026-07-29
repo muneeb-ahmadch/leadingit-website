@@ -50,6 +50,11 @@ export const RANGE_ROUTE_KEYS: readonly string[] = [
   'black-nova/aria',
   'black-nova/axes',
   'black-nova/black-jack',
+  // Two in-wall speakers, not one: the record's own description calls Plano "a
+  // unique collection", and its Models spec group lists Plano R3 (compact,
+  // surround duty) and Plano R5 (reference, front stage) — different drivers,
+  // different roles. It was shipping one Product node for both.
+  'basalte/plano',
   // Every uandksound entry is a loudspeaker series; individual models within a
   // series are not catalogued as separate routes.
   'uandksound/reference-series',
@@ -61,6 +66,52 @@ export const RANGE_ROUTE_KEYS: readonly string[] = [
 ];
 
 const RANGE_ROUTE_SET: ReadonlySet<string> = new Set(RANGE_ROUTE_KEYS);
+
+/**
+ * Spec-group labels that mean "this record describes more than one model".
+ *
+ * The catalog announces a family in its own spec table, but it does not use one
+ * word for it — `Range`, `Models`, `Layouts` and `Variants` are all in use. The
+ * first version of the build guard matched only `range`, which is why it caught
+ * `basalte/aalto` and would have caught none of the four Black Nova collections
+ * it was written in response to, and missed `basalte/plano` entirely.
+ *
+ * Match here is a *question*, not a verdict: a record carrying one of these
+ * labels must be resolved either into `RANGE_ROUTE_KEYS` or into
+ * `SINGLE_PRODUCT_ACKNOWLEDGED` below. An unresolved record fails the build.
+ */
+export const FAMILY_SPEC_LABELS: readonly string[] = [
+  'range',
+  'models',
+  'layouts',
+  'variants',
+  'series',
+  'collection',
+  'configurations',
+  'editions',
+];
+
+/**
+ * Records that look like a family by the test above but are genuinely one
+ * product, each with the reason it is not a range. This exists so the guard
+ * cannot be silenced by quietly widening a regex: opting out is an explicit,
+ * reviewable line of code with a justification attached.
+ *
+ * The distinction being drawn: a **model** is a different product (Plano R3 and
+ * Plano R5 are two speakers with different drivers and roles). A **variant** is
+ * the same product in another form.
+ */
+export const SINGLE_PRODUCT_ACKNOWLEDGED: Readonly<Record<string, string>> = {
+  // One iPad mount. "Eve" and "Eve Curve" are the same product wall-mounted or
+  // freestanding — a mounting option, not a second model. The page is written
+  // and titled as one product, and the Variants row is a spec detail.
+  'basalte/eve': 'Eve and Eve Curve are mounting variants of one product, not distinct models.',
+};
+
+/** True when `label` announces that a record covers more than one model. */
+export function isFamilySpecLabel(label: string): boolean {
+  return FAMILY_SPEC_LABELS.includes(label.trim().toLowerCase());
+}
 
 /** The manifest/registry key for a product route. */
 export function rangeKey(brandSlug: string, productSlug: string): string {
