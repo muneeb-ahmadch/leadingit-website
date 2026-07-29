@@ -117,7 +117,7 @@ export function brandMeta(brand: Brand): PageMeta {
     title: `${brand.name} in Dubai — Supplied & Installed by ${SITE_NAME}`,
     // `<brand> — <tagline> <supply sentence>`. Every tagline in the catalog is a
     // complete sentence ending in a full stop, so this reads as prose. Worst
-    // case is Basalte at 136 chars; shortest is U&K Sound at 104.
+    // case is Basalte at 136 chars; shortest is UandKSound at 105.
     description: `${brand.name} — ${brand.tagline} ${BRAND_SUPPLY_SENTENCE}`,
     path: `/brands/${brand.slug}`,
     ogImage: ownImage(brand.heroImage),

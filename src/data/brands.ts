@@ -83,12 +83,37 @@ export const BRANDS: Brand[] = [
   },
   {
     slug: 'uandksound',
-    name: 'U&K Sound',
-    wordmark: 'U&K SOUND',
-    tagline: 'Awaken your senses.',
+    // Official styling, evidenced across 54 pages of uandksound.com (2026-07-28):
+    // the manufacturer writes `uandksound` lowercase in the logotype artwork,
+    // every page title, the footer copyright and its oEmbed `provider_name`, and
+    // `UandKSound` mixed-case in all About/product prose, on its own YouTube
+    // channel and on its LinkedIn company page. "U&K Sound" — the value this
+    // field held until now — appears NOWHERE in any first-party context.
+    // Mixed-case is used for `name` because it is the form that anchors the two
+    // strongest external entity nodes (YouTube, LinkedIn) that a knowledge graph
+    // reconciles against, and because an all-lowercase <h1>/<title> reads as a
+    // typo and gets re-cased by aggregators. It also spells "and" out, so it
+    // cannot be misread as "UK Sound" — a United Kingdom implication would be
+    // actively harmful for a Dubai/Pakistan distributor (docs/05 §3b).
+    name: 'UandKSound',
+    // The logo artwork is literally lowercase, so the wordmark breaks this
+    // file's all-caps convention on purpose: official styling outranks it.
+    wordmark: 'uandksound',
+    // Their styling is title case with no full stop ("Awaken Your Senses").
+    // The stop is retained because `brandMeta()` composes this field into prose
+    // as a complete sentence; without it the meta description runs on.
+    tagline: 'Awaken Your Senses.',
     category: 'cinema',
+    // The opening clause used to read "Born in Europe and voiced alongside the
+    // film industry's own sound engineers". Both halves were unsourced and the
+    // first was false: the design studio was founded in Shenzhen in 2009 and
+    // production remains China-based, expanding into Spain later
+    // (https://www.uandksound.com/company/). Removed rather than rewritten —
+    // replacing one unsourced origin story with another is the same mistake.
+    // A sourced origin paragraph is Phase 3 content work (OQ #17). What remains
+    // is product-level and verifiable from the manufacturer's own pages.
     story:
-      'Born in Europe and voiced alongside the film industry\'s own sound engineers, U&K Sound builds high-end cinema and custom loudspeakers that dissolve into the architecture of a room. Horn-loaded Reference systems, Air Motion tweeters and hand-finished cabinets — supplied, installed and calibrated only through trained specialists, to awaken every sense.',
+      'UandKSound builds high-end cinema and custom loudspeakers that dissolve into the architecture of a room. Horn-loaded Reference systems, Air Motion tweeters and hand-finished cabinets — supplied, installed and calibrated only through trained specialists, to awaken every sense.',
     heroImage: '/brands/uandksound-hero.jpg',
     accent: '#9C8B6E',
   },
