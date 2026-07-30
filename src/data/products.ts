@@ -1804,9 +1804,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'marantz',
     name: 'Cinema 30',
     collection: 'Reference 11.4 Channel 8K AV Receiver',
-    tagline: 'The reference Marantz AV receiver, without compromise.',
+    tagline: 'Eleven channels, one chassis, no separates required.',
     description:
-      'Cinema 30 is Marantz’s most sophisticated AV receiver, engineered with proprietary HDAM circuitry refined over decades. Eleven amplified channels, full 8K connectivity and HEOS streaming bring reference home cinema to the most demanding rooms.',
+      'Eleven amplified channels at 140 W each make Cinema 30 the Marantz receiver for rooms that would otherwise need separates. Discrete HDAM SA-2 circuitry, dual-DAC conversion and a monolithic symmetrical amplifier sit behind seven 8K HDMI inputs with eARC, and Audyssey MultEQ XT32 handles calibration with Dirac Live available. Built at Marantz’s Shirakawa plant in Japan.',
     metaDescription:
       'Marantz Cinema 30 reference 11.4 channel 8K AV receiver with Dolby Atmos, DTS:X Pro and HEOS. Distributed and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz Cinema 30', 'Cinema 30 AV receiver', 'Marantz Cinema 30 UAE', 'Marantz Cinema 30 Pakistan', '11.4 channel AV receiver'],
@@ -1862,9 +1862,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'marantz',
     name: 'Cinema 50',
     collection: 'Premium 9.4 Channel 8K AV Receiver',
-    tagline: 'Premium theater performance, timeless Marantz design.',
+    tagline: 'Nine-point-four channels, tuned to the room you have.',
     description:
-      'Cinema 50 blends timeless Marantz design with contemporary immersive audio across nine amplified channels at 110 watts. With full 8K connectivity it suits dedicated cinema spaces and elevated living rooms alike.',
+      'Cinema 50 carries 9.4 channels at 110 W with six 8K HDMI inputs — the point in the Cinema range where speaker-layout freedom stops being a compromise. Audyssey MultEQ XT32 plus optional Dirac Live lets an installer tune it to a treated room or an untreated one. Marantz’s official tier for it is Premium.',
     metaDescription:
       'Marantz Cinema 50 premium 9.4 channel 8K AV receiver, 110W per channel with Dolby Atmos and Audyssey XT32. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz Cinema 50', 'Cinema 50 AV receiver', 'Marantz Cinema 50 UAE', 'Marantz Cinema 50 Pakistan', '9.4 channel AV receiver'],
@@ -1890,10 +1890,12 @@ export const PRODUCTS: Product[] = [
     slug: 'cinema-60',
     brandSlug: 'marantz',
     name: 'Cinema 60',
-    collection: 'Premium 7.2 Channel 8K AV Receiver',
-    tagline: 'Luxury home theater with timeless design.',
+    // Marantz's own tier name for CINEMA 60 is "Signature"; "Premium" is
+    // CINEMA 50's tier (audit D-1, marantz.com/en-gb CINEMA60GB).
+    collection: 'Signature 7.2 Channel 8K AV Receiver',
+    tagline: 'The seven-channel Cinema, sized for real rooms.',
     description:
-      'Cinema 60 brings foundational luxury home theatre with warm, spacious Marantz sound across seven channels at 100 watts. Comprehensive immersive audio and 8K support arrive in an elegant, intuitive package for modern living spaces.',
+      'Cinema 60 is the 7.2-channel entry to the Cinema range: 100 W per channel, six HDMI inputs and the full immersive format set, in the chassis depth an apartment or family room can actually take. Marantz’s own tier name for it is Signature.',
     metaDescription:
       'Marantz Cinema 60 premium 7.2 channel 8K AV receiver with Dolby Atmos, DTS:X and HEOS streaming. Supplied across the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz Cinema 60', 'Cinema 60 AV receiver', 'Marantz Cinema 60 UAE', 'Marantz Cinema 60 Pakistan', '7.2 channel AV receiver'],
@@ -1920,9 +1922,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'marantz',
     name: 'Cinema 70s',
     collection: 'Slimline 7.2 Channel 8K AV Receiver',
-    tagline: 'Premium theater performance in a slimline chassis.',
+    tagline: 'Seven-two channels in a credenza-depth chassis.',
     description:
-      'Cinema 70s delivers refined surround sound in a slim chassis that fits where conventional receivers cannot. Seven channels at 50 watts, modern immersive formats and an all-new graphical interface make it ideal for discreet installations.',
+      'Cinema 70s puts 7.2 channels at 50 W into a chassis short enough for a closed credenza or a shallow rack — the reason it gets specified where a full-height receiver will not go. Six HDMI inputs (three 8K) with eARC, the current immersive formats, and an HD on-screen interface for setup from the seat.',
     metaDescription:
       'Marantz Cinema 70s slimline 7.2 channel 8K AV receiver with Dolby Atmos and HEOS streaming. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz Cinema 70s', 'Cinema 70s AV receiver', 'Marantz Cinema 70s UAE', 'Marantz Cinema 70s Pakistan', 'slimline AV receiver'],
@@ -1949,9 +1951,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'marantz',
     name: 'Stereo 70s',
     collection: 'Slimline Stereo Network Receiver',
-    tagline: 'Two-channel simplicity, home cinema flexibility.',
+    tagline: 'One box for the television and the turntable.',
     description:
-      'Stereo 70s merges two-channel simplicity with home theatre flexibility in an elegant slimline chassis. HEOS streaming, 8K HDMI connectivity and 75 watts per channel let it anchor a refined music and television system.',
+      'Stereo 70s answers the client who wants one box for the television and the record player. Two channels at 75 W plus dual subwoofer outputs, six 8K HDMI inputs with ARC, an MM phono stage and HEOS streaming, in the same shallow chassis as Cinema 70s.',
     metaDescription:
       'Marantz Stereo 70s slimline stereo network receiver, 75W per channel with 8K HDMI, HEOS and phono input. Supplied across the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz Stereo 70s', 'Stereo 70s receiver', 'Marantz Stereo 70s UAE', 'Marantz Stereo 70s Pakistan', 'stereo network receiver'],
@@ -2054,8 +2056,10 @@ export const PRODUCTS: Product[] = [
         { name: 'Formats', value: 'Dolby Atmos, DTS:X Pro, Auro-3D' },
       ] },
       { label: 'Calibration & Streaming', rows: [
-        { name: 'Room correction', value: 'Audyssey MultEQ XT32 + Dirac' },
-        { name: 'Streaming', value: 'HEOS, Roon Ready' },
+        // Marantz calls Dirac Live optional on AV 30, and does not publish a
+        // Roon Ready claim for it (audit D-2).
+        { name: 'Room correction', value: 'Audyssey MultEQ XT32, optional Dirac Live' },
+        { name: 'Streaming', value: 'HEOS Built-in' },
       ] },
     ],
     inUse: mzInUse,
@@ -2096,7 +2100,7 @@ export const PRODUCTS: Product[] = [
     collection: '12-Channel Reference Power Amplifier',
     tagline: 'Master-level power for premium home theater.',
     description:
-      'AMP 20 is a twelve-channel reference power amplifier delivering 200 watts per channel through custom Class D amplification. Hand-tuned in Japan with a copper-plated chassis, it partners with the AV 20 for elite cinema systems.',
+      'AMP 20 is a twelve-channel reference power amplifier delivering 200 watts per channel through custom Class D amplification. Crafted in Shirakawa, Japan with a copper-plated chassis, it is the twelve-channel partner specified alongside AV 20.',
     metaDescription:
       'Marantz AMP 20 twelve-channel reference power amplifier, 200W per channel with HDAM-SA2 and copper-plated chassis. Supplied in the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz AMP 20', 'AMP 20 amplifier', 'Marantz AMP 20 UAE', 'Marantz AMP 20 Pakistan', '12 channel power amplifier'],
@@ -2154,7 +2158,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Compact Network CD Receiver',
     tagline: 'All-in-one streaming and CD, refined.',
     description:
-      'M-CR612 is a compact all-in-one network CD receiver that brings refined Marantz sound to any room. CD playback, HEOS multi-room streaming and flexible connectivity arrive in an elegant, space-efficient design.',
+      'M-CR612 puts CD, tuner, network streaming and 60 W per channel into one shallow box for a bedroom, study or second lounge. HEOS multi-room, AirPlay 2 and Bluetooth cover streaming; the disc drive and AM/FM tuner cover the collection already in the room.',
     metaDescription:
       'Marantz M-CR612 compact network CD receiver with HEOS multi-room streaming, AirPlay 2 and 60W per channel. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz M-CR612', 'M-CR612 network CD receiver', 'Marantz M-CR612 UAE', 'Marantz M-CR612 Pakistan', 'compact network receiver'],
@@ -2181,9 +2185,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'marantz',
     name: 'CD6007',
     collection: 'CD Player',
-    tagline: 'Masterfully recreated audio, slimline design.',
+    tagline: 'Disc and file library, one shelf unit.',
     description:
-      'CD6007 lets you enjoy masterfully recreated audio from CD and USB sources with high-resolution support. Custom HDAM output and precision conversion deliver refined Marantz sound in a slimline chassis.',
+      'CD6007 is a slimline disc player with a custom HDAM output buffer and 192 kHz/24-bit conversion with two selectable digital filters. A front USB port handles WAV, FLAC, ALAC, AIFF and DSD, so one shelf unit covers both the disc collection and a file library.',
     metaDescription:
       'Marantz CD6007 CD player with custom HDAM, 192kHz/24-bit and DSD playback from CD and USB. Supplied across the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz CD6007', 'CD6007 CD player', 'Marantz CD6007 UAE', 'Marantz CD6007 Pakistan', 'hi-res CD player'],
@@ -2210,9 +2214,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'marantz',
     name: 'LINK 10n',
     collection: 'Reference Streaming Preamplifier',
-    tagline: 'Reference streaming meets high-end craft.',
+    tagline: 'Streamer and preamplifier, one 10 Series chassis.',
     description:
-      'LINK 10n is a reference-class streaming preamplifier engineered with the technology and artisanship of the 10 Series. A fully balanced architecture, advanced conversion and a full-color HD display make it a complete front-end for high-performance stereo.',
+      'LINK 10n is the 10 Series front end: a streamer and full preamplifier in one, on a fully balanced 2.1 architecture inside a triple-layer aluminium chassis with copper plating. Balanced and single-ended analogue inputs, digital inputs, an MM/MC phono stage and a full-colour HD display mean it can be the only source component in a reference stereo system.',
     metaDescription:
       'Marantz LINK 10n reference streaming preamplifier with fully balanced architecture, HEOS, Roon Ready and phono input. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz LINK 10n', 'LINK 10n streamer', 'Marantz LINK 10n UAE', 'Marantz LINK 10n Pakistan', 'reference streaming preamplifier'],
@@ -2239,9 +2243,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'marantz',
     name: 'MODEL 10',
     collection: 'Reference Integrated Amplifier',
-    tagline: 'The most powerful integrated Marantz has made.',
+    tagline: 'Two hundred and fifty watts a channel, dual-mono.',
     description:
-      'MODEL 10 is Marantz’s new reference integrated amplifier, delivering 250 watts per channel through a fully balanced dual-mono topology and an all-new Marantz SMPS. A triple-layer copper-plated chassis and iconic design are crafted in Shirakawa, Japan.',
+      'MODEL 10 is Marantz’s new reference integrated amplifier, delivering 250 watts per channel through a fully balanced dual-mono topology and an all-new Marantz SMPS. A triple-layer copper-plated chassis houses it, and Marantz states the amplifier was conceived and engineered at its Shirakawa facility in Japan.',
     metaDescription:
       'Marantz MODEL 10 reference integrated amplifier, 250W per channel with dual-mono Class D and all-new SMPS. Supplied across the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz MODEL 10', 'MODEL 10 integrated amplifier', 'Marantz MODEL 10 UAE', 'Marantz MODEL 10 Pakistan', 'reference integrated amplifier'],
@@ -2306,7 +2310,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Reference Wireless Speaker · HEOS Built-in',
     tagline: 'Reference Marantz sound, freed from the rack.',
     description:
-      'Horizon distils seventy years of Marantz voicing into a single sculptural wireless speaker. A 6.5" Gravity driver, three wideband and two high-frequency drivers are driven by 310 watts of Rise GaN amplification, with HEOS streaming and HDMI eARC for television sound.',
+      'Horizon is Marantz’s wireless speaker for clients who want the sound without the rack. A 6.5" Gravity woofer, three wideband and two high-frequency drivers are driven by 310 W (FTC) of Marantz Rise GaN FET amplification, with HEOS streaming and HDMI eARC for television sound.',
     metaDescription:
       'Marantz Horizon reference wireless speaker with 310W GaN amplification, HEOS, AirPlay 2 and HDMI eARC. Supplied across the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz Horizon', 'Horizon wireless speaker', 'Marantz Horizon UAE', 'Marantz Horizon Pakistan', 'premium wireless speaker'],
@@ -2340,9 +2344,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'marantz',
     name: 'Horizon Tripod',
     collection: 'Horizon Accessory',
-    tagline: 'American walnut and cast iron, at listening height.',
+    tagline: 'Walnut and cast iron, at seated listening height.',
     description:
-      'Elegantly crafted from American walnut and robust cast iron with a satin black finish, the tripod places the Marantz Horizon at the ideal height for listening. Its walnut legs recall the cabinets of iconic Marantz amplifiers of the past.',
+      'The optional tripod raises Horizon to seated listening height on solid American walnut legs over a satin-black cast-iron core. Marantz states the walnut finish is a reference to the finishes used on its earlier amplifiers.',
     metaDescription:
       'Marantz Horizon Tripod in American walnut and cast iron — the optional stand for the Horizon wireless speaker. Available in the UAE and Pakistan via Leading IT.',
     keywords: ['Marantz Horizon Tripod', 'Horizon speaker stand', 'Marantz Horizon Tripod UAE', 'Marantz Horizon Tripod Pakistan'],
@@ -2447,7 +2451,10 @@ export const PRODUCTS: Product[] = [
       ] },
       { label: 'Light & Optics', rows: [
         { name: 'Source', value: 'BLU-Escent laser, 2,300 lm' },
-        { name: 'Lens', value: '65 mm all-glass, powered shift' },
+        // JVC publishes an 80 mm, 15-element/11-group lens for the NZ700; the
+        // 65 mm figure belongs to the NZ800, and "all-glass" is not stated
+        // for this model (audit D-7).
+        { name: 'Lens', value: '80 mm, 15-element / 11-group, powered shift' },
       ] },
       { label: 'Video', rows: [
         { name: 'Inputs', value: '2× HDMI, 4K60 4:4:4' },
@@ -2476,7 +2483,7 @@ export const PRODUCTS: Product[] = [
       ] },
       { label: 'Light & Optics', rows: [
         { name: 'Source', value: 'BLU-Escent laser, 2,000 lm' },
-        { name: 'Lens', value: 'All-glass, powered shift' },
+        { name: 'Lens', value: '80 mm, 15-element / 11-group, powered shift' },
       ] },
       { label: 'Video', rows: [
         { name: 'Inputs', value: '2× HDMI, 4K60 4:4:4' },
@@ -2492,9 +2499,9 @@ export const PRODUCTS: Product[] = [
     collection: '4K Laser DLP Projector',
     tagline: 'Bright 4K laser projection for living spaces.',
     description:
-      'LX-NZ30 brings JVC picture science to bright, multi-purpose rooms — a 3,300-lumen BLU-Escent laser drives a 4K DLP engine with HDR10+ and JVC’s acclaimed auto-tone-mapping, in a compact body that installs anywhere.',
+      'LX-NZ30 brings JVC picture science to bright, multi-purpose rooms — a 3,300-lumen BLU-Escent laser drives a 4K DLP engine with HDR10, HLG and JVC’s acclaimed auto-tone-mapping, in a compact body that installs anywhere.',
     metaDescription:
-      'JVC LX-NZ30 4K laser DLP projector — 3,300 lumens, HDR10+, BLU-Escent laser light source. Distributed in the UAE and Pakistan by Leading IT.',
+      'JVC LX-NZ30 4K laser DLP projector — 3,300 lumens, HDR10 and HLG, BLU-Escent laser light source. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['JVC LX-NZ30', 'LX-NZ30 projector', 'JVC LX-NZ30 UAE', 'JVC LX-NZ30 Pakistan', '4K laser projector'],
     hero: '/products/jvc/lx-nz30.png',
     finishes: [mzBlack('/products/jvc/lx-nz30.png'), pkWhite('/products/jvc/lx-nz30-white.png')],
@@ -2509,7 +2516,9 @@ export const PRODUCTS: Product[] = [
       ] },
       { label: 'Video', rows: [
         { name: 'Inputs', value: '2× HDMI, 4K60' },
-        { name: 'HDR', value: 'HDR10+, auto tone mapping' },
+        // JVC lists HDR10 and HLG only for the LX-NZ30 — no HDR10+ row exists
+        // on its spec table, unlike the NZ series (audit D-8).
+        { name: 'HDR', value: 'HDR10, HLG, auto tone mapping' },
       ] },
     ],
     inUse: jvInUse,
@@ -2521,9 +2530,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'denon',
     name: 'AVC-A1H',
     collection: 'Flagship 15.4 Channel 8K AV Amplifier',
-    tagline: 'The most powerful AV amplifier Denon has ever built.',
+    tagline: 'Fifteen amplified channels, up to 9.4.6.',
     description:
-      'AVC-A1H is Denon’s flagship — fifteen channels of amplification, the largest transformer in the company’s history and a 9.4.6 immersive configuration, designed and manufactured at Denon’s facility in Shirakawa, Japan.',
+      'AVC-A1H carries fifteen amplified channels at 150 W and supports layouts up to 9.4.6 — Denon presents it as the world’s first 15-channel AV receiver. Denon states it is designed and manufactured at its Japanese facilities and handcrafted at Shirakawa Audio Works, with audiophile-grade DACs, gold-plated terminals and a triple-layer chassis.',
     metaDescription:
       'Denon AVC-A1H flagship 15.4 channel 8K AV amplifier, 150W per channel with Dolby Atmos, DTS:X Pro and Auro-3D. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['Denon AVC-A1H', 'AVC-A1H amplifier', 'Denon A1H UAE', 'Denon A1H Pakistan', '15.4 channel AV amplifier'],
@@ -2552,7 +2561,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Reference 13.4 Channel 8K AV Amplifier',
     tagline: 'Reference immersion, crafted in Japan.',
     description:
-      'AVC-A10H drives up to thirteen speakers and four subwoofers at 150 watts per channel. Dolby Atmos, DTS:X Pro, IMAX Enhanced and Auro-3D meet audiophile-grade parts selection and Japanese craftsmanship.',
+      'AVC-A10H sits one step below the A1H: 13.4 channels at 150 W, seven HDMI inputs, and layouts up to 7.4.6 or 9.4.4. Nine two-channel DACs, gold-plated terminals and a rigid triple-layer chassis do the work Denon reserves for its Shirakawa-built receivers, and it will run three zones.',
     metaDescription:
       'Denon AVC-A10H reference 13.4 channel 8K AV amplifier, 150W per channel with Dolby Atmos and DTS:X Pro. Supplied across the UAE and Pakistan by Leading IT.',
     keywords: ['Denon AVC-A10H', 'AVC-A10H amplifier', 'Denon A10H UAE', 'Denon A10H Pakistan', '13.4 channel AV amplifier'],
@@ -2578,12 +2587,16 @@ export const PRODUCTS: Product[] = [
     slug: 'avc-x8500h',
     brandSlug: 'denon',
     name: 'AVC-X8500H',
-    collection: 'Flagship 13.2 Channel AV Amplifier',
-    tagline: 'The world’s first 13.2 channel AV amplifier.',
+    // Denon publishes every AVC-X8500H URL under `archive-av-receivers` and
+    // renders the page as "Archived"; the current model is the AVC-X8500HA.
+    // The route and slug are unchanged (a URL decision), but the copy no longer
+    // presents a superseded unit as the current flagship (audit D-11).
+    collection: 'Archived 13.2 Channel AV Amplifier',
+    tagline: 'Thirteen channels, monolithic construction.',
     description:
-      'AVC-X8500H redefined what a single chassis could do — the world’s first thirteen-channel AV amplifier, delivering 150 watts per channel with monolithic amplifier construction and full immersive format support for the grandest theatres.',
+      'AVC-X8500H is a superseded model — Denon lists it under its product archive, and the current equivalent is the AVC-X8500HA. It carries thirteen amplified channels at 150 watts each, with monolithic amplifier construction and full immersive format support for large theatres. Talk to us before specifying it on a new project.',
     metaDescription:
-      'Denon AVC-X8500H flagship 13.2 channel AV amplifier, 150W per channel with Dolby Atmos, DTS:X and Auro-3D. Distributed in the UAE and Pakistan by Leading IT.',
+      'Denon AVC-X8500H 13.2 channel AV amplifier, 150W per channel — archived by Denon and superseded by the AVC-X8500HA. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['Denon AVC-X8500H', 'AVC-X8500H amplifier', 'Denon X8500H UAE', 'Denon X8500H Pakistan', '13.2 channel AV amplifier'],
     hero: '/products/denon/avc-x8500h.png',
     finishes: [mzBlack('/products/denon/avc-x8500h.png')],
@@ -2637,9 +2650,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'denon',
     name: 'AVC-X4800H',
     collection: '9.4 Channel 8K AV Amplifier',
-    tagline: 'Breathtaking 3D audio for larger living spaces.',
+    tagline: 'Nine-point-four channels for the large living room.',
     description:
-      'Designed and manufactured in Japan, AVC-X4800H drives 9.4 channels of amplification at 125 watts each. Dolby Atmos, DTS:X Pro, IMAX Enhanced and Auro-3D envelop larger living spaces in breathtaking three-dimensional sound.',
+      'AVC-X4800H is the 9.4-channel receiver for a large living room rather than a dedicated cinema: 125 W a channel, seven 8K-ready HDMI inputs and three outputs, and the full immersive set including Auro-3D and IMAX Enhanced. Audyssey is installed; Dirac Live Room Correction and Bass Control are paid upgrades. Denon states it is designed and manufactured in Japan.',
     metaDescription:
       'Denon AVC-X4800H 9.4 channel 8K AV amplifier, 125W per channel with Dolby Atmos and DTS:X Pro. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['Denon AVC-X4800H', 'AVC-X4800H amplifier', 'Denon X4800H UAE', 'Denon X4800H Pakistan', '9.4 channel AV amplifier'],
@@ -2668,7 +2681,7 @@ export const PRODUCTS: Product[] = [
     collection: '9.4 Channel 8K AV Amplifier',
     tagline: 'The custom-install favourite, four subwoofers deep.',
     description:
-      'AVC-X3800H pairs nine channels of amplification with up to four independent subwoofers — theatre-quality Dolby Atmos, DTS:X, IMAX Enhanced and Auro-3D with 8K video and HEOS streaming, in the channel layout integrators trust.',
+      'AVC-X3800H is the model integrators reach for when the brief needs four separately controlled subwoofers without stepping up to the 6800H. Nine amplified channels at 105 W, eleven-channel processing, six 8K HDMI inputs and three outputs, and Dirac Live available over the installed Audyssey MultEQ XT32.',
     metaDescription:
       'Denon AVC-X3800H 9.4 channel 8K AV amplifier, 105W per channel with Dolby Atmos and four subwoofer outputs. Supplied in the UAE and Pakistan by Leading IT.',
     keywords: ['Denon AVC-X3800H', 'AVC-X3800H amplifier', 'Denon X3800H UAE', 'Denon X3800H Pakistan', '9.4 channel AV amplifier'],
@@ -2697,7 +2710,7 @@ export const PRODUCTS: Product[] = [
     collection: '7.2 Channel 8K AV Receiver',
     tagline: 'Refined immersion for medium-size rooms.',
     description:
-      'AVR-X2800H fills medium-size rooms with refined 7.2 or 5.2.2 surround sound. Dolby Atmos, DTS:X and incredible 8K video meet HEOS streaming for whole-home music.',
+      'AVR-X2800H is the 7.2-channel receiver for a medium room at 95 W a channel, with six HDMI inputs (three 8K-ready) and two outputs. The extra channels can drive a second zone instead of height speakers, which is what makes it flexible on a retrofit.',
     metaDescription:
       'Denon AVR-X2800H 7.2 channel 8K AV receiver, 95W per channel with Dolby Atmos, DTS:X and HEOS. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['Denon AVR-X2800H', 'AVR-X2800H receiver', 'Denon X2800H UAE', 'Denon X2800H Pakistan', '7.2 channel AV receiver'],
@@ -2753,9 +2766,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'denon',
     name: 'AVR-S970H',
     collection: '7.2 Channel 8K AV Receiver',
-    tagline: 'Enveloping 3D audio, 8K-ready.',
+    tagline: 'Overhead effect, with or without height speakers.',
     description:
-      'AVR-S970H delivers enveloping 3D audio and incredible 8K video for medium-size rooms — 7.2 or 5.2.2 configurations with Dolby Atmos and DTS:X, plus HEOS streaming to share music through the home.',
+      'AVR-S970H covers a 7.2 or 5.2.2 layout at 90 W a channel with 8K/60 and 4K/120 pass-through. Dolby Atmos Height Virtualizer and DTS Virtual:X give an overhead impression where height speakers cannot be installed, and Denon’s guided setup plus Audyssey MultEQ handle calibration.',
     metaDescription:
       'Denon AVR-S970H 7.2 channel 8K AV receiver with Dolby Atmos, DTS:X and HEOS Built-in. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['Denon AVR-S970H', 'AVR-S970H receiver', 'Denon S970H UAE', 'Denon S970H Pakistan', '7.2 channel 8K receiver'],
@@ -2782,9 +2795,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'denon',
     name: 'AVC-S670H',
     collection: '5.2 Channel 8K AV Amplifier',
-    tagline: 'The heart of an elegant 5.2 home theater.',
+    tagline: 'Five-two channels, discrete output stages.',
     description:
-      'AVC-S670H is the heart of a refined 5.2 home theatre — incredible 8K video, high-definition Dolby TrueHD and DTS-HD Master Audio surround, and HEOS Built-in to stream music to wireless speakers in other rooms.',
+      'AVC-S670H is a 5.2-channel amplifier at 75 W a channel with discrete high-current output stages on every channel. It decodes Dolby TrueHD and DTS-HD Master Audio, passes 8K, and joins a HEOS multi-room system, which suits a compact media room rather than a dedicated cinema.',
     metaDescription:
       'Denon AVC-S670H 5.2 channel 8K AV amplifier with Dolby TrueHD, DTS-HD Master Audio and HEOS. Supplied across the UAE and Pakistan by Leading IT.',
     keywords: ['Denon AVC-S670H', 'AVC-S670H amplifier', 'Denon S670H UAE', 'Denon S670H Pakistan', '5.2 channel AV amplifier'],
@@ -2813,7 +2826,7 @@ export const PRODUCTS: Product[] = [
     collection: '5.2 Channel 8K AV Receiver · Bluetooth',
     tagline: 'True surround sound for smaller spaces.',
     description:
-      'AVR-X580BT brings movies to life in smaller spaces — 5.2-channel surround with amazing 8K picture quality, Dolby TrueHD and DTS-HD decoding, and wireless music streaming via Bluetooth.',
+      'AVR-X580BT is the 5.2-channel option for a small room: 70 W a channel, four HDMI inputs with 8K and eARC, Dolby TrueHD and DTS-HD decoding, and VRR/ALLM/QFT for a console. Streaming is Bluetooth only — there is no network stage, which is the trade for the price.',
     metaDescription:
       'Denon AVR-X580BT 5.2 channel 8K AV receiver with Dolby TrueHD, DTS-HD and Bluetooth streaming. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['Denon AVR-X580BT', 'AVR-X580BT receiver', 'Denon X580BT UAE', 'Denon X580BT Pakistan', '5.2 channel 8K receiver'],
@@ -2842,7 +2855,7 @@ export const PRODUCTS: Product[] = [
     collection: '5.1 Channel 4K AV Receiver · Bluetooth',
     tagline: 'The essential first step into home cinema.',
     description:
-      'AVR-X250BT is the essential first step into home cinema — 5.1-channel surround with full 4K, HDR and ARC support, five HDMI inputs and built-in Bluetooth for effortless music streaming.',
+      'AVR-X250BT is the smallest Denon we carry: 5.1 channels, five HDMI inputs with 4K and ARC pass-through, and Bluetooth for music. Denon rates it at 130 W per channel maximum. It is the right answer for a guest room or a first system, not for a treated cinema.',
     metaDescription:
       'Denon AVR-X250BT 5.1 channel 4K AV receiver with HDR passthrough and Bluetooth streaming. Supplied across the UAE and Pakistan by Leading IT.',
     keywords: ['Denon AVR-X250BT', 'AVR-X250BT receiver', 'Denon X250BT UAE', 'Denon X250BT Pakistan', '5.1 channel AV receiver'],
@@ -2869,9 +2882,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'denon',
     name: 'DRA-900H',
     collection: '2.2 Channel 8K Stereo Network Receiver',
-    tagline: 'Vinyl to 8K, through a two-channel soul.',
+    tagline: 'Two channels, with the video switching of an AVR.',
     description:
-      'DRA-900H unites your music and movie collections in a two-channel system — vinyl, CD, hi-res files, Blu-ray and 8K sources through 100 watts per channel, with HEOS streaming to share it all through the home.',
+      'DRA-900H is a two-channel receiver with the video switching of an AV model: 100 W a channel, six HDMI inputs (three 8K-ready) with eARC, an MM phono stage and two subwoofer outputs. It suits the client whose main system is a pair of speakers but whose sources include a projector.',
     metaDescription:
       'Denon DRA-900H 2.2 channel 8K stereo network receiver, 100W per channel with phono input and HEOS. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['Denon DRA-900H', 'DRA-900H receiver', 'Denon DRA-900H UAE', 'Denon DRA-900H Pakistan', 'stereo network receiver'],
@@ -2899,10 +2912,10 @@ export const PRODUCTS: Product[] = [
     slug: 'reserve-r700',
     brandSlug: 'polk-audio',
     name: 'Reserve R700',
-    collection: 'Reserve Series · Flagship Tower',
-    tagline: 'The cornerstone of the ultimate home cinema.',
+    collection: 'Reserve Series · Tower',
+    tagline: 'Dual eight-inch woofers, ring-radiator top end.',
     description:
-      'Reserve R700 is Polk’s flagship tower — a 1" Pinnacle ring radiator tweeter, 6.5" Turbine Cone midrange and dual 8" woofers with Power Port 2.0 bass loading. IMAX Enhanced and Hi-Res certified for reference theatre and music alike.',
+      'Reserve R700 is the largest tower in the Reserve range — a 1" Pinnacle ring radiator tweeter, 6.5" Turbine Cone midrange and dual 8" woofers with Power Port 2.0 and X-Port bass loading. IMAX Enhanced and Hi-Res certified for reference theatre and music alike.',
     metaDescription:
       'Polk Audio Reserve R700 flagship tower speaker — Pinnacle tweeter, Turbine Cone mid, dual 8" woofers, IMAX Enhanced. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['Polk Reserve R700', 'Reserve R700 tower speaker', 'Polk R700 UAE', 'Polk R700 Pakistan', 'flagship floor-standing speaker'],
@@ -2914,7 +2927,7 @@ export const PRODUCTS: Product[] = [
         { name: 'Mid & bass', value: '6.5" Turbine Cone, 2× 8" woofers' },
       ] },
       { label: 'Performance', rows: [
-        { name: 'Response', value: '30 Hz – 50 kHz' },
+        { name: 'Overall frequency response', value: '30 Hz – 50 kHz' },
         { name: 'Sensitivity', value: '88 dB (2.83 V/1 m)' },
       ] },
       { label: 'Certification', rows: [
@@ -2929,9 +2942,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'polk-audio',
     name: 'Reserve R600',
     collection: 'Reserve Series · Tower',
-    tagline: 'Premium hi-fi balance, powerful 3D performance.',
+    tagline: 'The Reserve tower that fits the room.',
     description:
-      'Reserve R600 elegantly balances premium hi-fi quality and design — a 1" Pinnacle ring radiator tweeter over dual 6.5" Turbine Cone woofers delivers spacious stereo and powerful surround performance in equal measure.',
+      'Reserve R600 is the tower to specify when R700 will not fit the room or the budget: the same 1" Pinnacle ring radiator tweeter over dual 6.5" Turbine Cone woofers with Power Port 2.0. Polk rates it 43 Hz–38 kHz at −3 dB and 87.5 dB sensitivity, and it is Hi-Res Audio certified.',
     metaDescription:
       'Polk Audio Reserve R600 tower speaker — 1" Pinnacle tweeter, dual 6.5" Turbine Cone woofers, Hi-Res certified. Supplied across the UAE and Pakistan by Leading IT.',
     keywords: ['Polk Reserve R600', 'Reserve R600 tower speaker', 'Polk R600 UAE', 'Polk R600 Pakistan', 'floor-standing speaker'],
@@ -2943,7 +2956,7 @@ export const PRODUCTS: Product[] = [
         { name: 'Woofers', value: '2× 6.5" Turbine Cone' },
       ] },
       { label: 'Performance', rows: [
-        { name: 'Response', value: '32 Hz – 50 kHz' },
+        { name: 'Overall frequency response', value: '32 Hz – 50 kHz' },
         { name: 'Sensitivity', value: '87.5 dB (2.83 V/1 m)' },
       ] },
       { label: 'Certification', rows: [
@@ -2958,7 +2971,7 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'polk-audio',
     name: 'Reserve R500',
     collection: 'Reserve Series · Slim Tower',
-    tagline: 'Compact towers, supremely musical.',
+    tagline: 'A narrow tower that still reaches 35 Hz.',
     description:
       'Reserve R500 packs the full Reserve voicing into a compact, room-friendly tower — a 1" Pinnacle ring radiator tweeter and dual 5.25" Turbine Cone woofers that disappear into the architecture and the soundstage alike.',
     metaDescription:
@@ -2972,7 +2985,7 @@ export const PRODUCTS: Product[] = [
         { name: 'Woofers', value: '2× 5.25" Turbine Cone' },
       ] },
       { label: 'Performance', rows: [
-        { name: 'Response', value: '35 Hz – 50 kHz' },
+        { name: 'Overall frequency response', value: '35 Hz – 50 kHz' },
         { name: 'Sensitivity', value: '87 dB (2.83 V/1 m)' },
       ] },
       { label: 'Certification', rows: [
@@ -3001,7 +3014,7 @@ export const PRODUCTS: Product[] = [
         { name: 'Woofers', value: '2× 6.5" Turbine Cone' },
       ] },
       { label: 'Performance', rows: [
-        { name: 'Response', value: '36 Hz – 50 kHz' },
+        { name: 'Overall frequency response', value: '36 Hz – 50 kHz' },
         { name: 'Sensitivity', value: '89 dB (2.83 V/1 m)' },
       ] },
       { label: 'Amplification', rows: [
@@ -3016,9 +3029,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'polk-audio',
     name: 'Reserve R350',
     collection: 'Reserve Series · Slim LCR',
-    tagline: 'A discreet slim profile, a full front stage.',
+    tagline: 'Five inches deep, horizontal or vertical.',
     description:
-      'Reserve R350 is the discreet answer for premium rooms — a slim left/center/right speaker with a 1" Pinnacle ring radiator tweeter and four 4" Turbine Cone woofers. Use one for dialogue or three as an entire front stage, on-wall or in cabinetry.',
+      'Reserve R350 is a 5"-deep enclosure with a 1" Pinnacle ring radiator tweeter and four 4" Turbine Cone woofers, sealed rather than ported. Because it works vertically as well as horizontally and takes a four-way wall mount, one specification covers the centre channel or a full slim front stage on-wall.',
     metaDescription:
       'Polk Audio Reserve R350 slim LCR speaker — 1" Pinnacle tweeter, four 4" Turbine Cone woofers, wall-mountable. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['Polk Reserve R350', 'Reserve R350 LCR speaker', 'Polk R350 UAE', 'Polk R350 Pakistan', 'slim center channel'],
@@ -3030,7 +3043,7 @@ export const PRODUCTS: Product[] = [
         { name: 'Woofers', value: '4× 4" Turbine Cone' },
       ] },
       { label: 'Performance', rows: [
-        { name: 'Response', value: '50 Hz – 50 kHz' },
+        { name: 'Overall frequency response', value: '50 Hz – 50 kHz' },
         { name: 'Recommended power', value: '25 – 200 W' },
       ] },
       { label: 'Placement', rows: [
@@ -3059,7 +3072,7 @@ export const PRODUCTS: Product[] = [
         { name: 'Woofers', value: '2× 5.25" Turbine Cone' },
       ] },
       { label: 'Performance', rows: [
-        { name: 'Response', value: '45 Hz – 50 kHz' },
+        { name: 'Overall frequency response', value: '45 Hz – 50 kHz' },
         { name: 'Sensitivity', value: '86.5 dB (2.83 V/1 m)' },
       ] },
       { label: 'Amplification', rows: [
@@ -3248,9 +3261,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'polk-audio',
     name: 'Signature Elite ES90',
     collection: 'Signature Elite · Height Module',
-    tagline: 'Lifelike overhead sound, certified by Dolby.',
+    tagline: 'An Atmos layer without opening the ceiling.',
     description:
-      'Signature Elite ES90 adds a Dolby Atmos-certified height layer to Elite towers and bookshelves — up-firing modules that elevate the home theatre with lifelike overhead sound, no ceiling speakers required.',
+      'Signature Elite ES90 adds an up-firing height pair on top of an existing Signature Elite tower or bookshelf, so an Atmos layer goes in without opening the ceiling. It uses a 1" Terylene dome tweeter and a 5.25" mica-fortified polypropylene midrange woofer, and Polk rates it at 85 dB. Polk lists it as fitting ES20, ES55 and ES60 (and Signature S20/S55/S60) only — not ES50/S50 or ES15/S15.',
     metaDescription:
       'Polk Audio Signature Elite ES90 Dolby Atmos-certified height module for Signature Elite speakers. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['Polk Signature Elite ES90', 'ES90 height module', 'Polk ES90 UAE', 'Polk ES90 Pakistan', 'Dolby Atmos module'],
@@ -3266,7 +3279,11 @@ export const PRODUCTS: Product[] = [
         { name: 'Recommended power', value: '20 – 150 W' },
       ] },
       { label: 'Placement', rows: [
-        { name: 'Pairing', value: 'ES20, ES55, ES60 & S-series' },
+        // Polk names the compatible models explicitly and publishes an equally
+        // explicit exclusion; the previous "& S-series" swept in the two models
+        // Polk rules out, which an integrator could order against (audit D-14).
+        { name: 'Pairing', value: 'ES20, ES55, ES60, S20, S55, S60' },
+        { name: 'Not compatible', value: 'ES50 / S50 towers, ES15 / S15 bookshelves' },
         { name: 'Inputs', value: 'Gold 5-way binding posts' },
       ] },
     ],
@@ -3281,19 +3298,24 @@ export const PRODUCTS: Product[] = [
     collection: 'Cinema Series · Reference',
     tagline: 'Horn-loaded reference for the dedicated cinema.',
     description:
-      'The Reference Series is the culmination of a long research project with sound engineers from the film industry. A high-density enclosure meets THX standards, an oversized-magnet woofer delivers exceptional impact, and a same-plane horn tweeter locates every effect with precision. Its modular configuration is built to sit behind large projection screens without compromise.',
+      'Reference Series is the horn-loaded range UandKSound positions for dedicated cinema rooms, and the only one it describes as developed with film-industry sound engineers. The M1200LCR pairs a single 12" ferrite-magnet woofer with a horn tweeter on the same baffle plane and is rated 45 Hz–20 kHz ±3 dB at 97 dB; the M1800SW adds an 18" passive bass-reflex subwoofer. UandKSound states the high-density MDF enclosure was developed to meet THX standards and that the modular format is intended for placement behind large projection screens.',
     metaDescription:
       'UandKSound Reference Series cinema speakers — horn-loaded M1200LCR, M800SR and M1800SW subwoofer, THX-standard enclosures. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['UandKSound Reference Series', 'M1200LCR', 'M1800SW subwoofer', 'UandKSound cinema speakers UAE', 'UandKSound Pakistan', 'horn-loaded cinema loudspeaker'],
     hero: uk('reference-m1200lcr.png'),
     finishes: [ukBlack(uk('reference-m1200lcr.png'), 'Black Yarn Paint')],
     specs: [
+      // The "500 – 1000 W" range matched none of the three figures the
+      // manufacturer publishes, "coated paper" and the ±1.5 dB tolerance are
+      // not published at all, and 97 dB is a woofer figure rather than a system
+      // SPL. Every row below is the official published value (audit D-15/D-17).
       { label: 'M1200LCR · LCR', rows: [
         { name: 'Impedance', value: '8 Ω' },
-        { name: 'Frequency', value: '45 Hz – 20 kHz' },
-        { name: 'Power', value: '500 – 1000 W' },
-        { name: 'Drivers', value: '1× 12" coated paper, horn tweeter' },
-        { name: 'SPL', value: '97 dB ±1.5 dB' },
+        { name: 'Frequency', value: '45 Hz – 20 kHz (±3 dB)' },
+        { name: 'Power (RMS)', value: '600 W' },
+        { name: 'Power (peak)', value: '1000 W' },
+        { name: 'Drivers', value: '1× 12" ferrite woofer, 1.74" horn tweeter' },
+        { name: 'Woofer sensitivity', value: '97 dB (2.83 V/1 m)' },
       ] },
       { label: 'M800SR · Surround', rows: [
         { name: 'Impedance', value: '8 Ω' },
@@ -3319,7 +3341,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Cinema Series · M8',
     tagline: 'Three-way flagship, Air Motion tweeter.',
     description:
-      'The M8 Series renews UandKSound\'s flagship models with hand-selected components and a meticulously built crossover network. Every model is a three-way design with a 12 dB/oct divider, crowned by an AMT Air Motion Transformer tweeter that makes the sound leap forward. The extra-slim M850-N cabinet adapts to any custom installation, partnered by the 1200 W Class D M1500-N subwoofer.',
+      'M8 Series is the three-way tier of the UandKSound cinema range, crossed over at 12 dB/octave with an Air Motion Transformer tweeter. The M850N on-wall model runs 2 × 8" and 2 × 4" composite-pulp drivers in a 150 mm-deep sealed cabinet at 90 dB and 45 Hz–22 kHz ±3 dB; the M820IW is the in-wall equivalent. The matching M1500N subwoofer is a 15" Class D design rated 1200 W peak with room EQ.',
     metaDescription:
       'UandKSound M8 Series three-way cinema speakers with AMT Air Motion tweeter — M850N, M820IW and M1500N subwoofer. Supplied in the UAE and Pakistan by Leading IT.',
     keywords: ['UandKSound M8 Series', 'M850N', 'M1500N subwoofer', 'AMT Air Motion tweeter', 'UandKSound UAE', 'UandKSound Pakistan'],
@@ -3329,7 +3351,10 @@ export const PRODUCTS: Product[] = [
       { label: 'M850N · Three-way', rows: [
         { name: 'Impedance', value: '4 Ω' },
         { name: 'Frequency', value: '45 Hz – 22 kHz' },
-        { name: 'Power', value: '300 – 600 W' },
+        // Was "300 – 600 W", which matches no published figure (audit D-15);
+        // the official ratings are 100 W AES / 200 W RMS / 400 W peak (D-17).
+        { name: 'Power (RMS)', value: '200 W' },
+        { name: 'Power (peak)', value: '400 W' },
         { name: 'Drivers', value: '2× 4" / 2× 8", AMT tweeter' },
         { name: 'SPL', value: '90 dB ±1.5 dB' },
       ] },
@@ -3341,9 +3366,12 @@ export const PRODUCTS: Product[] = [
         { name: 'Depth', value: '130 mm' },
       ] },
       { label: 'M1500N · Subwoofer', rows: [
-        { name: 'Frequency', value: '20 Hz – 250 Hz' },
+        // Was "20 Hz – 250 Hz"; the published response is 25 Hz – 300 Hz, and
+        // the amplifier is rated 300 W AES / 800 W RMS / 1200 W peak (D-15/D-17).
+        { name: 'Frequency', value: '25 Hz – 300 Hz' },
         { name: 'Driver', value: '1× 15" / 38.1 cm coated paper' },
-        { name: 'Power', value: '1200 W Class D' },
+        { name: 'Power (RMS)', value: '800 W, Class D' },
+        { name: 'Power (peak)', value: '1200 W' },
         { name: 'Enclosure', value: 'MDF, room EQ' },
         { name: 'Weight', value: '44.5 kg' },
       ] },
@@ -3358,7 +3386,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Cinema Series · M6',
     tagline: 'Slim on-wall and in-wall, Air Motion clarity.',
     description:
-      'Following the concept of the M8 Series, the M6 Series mounts on — or flush to — the wall, in an extra-slim cabinet designed for complex custom installations. Its legacy Air Motion tweeter delivers more precise, cleaner high frequencies, giving the range an acoustic performance and aesthetic commitment without compromise. Full enjoyment, whether a film or a favourite artist, with none of the installation complexity.',
+      'M6 Series is the slim tier: the same Air Motion tweeter as M8 in a shallower cabinet, available on-wall (M610N, M620N) and in-wall (M610IW, M600IW). The M620N is 132 mm deep, runs 2 × 6.5" and 2 × 4" drivers at 89 dB and 45 Hz–22 kHz ±3 dB, and weighs 13 kg — the depth is why it gets specified into stud walls and joinery. The M1200N subwoofer completes it with a 12" Class D driver rated 1200 W peak.',
     metaDescription:
       'UandKSound M6 Series slim on-wall and in-wall cinema speakers with Air Motion tweeter — M610N, M620N, in-wall models and M1200N subwoofer. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['UandKSound M6 Series', 'M620N', 'M610IW', 'M1200N subwoofer', 'Air Motion tweeter', 'UandKSound UAE Pakistan'],
@@ -3374,7 +3402,10 @@ export const PRODUCTS: Product[] = [
       { label: 'M620N · On-wall', rows: [
         { name: 'Impedance', value: '4 Ω' },
         { name: 'Frequency', value: '45 Hz – 22 kHz' },
-        { name: 'Power', value: '160 – 320 W' },
+        // Official: 80 W AES / 160 W RMS / 320 W peak — the single "Power"
+        // range hid two different ratings (audit D-17).
+        { name: 'Power (RMS)', value: '160 W' },
+        { name: 'Power (peak)', value: '320 W' },
         { name: 'Drivers', value: '2× 4" / 2× 6.5", AMT tweeter' },
       ] },
       { label: 'M610IW · In-wall', rows: [
@@ -3390,10 +3421,14 @@ export const PRODUCTS: Product[] = [
         { name: 'Driver', value: '1× 6.5"' },
       ] },
       { label: 'M1200N · Subwoofer', rows: [
-        { name: 'Frequency', value: '30 Hz – 250 Hz' },
+        // Was "30 Hz – 250 Hz" and "30.27 kg"; official figures are
+        // 25 Hz – 300 Hz and 30.3 kg, amplifier 200 W AES / 800 W RMS /
+        // 1200 W peak (audit D-15/D-17).
+        { name: 'Frequency', value: '25 Hz – 300 Hz' },
         { name: 'Driver', value: '1× 12" / 30 cm coated paper' },
-        { name: 'Power', value: '1200 W Class D' },
-        { name: 'Weight', value: '30.27 kg' },
+        { name: 'Power (RMS)', value: '800 W, Class D' },
+        { name: 'Power (peak)', value: '1200 W' },
+        { name: 'Weight', value: '30.3 kg' },
       ] },
       AMT_TWEETER_SPEC,
     ],
@@ -3428,7 +3463,8 @@ export const PRODUCTS: Product[] = [
         { name: 'SPL', value: '91 dB ±1.5 dB' },
       ] },
       { label: 'S1200 I · Subwoofer', rows: [
-        { name: 'Frequency', value: '25 Hz – 250 Hz' },
+        // Published response is 25 Hz – 300 Hz, not 250 Hz (audit D-15).
+        { name: 'Frequency', value: '25 Hz – 300 Hz' },
         { name: 'Driver', value: '1× 12" / 30 cm coated paper' },
         { name: 'Power', value: '1200 W Class AB' },
         { name: 'Enclosure', value: 'MDF material' },
@@ -3442,9 +3478,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'uandksound',
     name: 'E Series',
     collection: 'Custom Series · E',
-    tagline: 'The sound of invisibility — in-wall and in-ceiling.',
+    tagline: 'In-wall and in-ceiling, 98 mm behind the plaster.',
     description:
-      'The E Series sets a fresh standard for in-wall and in-ceiling performance. Voice- and timbre-matched with one another and the rest of the range, every model features an ultra-low-profile, paintable micro-perforated grille for near-invisible integration, held by neodymium magnets. PRX Poly Resin CrossPoint molds, a Smooth Visual Flangeless System and gold-plated binding posts complete a truly custom-grade speaker.',
+      'E Series is the architectural range: in-wall (E610IW, E620IW), in-ceiling (E610C, E650FX) and a 12" subwoofer (E1200I), all voice- and timbre-matched to the rest of the UandKSound line. Mounting depth on the E620IW is 98 mm behind a 456 × 186 mm cut-out, and the paintable micro-perforated grille attaches magnetically, so the finished result is a painted wall with a 220 mm-wide outline. Aluminium 6.5" cones and a 1" aluminium tweeter with ±3 dB adjustment handle the tuning.',
     metaDescription:
       'UandKSound E Series in-wall and in-ceiling custom speakers with paintable micro-perforated grilles — E610, E620, E650 and E1200I subwoofer. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['UandKSound E Series', 'E620IW', 'E610C in-ceiling', 'E1200I subwoofer', 'invisible in-wall speaker', 'UandKSound UAE Pakistan'],
@@ -3497,17 +3533,21 @@ export const PRODUCTS: Product[] = [
     keywords: ['UandKSound M Series amplifier', 'M4500D', 'M7300D', 'M7300', 'multichannel cinema amplifier', 'UandKSound UAE Pakistan'],
     hero: uk('m-m4500d.png'),
     finishes: [ukBlack(uk('m-m4500d.png'), 'Black')],
+    // All four THD values were an order of magnitude high (audit D-16): the
+    // manufacturer publishes 0.001% for M4500D/M7300D and 0.002% for
+    // M7300/M2300. Its pages misprint "＞" where "<" is clearly meant, so the
+    // comparator below stays "<" and only the digits were corrected.
     specs: [
       { label: 'M4500D · Class D', rows: [
         { name: 'Power', value: '750 W / 4 Ω × 4 ch' },
         { name: 'Mode', value: 'Bridgeable' },
-        { name: 'THD', value: '< 0.01% (20 Hz – 20 kHz)' },
+        { name: 'THD', value: '< 0.001% (20 Hz – 20 kHz)' },
         { name: 'SNR', value: '> 110 dB' },
         { name: 'Trigger', value: '12 V DC' },
       ] },
       { label: 'M7300D · Class D', rows: [
         { name: 'Power', value: '300 W / 8 Ω × 7 ch' },
-        { name: 'THD', value: '< 0.01% (20 Hz – 20 kHz)' },
+        { name: 'THD', value: '< 0.001% (20 Hz – 20 kHz)' },
         { name: 'SNR', value: '> 110 dB' },
         { name: 'Trigger', value: '12 V DC' },
         { name: 'Weight', value: '24 kg' },
@@ -3515,14 +3555,14 @@ export const PRODUCTS: Product[] = [
       { label: 'M7300 · Class A/AB', rows: [
         { name: 'Power', value: '300 W / 4 Ω × 7 ch' },
         { name: 'SNR', value: '> 115 dB, A-weighted' },
-        { name: 'THD', value: '< 0.02% (20 Hz – 20 kHz)' },
+        { name: 'THD', value: '< 0.002% (20 Hz – 20 kHz)' },
         { name: 'Inputs', value: '7× XLR / RCA' },
         { name: 'Weight', value: '57 kg' },
       ] },
       { label: 'M2300 · Class A/AB', rows: [
         { name: 'Power', value: '300 W / 4 Ω × 2 ch' },
         { name: 'SNR', value: '> 115 dB, A-weighted' },
-        { name: 'THD', value: '< 0.02% (20 Hz – 20 kHz)' },
+        { name: 'THD', value: '< 0.002% (20 Hz – 20 kHz)' },
         { name: 'Inputs', value: '2× XLR / RCA' },
         { name: 'Weight', value: '22 kg' },
       ] },

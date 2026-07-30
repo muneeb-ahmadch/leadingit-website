@@ -104,16 +104,27 @@ export const BRANDS: Brand[] = [
     // as a complete sentence; without it the meta description runs on.
     tagline: 'Awaken Your Senses.',
     category: 'cinema',
-    // The opening clause used to read "Born in Europe and voiced alongside the
-    // film industry's own sound engineers". Both halves were unsourced and the
-    // first was false: the design studio was founded in Shenzhen in 2009 and
-    // production remains China-based, expanding into Spain later
-    // (https://www.uandksound.com/company/). Removed rather than rewritten —
-    // replacing one unsourced origin story with another is the same mistake.
-    // A sourced origin paragraph is Phase 3 content work (OQ #17). What remains
-    // is product-level and verifiable from the manufacturer's own pages.
+    // Origin paragraph restored, this time sourced. The earlier clause ("Born in
+    // Europe and voiced alongside the film industry's own sound engineers") was
+    // deleted on the belief that it was invented; a re-check of
+    // https://www.uandksound.com/company/ showed the underlying facts are
+    // published — the deletion removed a true, sourceable claim. Every element
+    // below is on that page: design studio 2009, brand founded 2013, Michael Hu
+    // (published title Chief Design Officer), production still China-based, later
+    // expansion into Spain. Voice/timbre matching is published per product
+    // (e.g. /product/e620iw/, /product/c823iw/).
+    //
+    // Two deliberate omissions: Michael Hu's prior work with British brands
+    // including B&W (sourced, but naming another manufacturer invites a claim we
+    // cannot stand behind about the nature of that work), and any legal entity
+    // name (unpublished — the only company named on the site, Wimood B.V., is
+    // presented as the European logistics hub, not the manufacturer).
+    //
+    // The company's own page spells the city "Shenzen"; the standard spelling is
+    // Shenzhen and we use it, because this is an orthographic error on their
+    // side rather than a styling decision.
     story:
-      'UandKSound builds high-end cinema and custom loudspeakers that dissolve into the architecture of a room. Horn-loaded Reference systems, Air Motion tweeters and hand-finished cabinets — supplied, installed and calibrated only through trained specialists, to awaken every sense.',
+      'UandKSound began as an audio design studio in Shenzhen in 2009, and became a brand in its own name in 2013 under Michael Hu, its Chief Design Officer. Production remains China-based, with a European arm added later through the company’s expansion into Spain. Its loudspeakers are voice- and timbre-matched across ranges, which is why a mixed installation — in-wall here, on-wall there — holds a consistent tonal balance from room to room.',
     heroImage: '/brands/uandksound-hero.jpg',
     accent: '#9C8B6E',
   },
