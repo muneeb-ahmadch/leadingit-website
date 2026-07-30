@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { type ReactNode } from 'react';
+import { href } from '@/seo/paths';
 
 type Variant = 'gold' | 'ghost';
 
@@ -11,6 +12,11 @@ type CommonProps = {
   withArrow?: boolean;
 };
 
+/**
+ * `to` is a site-relative path in the internal, slashless form; the trailing
+ * slash is added here by `href()` (`src/seo/paths.ts`), so no caller has to
+ * remember it and no CTA on the site points at a 301.
+ */
 export function ButtonLink({
   to,
   variant = 'gold',
@@ -20,7 +26,7 @@ export function ButtonLink({
 }: CommonProps & { to: string }) {
   const cls = variant === 'gold' ? 'btn-gold' : 'btn-ghost';
   return (
-    <Link to={to} className={`${cls} group ${className}`}>
+    <Link to={href(to)} className={`${cls} group ${className}`}>
       <span>{children}</span>
       {withArrow && (
         <ArrowRight

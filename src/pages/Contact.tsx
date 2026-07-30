@@ -6,7 +6,13 @@ import { MapPin, Mail } from 'lucide-react';
 import { Reveal } from '@/components/primitives/Reveal';
 import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { Button } from '@/components/primitives/Button';
-import { useSeo } from '@/lib/useSeo';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { Seo } from '@/seo/Seo';
+import { contactMeta } from '@/seo/meta';
+import { simplePageCrumbs } from '@/seo/breadcrumbs';
+import { buildWebPage } from '@/seo/jsonld/webpage';
+import { buildBreadcrumbList } from '@/seo/jsonld/breadcrumbList';
+import { breadcrumbNodeId } from '@/seo/jsonld/ids';
 
 export function Contact() {
   const { t } = useTranslation();
@@ -21,13 +27,8 @@ export function Contact() {
     const incoming = params.get('message');
     if (incoming) setMessage(incoming);
   }, [params]);
-  useSeo({
-    title: 'Contact — Begin a Project',
-    description:
-      'Tell us about the residence, development or installation you have in mind. Leading IT engineers respond personally across the Gulf and Pakistan.',
-    path: '/contact',
-    keywords: 'contact Leading IT, home automation enquiry Gulf Pakistan, custom cinema consultation',
-  });
+  const meta = contactMeta();
+  const crumbs = simplePageCrumbs(t('nav.contact'), meta.path);
 
   // No backend yet (Phase 5 ships the hardened PHP endpoint). Until then the
   // form composes a real email draft — never a fake "message sent" state.
@@ -45,7 +46,22 @@ export function Contact() {
 
   return (
     <section className="relative pt-44 pb-32 container-luxe">
+      <Seo
+        meta={meta}
+        jsonLd={[
+          buildWebPage({
+            path: meta.path,
+            name: meta.title,
+            type: 'ContactPage',
+            description: meta.description,
+            breadcrumbId: breadcrumbNodeId(meta.path),
+          }),
+          buildBreadcrumbList(crumbs, meta.path),
+        ]}
+      />
+
       <Reveal>
+        <Breadcrumbs crumbs={crumbs} className="mb-8" />
         <Eyebrow>{t('contact.eyebrow')}</Eyebrow>
         <h1 className="mt-5 font-serif text-display max-w-3xl">{t('contact.title')}</h1>
       </Reveal>

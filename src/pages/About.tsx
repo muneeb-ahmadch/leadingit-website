@@ -2,7 +2,13 @@ import { useTranslation } from 'react-i18next';
 import { Reveal } from '@/components/primitives/Reveal';
 import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { ButtonLink } from '@/components/primitives/Button';
-import { useSeo } from '@/lib/useSeo';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { Seo } from '@/seo/Seo';
+import { aboutMeta } from '@/seo/meta';
+import { simplePageCrumbs } from '@/seo/breadcrumbs';
+import { buildWebPage } from '@/seo/jsonld/webpage';
+import { buildBreadcrumbList } from '@/seo/jsonld/breadcrumbList';
+import { breadcrumbNodeId } from '@/seo/jsonld/ids';
 
 const TEAM = [
   { name: 'Jonathan', roleKey: 'about.roleManagingDirector' },
@@ -12,13 +18,8 @@ const TEAM = [
 
 export function About() {
   const { t } = useTranslation();
-  useSeo({
-    title: 'About — Engineers, Not a Sales Team',
-    description:
-      'Leading IT is a team of engineers with over 60 years of experience, helping clients select, procure and integrate quality automation across the Gulf and Pakistan.',
-    path: '/about',
-    keywords: 'Leading IT, about, automation engineers, value-added distributor Gulf Pakistan',
-  });
+  const meta = aboutMeta();
+  const crumbs = simplePageCrumbs(t('nav.about'), meta.path);
   const stats = [
     { value: t('about.stat1Value'), label: t('about.stat1Label') },
     { value: t('about.stat2Value'), label: t('about.stat2Label') },
@@ -27,9 +28,24 @@ export function About() {
 
   return (
     <>
+      <Seo
+        meta={meta}
+        jsonLd={[
+          buildWebPage({
+            path: meta.path,
+            name: meta.title,
+            type: 'AboutPage',
+            description: meta.description,
+            breadcrumbId: breadcrumbNodeId(meta.path),
+          }),
+          buildBreadcrumbList(crumbs, meta.path),
+        ]}
+      />
+
       {/* hero */}
       <section className="relative pt-44 pb-24 container-luxe">
         <Reveal>
+          <Breadcrumbs crumbs={crumbs} className="mb-8" />
           <Eyebrow>{t('about.eyebrow')}</Eyebrow>
           <h1 className="mt-5 font-serif text-display max-w-4xl">{t('about.title')}</h1>
         </Reveal>

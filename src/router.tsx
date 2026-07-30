@@ -1,38 +1,55 @@
 import type { RouteRecord } from 'vite-react-ssg';
 import { Layout } from '@/components/layout/Layout';
+import { KEYPAD_DESIGNER_PATH } from '@/seo/paths';
 
 /**
- * Static tool route inside the Black Nova brand namespace. React Router ranks
- * static segments above dynamic ones, so it always wins over
- * `/brands/:slug/:productSlug` — and it is filtered out of the generated product
- * paths below so the two can never emit the same file.
+ * `getStaticPaths` decides which files the prerender writes. It is called in
+ * exactly one place — `vite-react-ssg`'s Node build — and never in a browser.
+ *
+ * That matters because the only way to enumerate URLs is the manifest, and the
+ * manifest reaches `src/data/products.ts` (~3,500 lines). `vite-react-ssg` runs
+ * two separate Rollup builds off this one file, so `import.meta.env.SSR` is a
+ * compile-time constant in both: `true` for the SSR build that prerenders,
+ * `false` for the client build. In the client build these ternaries fold to
+ * `undefined` and Rollup drops the `import()` with them, so neither the manifest
+ * nor the catalog it pulls in can reach the entry chunk. A plain top-level
+ * `import` of `@/seo/routes` here — which is what this file used to do — put
+ * `STATIC_ROUTES`, `RESERVED_BRAND_CHILD_SLUGS` and the manifest's assertion
+ * prose in front of every visitor.
+ *
+ * The dynamic import keeps one source of truth: the paths still come from the
+ * same manifest the sitemap and the validation harness read. Do not replace it
+ * with a second, hand-kept path list.
  */
-const KEYPAD_DESIGNER_PATH = '/brands/black-nova/keypad-designer';
+type StaticPaths = RouteRecord['getStaticPaths'];
 
-/**
- * `getStaticPaths` only ever runs in Node during the prerender, so the catalogs
- * it needs are pulled in with `await import()`: that keeps `src/data/*` out of
- * the browser entry chunk, where it would otherwise be shipped to every page
- * just to build a list of build-time URLs.
- */
+const brandStaticPaths: StaticPaths = import.meta.env.SSR
+  ? async () => (await import('@/seo/routes')).brandPaths()
+  : undefined;
 
-/** Every brand page that gets prerendered. */
-export const brandPaths = async (): Promise<string[]> => {
-  const { BRANDS } = await import('@/data/brands');
-  return BRANDS.map((b) => `/brands/${b.slug}`);
-};
-
-/** Every product page that gets prerendered (brandSlug + slug pairs). */
-export const productPaths = async (): Promise<string[]> => {
-  const { PRODUCTS } = await import('@/data/products');
-  return PRODUCTS.map((p) => `/brands/${p.brandSlug}/${p.slug}`).filter(
-    (path) => path !== KEYPAD_DESIGNER_PATH,
-  );
-};
+const productStaticPaths: StaticPaths = import.meta.env.SSR
+  ? async () => (await import('@/seo/routes')).productPaths()
+  : undefined;
 
 /**
  * Route records consumed by `ViteReactSSG`: the same tree drives the build-time
  * prerender and the browser router after hydration.
+ *
+ * The URL set itself is not defined here — it comes from the typed manifest in
+ * `src/seo/routes.ts`, which also feeds `scripts/gen-sitemap.mjs` and the
+ * metadata layer. This file only maps patterns to components.
+ *
+ * Route patterns are declared in the manifest's **internal form** — no trailing
+ * slash (`/brands/:slug`). Anchors render the slashed form via `href()`; React
+ * Router's `compilePath()` appends `\/*$` when matching to the end, so
+ * `/brands/marantz/` matches `/brands/:slug` with identical params. See
+ * `src/seo/paths.ts` for the whole convention.
+ *
+ * `KEYPAD_DESIGNER_PATH` is a static segment inside the Black Nova namespace.
+ * React Router ranks static segments above dynamic ones, so it always wins over
+ * `/brands/:slug/:productSlug` — and the manifest both filters it out of the
+ * generated product paths and hard-fails if a product ever claims that slug, so
+ * the two can never emit the same file.
  *
  * Every page is loaded through react-router's `lazy` field so each one compiles
  * to its own chunk. Nothing is deferred in the output: the prerender resolves
@@ -53,7 +70,7 @@ export const routes: RouteRecord[] = [
       {
         path: '/brands/:slug',
         lazy: async () => ({ Component: (await import('@/pages/BrandPage')).BrandPage }),
-        getStaticPaths: brandPaths,
+        getStaticPaths: brandStaticPaths,
       },
       {
         path: KEYPAD_DESIGNER_PATH,
@@ -64,7 +81,7 @@ export const routes: RouteRecord[] = [
       {
         path: '/brands/:slug/:productSlug',
         lazy: async () => ({ Component: (await import('@/pages/ProductPage')).ProductPage }),
-        getStaticPaths: productPaths,
+        getStaticPaths: productStaticPaths,
       },
       {
         path: '/lit-home',
@@ -76,7 +93,8 @@ export const routes: RouteRecord[] = [
         lazy: async () => ({ Component: (await import('@/pages/Contact')).Contact }),
       },
       // Prerendered as its own file; the splat renders the same page for any
-      // unmatched URL reached through client-side navigation.
+      // unmatched URL reached through client-side navigation. `/404` is in the
+      // manifest as `indexable: false`, so it never enters the sitemap.
       {
         path: '/404',
         lazy: async () => ({ Component: (await import('@/pages/NotFound')).NotFound }),

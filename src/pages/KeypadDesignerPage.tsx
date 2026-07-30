@@ -2,39 +2,45 @@ import { useTranslation } from 'react-i18next';
 import { Reveal } from '@/components/primitives/Reveal';
 import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { KeypadDesigner } from '@/features/keypadDesigner/KeypadDesigner';
-import { useSeo } from '@/lib/useSeo';
-import { SITE_NAME, absoluteUrl } from '@/lib/site';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { Seo } from '@/seo/Seo';
+import { keypadDesignerMeta } from '@/seo/meta';
+import { keypadDesignerCrumbs } from '@/seo/breadcrumbs';
+import { buildWebApplication } from '@/seo/jsonld/webApplication';
+import { buildWebPage } from '@/seo/jsonld/webpage';
+import { buildBreadcrumbList } from '@/seo/jsonld/breadcrumbList';
+import { breadcrumbNodeId } from '@/seo/jsonld/ids';
 
 export function KeypadDesignerPage() {
   const { t } = useTranslation();
-  const path = '/brands/black-nova/keypad-designer';
-  useSeo({
-    title: t('designer.seoTitle'),
-    description: t('designer.seoDescription'),
-    path,
-    keywords:
-      'design Black Nova keypad, Black Nova keypad configurator, custom keypad UAE, custom keypad Pakistan, ALBA keypad designer, Black Nova Dubai',
-    jsonLd: {
-      '@context': 'https://schema.org',
-      '@type': 'WebPage',
-      name: t('designer.seoTitle'),
-      description: t('designer.seoDescription'),
-      url: absoluteUrl(path),
-      isPartOf: { '@type': 'WebSite', name: SITE_NAME, url: absoluteUrl('/') },
-      about: { '@type': 'Brand', name: 'Black Nova' },
-    },
-  });
+  const meta = keypadDesignerMeta();
+  const crumbs = keypadDesignerCrumbs();
 
   return (
     <>
+      <Seo
+        meta={meta}
+        jsonLd={[
+          buildWebApplication({
+            path: meta.path,
+            name: t('designer.seoTitle'),
+            description: t('designer.seoDescription'),
+            applicationCategory: 'DesignApplication',
+          }),
+          buildWebPage({
+            path: meta.path,
+            name: meta.title,
+            description: meta.description,
+            breadcrumbId: breadcrumbNodeId(meta.path),
+          }),
+          buildBreadcrumbList(crumbs, meta.path),
+        ]}
+      />
+
       {/* hero */}
       <section className="relative pt-40 pb-14 container-luxe">
         <Reveal>
-          <div className="flex items-center gap-3 text-xs uppercase tracking-luxe text-bone-500">
-            <a href="/brands" className="hover:text-gold">Brands</a>
-            <span>·</span>
-            <a href="/brands/black-nova" className="hover:text-gold">Black Nova</a>
-          </div>
+          <Breadcrumbs crumbs={crumbs} />
         </Reveal>
         <Reveal delay={0.1}>
           <Eyebrow>{t('designer.entryEyebrow')}</Eyebrow>

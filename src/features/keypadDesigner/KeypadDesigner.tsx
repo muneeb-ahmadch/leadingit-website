@@ -18,6 +18,7 @@ import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { Button } from '@/components/primitives/Button';
 import { useHydrated } from '@/lib/hydration';
 import { WHATSAPP_NUMBER } from '@/lib/site';
+import { href } from '@/seo/paths';
 import {
   COLLECTIONS, COLLECTION_BY_ID, BACKLIGHTS, ICONS, ICON_BY_ID,
   finishesFor, layoutById, buttonCount,
@@ -372,7 +373,7 @@ function SummaryStep({ config }: { config: DesignConfig }) {
     `${t('designer.designLink')}: ${designUrl}`,
   ].join('\n');
 
-  const contactHref = `/contact?message=${encodeURIComponent(spec)}`;
+  const contactHref = href(`/contact?message=${encodeURIComponent(spec)}`);
   const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(spec)}`;
 
   const copyLink = async () => {

@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { href } from '@/seo/paths';
 import { LocaleSwitcher } from './LocaleSwitcher';
 
 export function Footer() {
@@ -16,9 +17,9 @@ export function Footer() {
         <div>
           <div className="eyebrow mb-5">Portfolio</div>
           <ul className="space-y-3 text-bone-300">
-            <li><a href="/brands" className="hover:text-gold transition-colors">Architectural Interfaces</a></li>
-            <li><a href="/brands" className="hover:text-gold transition-colors">Cinema &amp; AV</a></li>
-            <li><a href="/lit-home" className="hover:text-gold transition-colors">LIT Home</a></li>
+            <li><a href={href('/brands')} className="hover:text-gold transition-colors">Architectural Interfaces</a></li>
+            <li><a href={href('/brands')} className="hover:text-gold transition-colors">Cinema &amp; AV</a></li>
+            <li><a href={href('/lit-home')} className="hover:text-gold transition-colors">LIT Home</a></li>
           </ul>
         </div>
 

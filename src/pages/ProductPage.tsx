@@ -2,14 +2,24 @@ import { useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PRODUCT_BY_SLUG } from '@/data/products';
+import { PRODUCT_BY_SLUG, productsForBrand } from '@/data/products';
 import { BRAND_BY_SLUG } from '@/data/brands';
 import { Reveal } from '@/components/primitives/Reveal';
 import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { ButtonLink } from '@/components/primitives/Button';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { InternalLinks, type InternalLink } from '@/components/InternalLinks';
 import { useHydrated } from '@/lib/hydration';
-import { useSeo } from '@/lib/useSeo';
-import { SITE_NAME, absoluteUrl } from '@/lib/site';
+import { Seo } from '@/seo/Seo';
+import { KEYPAD_DESIGNER_PATH, href } from '@/seo/paths';
+import { productMeta } from '@/seo/meta';
+import { productCrumbs } from '@/seo/breadcrumbs';
+import { isRangeProduct } from '@/seo/ranges';
+import { buildProduct } from '@/seo/jsonld/product';
+import { buildWebPage } from '@/seo/jsonld/webpage';
+import { buildCollectionPage } from '@/seo/jsonld/itemList';
+import { buildBreadcrumbList } from '@/seo/jsonld/breadcrumbList';
+import { breadcrumbNodeId } from '@/seo/jsonld/ids';
 
 const SECTIONS = [
   { id: 'overview', i18nKey: 'product.navOverview' },
@@ -18,6 +28,14 @@ const SECTIONS = [
   { id: 'specs', i18nKey: 'product.navSpecs' },
   { id: 'in-use', i18nKey: 'product.navInUse' },
 ];
+
+/**
+ * How many sibling products a product page links to. Enough to move a visitor
+ * (and crawl equity) sideways through the brand's catalog; few enough that a
+ * 26-product brand like Crestron does not turn every product page into a link
+ * farm. The brand hub link below carries the rest.
+ */
+const RELATED_PRODUCT_LIMIT = 6;
 
 export function ProductPage() {
   const { slug = '', productSlug = '' } = useParams();
@@ -29,62 +47,71 @@ export function ProductPage() {
   // visible; the cross-fade only applies to finish swaps after hydration.
   const hydrated = useHydrated();
 
-  const path = `/brands/${slug}/${productSlug}`;
-  const seoName = product && brand ? `${brand.name} ${product.name}` : SITE_NAME;
-  const seoDesc = product?.metaDescription ?? product?.description ?? '';
-  useSeo({
-    title: product && brand ? `${seoName} — ${product.collection}` : SITE_NAME,
-    description: seoDesc,
-    path,
-    image: product?.hero,
-    type: 'product',
-    keywords: product?.keywords?.join(', '),
-    jsonLd:
-      product && brand
-        ? [
-            {
-              '@context': 'https://schema.org',
-              '@type': 'Product',
-              name: seoName,
-              description: seoDesc,
-              image: absoluteUrl(product.hero),
-              category: product.collection,
-              url: absoluteUrl(path),
-              brand: { '@type': 'Brand', name: brand.name },
-              offers: {
-                '@type': 'Offer',
-                availability: 'https://schema.org/InStock',
-                priceCurrency: 'AED',
-                seller: { '@type': 'Organization', name: SITE_NAME },
-              },
-            },
-            {
-              '@context': 'https://schema.org',
-              '@type': 'BreadcrumbList',
-              itemListElement: [
-                { '@type': 'ListItem', position: 1, name: 'Brands', item: absoluteUrl('/brands') },
-                { '@type': 'ListItem', position: 2, name: brand.name, item: absoluteUrl(`/brands/${brand.slug}`) },
-                { '@type': 'ListItem', position: 3, name: product.name, item: absoluteUrl(path) },
-              ],
-            },
-          ]
-        : undefined,
-  });
-
-  if (!product || !brand) return <Navigate to="/brands" replace />;
+  if (!product || !brand) return <Navigate to={href('/brands')} replace />;
 
   const activeFinish = product.finishes.find((f) => f.id === finishId) ?? product.finishes[0];
 
+  const meta = productMeta(product, brand);
+  const crumbs = productCrumbs(brand.name, brand.slug, product.name, product.slug);
+  /**
+   * Nine of these routes describe a product RANGE, not a purchasable SKU
+   * (`src/seo/ranges.ts`). A range has no single model, MPN or offer, so it must
+   * never carry `Product` markup — it gets `CollectionPage` instead. The branch
+   * is made here, on the registry, rather than guessed from the slug;
+   * `buildProduct()` independently refuses a range as a second line of defence.
+   */
+  const isRange = isRangeProduct(product.brandSlug, product.slug);
+  // Only assert an image this site actually hosts (docs/OPEN-QUESTIONS.md #4 —
+  // several records still carry remote prototype URLs).
+  const hostedHero = product.hero.startsWith('/') ? product.hero : undefined;
+  const pageNodeInput = {
+    path: meta.path,
+    name: meta.title,
+    description: meta.description,
+    breadcrumbId: breadcrumbNodeId(meta.path),
+    primaryImage: hostedHero,
+  };
+
+  // Sideways links through the brand's catalog: same category first (the closest
+  // real relationship in the data), then the rest of the brand, then the hub.
+  const siblings = productsForBrand(brand.slug).filter((p) => p.slug !== product.slug);
+  const sameCategory = product.category
+    ? siblings.filter((p) => p.category === product.category)
+    : [];
+  const sameCategorySlugs = new Set(sameCategory.map((p) => p.slug));
+  const related = [...sameCategory, ...siblings.filter((p) => !sameCategorySlugs.has(p.slug))];
+  const relatedLinks: InternalLink[] = [
+    ...related.slice(0, RELATED_PRODUCT_LIMIT).map(
+      (p): InternalLink => ({
+        to: `/brands/${brand.slug}/${p.slug}`,
+        // `<brand> <model>` is the anchor a model-number query matches, and it
+        // reads correctly out of context.
+        label: `${brand.name} ${p.name}`,
+        hint: p.collection,
+      }),
+    ),
+    {
+      to: `/brands/${brand.slug}`,
+      label: t('internalLinks.allBrandProducts', { brand: brand.name }),
+      hint: t('internalLinks.allBrandProductsHint'),
+    },
+  ];
+
   return (
     <>
+      <Seo
+        meta={meta}
+        jsonLd={[
+          isRange ? buildCollectionPage(pageNodeInput) : buildWebPage(pageNodeInput),
+          isRange ? null : buildProduct(product, brand),
+          buildBreadcrumbList(crumbs, meta.path),
+        ]}
+      />
+
       {/* hero */}
       <section className="relative pt-32 pb-12 container-luxe">
         <Reveal>
-          <div className="flex items-center gap-3 text-xs uppercase tracking-luxe text-bone-500">
-            <a href="/brands" className="hover:text-gold">Brands</a>
-            <span>·</span>
-            <a href={`/brands/${brand.slug}`} className="hover:text-gold">{brand.name}</a>
-          </div>
+          <Breadcrumbs crumbs={crumbs} />
         </Reveal>
         <div className="grid lg:grid-cols-[1fr_1fr] gap-12 items-center mt-10">
           <div>
@@ -252,12 +279,24 @@ export function ProductPage() {
                   <Eyebrow>{t('designer.entryEyebrow')}</Eyebrow>
                   <h3 className="mt-4 font-serif text-3xl max-w-xl">{t('designer.productCta', { name: product.name })}</h3>
                 </div>
-                <ButtonLink to={`/brands/${brand.slug}/keypad-designer?c=${product.slug}`}>{t('designer.entryCta')}</ButtonLink>
+                <ButtonLink to={`${KEYPAD_DESIGNER_PATH}?c=${product.slug}`}>{t('designer.entryCta')}</ButtonLink>
               </div>
             </div>
           </Reveal>
         </section>
       )}
+
+      {/* cross-links into the rest of the brand's catalog */}
+      <section className="container-luxe pb-20">
+        <Reveal>
+          <div className="border-t border-gold/20 pt-10">
+            <InternalLinks
+              title={t('internalLinks.moreFromBrand', { brand: brand.name })}
+              links={relatedLinks}
+            />
+          </div>
+        </Reveal>
+      </section>
 
       {/* inquire */}
       <section className="container-luxe pb-32">

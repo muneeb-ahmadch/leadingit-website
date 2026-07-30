@@ -1,25 +1,27 @@
 import { useTranslation } from 'react-i18next';
-import { Head } from 'vite-react-ssg';
 import { Reveal } from '@/components/primitives/Reveal';
 import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { ButtonLink } from '@/components/primitives/Button';
-import { SITE_NAME } from '@/lib/site';
+import { Seo } from '@/seo/Seo';
+import { href } from '@/seo/paths';
+import { notFoundMeta } from '@/seo/meta';
 
 /**
  * Real 404 page. Prerendered to its own file (`/404/index.html`, mirrored to
  * `dist/404.html` for Apache's `ErrorDocument`) so a missing URL never resolves
  * to a duplicate of the homepage. `noindex` keeps the prerendered copy of the
  * error page itself out of the index.
+ *
+ * No structured data and no breadcrumb: an error page is not an entity worth
+ * describing to a knowledge graph, and a `BreadcrumbList` on it would claim a
+ * position in a hierarchy this page does not occupy.
  */
 export function NotFound() {
   const { t } = useTranslation();
 
   return (
     <>
-      <Head>
-        <title>{`${t('notFound.seoTitle')} | ${SITE_NAME}`}</title>
-        <meta name="robots" content="noindex, follow" />
-      </Head>
+      <Seo meta={notFoundMeta()} noindex />
 
       <section className="relative pt-44 pb-32 container-luxe">
         <Reveal>
@@ -42,7 +44,7 @@ export function NotFound() {
         <Reveal delay={0.45}>
           <p className="mt-14 text-sm text-bone-500">
             {t('notFound.contactPrompt')}{' '}
-            <a href="/contact" className="text-gold hover:underline underline-offset-4">
+            <a href={href('/contact')} className="text-gold hover:underline underline-offset-4">
               {t('notFound.contactLink')}
             </a>
           </p>

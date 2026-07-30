@@ -1,14 +1,22 @@
 import { Navigate, useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { BRAND_BY_SLUG } from '@/data/brands';
+import { BRANDS, BRAND_BY_SLUG } from '@/data/brands';
 import { productsForBrand, CATEGORIES_BY_BRAND } from '@/data/products';
 import type { Product } from '@/data/products';
 import { Reveal } from '@/components/primitives/Reveal';
 import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { ButtonLink } from '@/components/primitives/Button';
 import { ArrowRight } from 'lucide-react';
-import { useSeo } from '@/lib/useSeo';
-import { SITE_NAME, absoluteUrl } from '@/lib/site';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { InternalLinks, type InternalLink } from '@/components/InternalLinks';
+import { Seo } from '@/seo/Seo';
+import { KEYPAD_DESIGNER_PATH, href } from '@/seo/paths';
+import { brandMeta } from '@/seo/meta';
+import { brandHubCrumbs } from '@/seo/breadcrumbs';
+import { buildBrand } from '@/seo/jsonld/brand';
+import { buildBreadcrumbList } from '@/seo/jsonld/breadcrumbList';
+import { buildBrandProductsItemList, buildCollectionPage } from '@/seo/jsonld/itemList';
+import { breadcrumbNodeId, pageUrl } from '@/seo/jsonld/ids';
 
 function ProductCard({ brandSlug, product, delay }: { brandSlug: string; product: Product; delay: number }) {
   const { t } = useTranslation();
@@ -16,7 +24,7 @@ function ProductCard({ brandSlug, product, delay }: { brandSlug: string; product
   return (
     <Reveal delay={delay}>
       <Link
-        to={`/brands/${brandSlug}/${product.slug}`}
+        to={href(`/brands/${brandSlug}/${product.slug}`)}
         className="group block bg-ink-800/60 border border-white/5 hover:border-gold/30 transition-all duration-700"
       >
         <div className="relative aspect-[4/3] overflow-hidden bg-ink-900">
@@ -49,36 +57,60 @@ export function BrandPage() {
   const { t } = useTranslation();
   const brand = BRAND_BY_SLUG[slug];
 
-  useSeo({
-    title: brand ? `${brand.name} — ${brand.tagline}` : SITE_NAME,
-    description: brand
-      ? `${brand.name} in Pakistan & the UAE — distributed and supported by ${SITE_NAME}. ${brand.story}`.slice(0, 300)
-      : '',
-    path: `/brands/${slug}`,
-    image: brand?.heroImage,
-    keywords: brand
-      ? `${brand.name}, ${brand.name} Pakistan, ${brand.name} UAE, ${brand.name} distributor, ${brand.name} dealer`
-      : undefined,
-    jsonLd: brand
-      ? {
-          '@context': 'https://schema.org',
-          '@type': 'Brand',
-          name: brand.name,
-          slogan: brand.tagline,
-          description: brand.story,
-          url: absoluteUrl(`/brands/${brand.slug}`),
-        }
-      : undefined,
-  });
-
-  if (!brand) return <Navigate to="/brands" replace />;
+  if (!brand) return <Navigate to={href('/brands')} replace />;
 
   const products = productsForBrand(brand.slug);
   const categories = CATEGORIES_BY_BRAND[brand.slug];
   const heroIsRender = brand.heroImage.startsWith('/products/');
 
+  const meta = brandMeta(brand);
+  const crumbs = brandHubCrumbs(brand.name, brand.slug);
+  // Same `@id` `buildBrandProductsItemList()` mints, derived once so the
+  // `CollectionPage.mainEntity` reference cannot drift from the node it names.
+  const productListId = `${pageUrl(meta.path)}#product-list`;
+
+  // Hub-and-spoke: this brand hub links sideways to its siblings and up to the
+  // brands index. Anchor text is the brand's own name, which is what a visitor
+  // and a crawler both need to predict the destination.
+  const siblingBrandLinks: InternalLink[] = [
+    ...BRANDS.filter((other) => other.slug !== brand.slug).map(
+      (other): InternalLink => ({
+        to: `/brands/${other.slug}`,
+        label: other.name,
+        hint: other.tagline,
+      }),
+    ),
+    {
+      to: '/brands',
+      label: t('internalLinks.browseAllBrands'),
+      hint: t('internalLinks.browseAllBrandsHint'),
+    },
+  ];
+
   return (
     <>
+      <Seo
+        meta={meta}
+        jsonLd={[
+          buildCollectionPage(
+            {
+              path: meta.path,
+              name: meta.title,
+              description: meta.description,
+              breadcrumbId: breadcrumbNodeId(meta.path),
+              // Only ever claim an image we host. Several brand records still
+              // carry remote prototype hero URLs (docs/OPEN-QUESTIONS.md #4) and
+              // `primaryImageOfPage` should not point at a third-party CDN.
+              primaryImage: heroIsRender ? brand.heroImage : undefined,
+            },
+            products.length > 0 ? productListId : undefined,
+          ),
+          buildBrand(brand),
+          buildBrandProductsItemList(brand, products),
+          buildBreadcrumbList(crumbs, meta.path),
+        ]}
+      />
+
       {/* hero */}
       <section className="relative h-[80svh] min-h-[560px] overflow-hidden grain">
         {heroIsRender && <div className="absolute inset-0 bg-warm-radial opacity-80" />}
@@ -91,6 +123,7 @@ export function BrandPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/60 to-ink-950/30" />
         <div className="relative h-full container-luxe flex flex-col justify-end pb-20">
           <Reveal>
+            <Breadcrumbs crumbs={crumbs} className="mb-6" />
             <Eyebrow>{brand.category === 'interfaces' ? 'Architectural Interfaces' : 'Cinema & AV'}</Eyebrow>
           </Reveal>
           <Reveal delay={0.15}>
@@ -189,7 +222,7 @@ export function BrandPage() {
                       {t('designer.entryBody')}
                     </p>
                     <div className="mt-9">
-                      <ButtonLink to={`/brands/${brand.slug}/keypad-designer`}>{t('designer.entryCta')}</ButtonLink>
+                      <ButtonLink to={KEYPAD_DESIGNER_PATH}>{t('designer.entryCta')}</ButtonLink>
                     </div>
                   </div>
                   <div className="relative aspect-square hidden lg:block">
@@ -207,8 +240,17 @@ export function BrandPage() {
         </section>
       )}
 
+      {/* cross-links to the rest of the portfolio */}
+      <section className="container-luxe pb-24">
+        <Reveal>
+          <div className="border-t border-gold/20 pt-10">
+            <InternalLinks title={t('internalLinks.otherBrands')} links={siblingBrandLinks} />
+          </div>
+        </Reveal>
+      </section>
+
       {/* inquire */}
-      <section className="container-luxe pb-32 pt-24">
+      <section className="container-luxe pb-32 pt-4">
         <Reveal>
           <div className="border-t border-gold/20 pt-10 flex flex-col md:flex-row gap-6 md:items-center justify-between">
             <div>

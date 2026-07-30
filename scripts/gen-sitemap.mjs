@@ -1,91 +1,110 @@
-// Generates public/sitemap.xml and public/robots.txt from the route data.
-// Runs automatically before `npm run build` via the "prebuild" script.
+// Generates public/sitemap.xml and public/robots.txt from the typed route
+// manifest (src/seo/routes.ts). Runs automatically before `npm run build` via
+// the "prebuild" script. Both outputs are gitignored — they are build artefacts.
 //
-// The URL list must stay in lockstep with the prerendered route set in
-// src/router.tsx: the same static routes, one entry per brand and one per
-// product. The /404 route is deliberately excluded — it is prerendered (and
-// mirrored to dist/404.html for Apache) but marked noindex, so it never belongs
-// in a sitemap.
-import { readFileSync, writeFileSync } from 'node:fs';
+// This script used to regex-scrape src/data/*.ts, which made it a second source
+// of truth that would drift from the router. It now loads the same manifest the
+// router's getStaticPaths uses, so the sitemap cannot disagree with the set of
+// files the prerender writes. Every structural invariant — duplicate paths,
+// unknown brand references, reserved-slug collisions, title/description limits
+// — is enforced inside the manifest itself and throws from `sitemapRoutes()`,
+// so it is inherited here rather than reimplemented.
+//
+// The manifest is TypeScript and uses the `@` alias, so it is loaded through
+// Vite's own SSR module runner: that resolves the alias and transpiles TS for
+// free, with no new dependency (Vite is already a devDependency). A dev server
+// in middlewareMode binds no port and, with the watcher off, exits cleanly.
+//
+// The /404 route is deliberately excluded — it is prerendered (and mirrored to
+// dist/404.html for Apache) but marked noindex, so it never belongs in a
+// sitemap. It carries `indexable: false` in the manifest; nothing here needs to
+// know its path.
+import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
+import { createServer } from 'vite';
+import { AI_CRAWLERS } from './lib/ai-crawlers.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const read = (p) => readFileSync(resolve(root, p), 'utf8');
-const fail = (msg) => {
-  console.error(`gen-sitemap: ${msg}`);
+
+// AI/answer-engine crawlers are explicitly allowed (user-ratified: being cited
+// is a first-class channel). /api/ is reserved for the Phase 5 PHP endpoint.
+// The list itself lives in scripts/lib/ai-crawlers.mjs — shared with
+// scripts/validate-seo.mjs so the generated robots.txt and the harness that
+// checks it can never silently disagree.
+
+function fail(message) {
+  console.error(`gen-sitemap: ${message}`);
   process.exit(1);
-};
+}
 
-const SITE_URL = (read('src/lib/site.ts').match(/SITE_URL\s*=\s*'([^']+)'/)?.[1] ?? '')
-  .replace(/\/$/, '');
-if (!SITE_URL) fail('could not read SITE_URL from src/lib/site.ts');
+const server = await createServer({
+  root,
+  // No port is bound and no HTML is served. The file watcher would otherwise
+  // keep the process alive after the files are written.
+  server: { middlewareMode: true, hmr: false, watch: null },
+  appType: 'custom',
+  // The manifest imports nothing from node_modules, so there is nothing to
+  // pre-bundle — skipping discovery keeps prebuild from crawling the whole app.
+  optimizeDeps: { noDiscovery: true, include: [] },
+  logLevel: 'error',
+});
 
-// Brand slugs — top-level `slug:` fields of the BRANDS entries.
-const brandSlugs = [...read('src/data/brands.ts').matchAll(/^ {4}slug: '([^']+)',$/gm)].map(
-  (m) => m[1],
-);
-if (brandSlugs.length === 0) fail('no brand slugs found in src/data/brands.ts');
+let routes;
+let siteUrl;
+try {
+  ({ SITE_URL: siteUrl } = await server.ssrLoadModule('/src/lib/site.ts'));
+  const { sitemapRoutes } = await server.ssrLoadModule('/src/seo/routes.ts');
+  routes = await sitemapRoutes();
+} catch (error) {
+  await server.close();
+  // Manifest assertions throw with a named, actionable message — surface it
+  // verbatim and break the build. A wrong sitemap must never be a warning.
+  fail(error instanceof Error ? error.message : String(error));
+}
+await server.close();
 
-// Product pages — every PRODUCTS entry starts with `slug:` immediately followed
-// by `brandSlug:`, which keeps the pair unambiguous (category taxonomies also
-// use a `slug:` field, and must not be matched here).
-const products = [
-  ...read('src/data/products.ts').matchAll(/^ {4}slug: '([^']+)',\n {4}brandSlug: '([^']+)',$/gm),
-].map((m) => ({ slug: m[1], brandSlug: m[2] }));
-if (products.length === 0) fail('no products found in src/data/products.ts');
+siteUrl = (siteUrl ?? '').replace(/\/$/, '');
+if (!siteUrl) fail('SITE_URL is empty in src/lib/site.ts');
+if (!siteUrl.startsWith('https://')) {
+  fail(`SITE_URL must be an absolute https origin, got "${siteUrl}"`);
+}
 
-const unknownBrand = products.find((p) => !brandSlugs.includes(p.brandSlug));
-if (unknownBrand) fail(`product "${unknownBrand.slug}" references unknown brand "${unknownBrand.brandSlug}"`);
-
-const KEYPAD_DESIGNER = '/brands/black-nova/keypad-designer';
-const staticRoutes = ['/', '/brands', KEYPAD_DESIGNER, '/lit-home', '/about', '/contact'];
-const urls = [
-  ...staticRoutes,
-  ...brandSlugs.map((s) => `/brands/${s}`),
-  ...products.map((p) => `/brands/${p.brandSlug}/${p.slug}`),
-];
-
-const duplicate = urls.find((u, i) => urls.indexOf(u) !== i);
-if (duplicate) fail(`duplicate URL generated: ${duplicate}`);
+const count = (kind) => routes.filter((route) => route.kind === kind).length;
+const rangeCount = count('range');
+const brandCount = count('brand');
+const productCount = count('product') + rangeCount;
+if (brandCount === 0) fail('the manifest produced no brand routes');
+if (productCount === 0) fail('the manifest produced no product routes');
 
 // Canonical URLs carry a trailing slash (docs/05 taxonomy; Apache DirectorySlash
-// 301s the bare form) — the root is already '/'. No <lastmod> (a build-time stamp
-// is not truthful per-URL) and no <changefreq>/<priority> (ignored by Google,
-// noise for everyone else).
-const canonical = (u) => (u === '/' ? `${SITE_URL}/` : `${SITE_URL}${u}/`);
-const body = urls
-  .map((u) => `  <url>\n    <loc>${canonical(u)}</loc>\n  </url>`)
-  .join('\n');
+// 301s the bare form) — the root is already '/'. No <lastmod> (a build-time
+// stamp is not truthful per-URL) and no <changefreq>/<priority> (ignored by
+// Google, noise for everyone else).
+const canonical = (path) => (path === '/' ? `${siteUrl}/` : `${siteUrl}${path}/`);
+const urls = routes.map((route) => canonical(route.path));
 
+const duplicate = urls.find((url, i) => urls.indexOf(url) !== i);
+if (duplicate) fail(`duplicate URL generated: ${duplicate}`);
+
+const body = urls.map((url) => `  <url>\n    <loc>${url}</loc>\n  </url>`).join('\n');
 writeFileSync(
   resolve(root, 'public/sitemap.xml'),
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`,
 );
 
-// AI/answer-engine crawlers are explicitly allowed (user-ratified: being cited
-// is a first-class channel). /api/ is reserved for the Phase 5 PHP endpoint.
-const AI_CRAWLERS = [
-  'GPTBot',
-  'ClaudeBot',
-  'Claude-User',
-  'PerplexityBot',
-  'Google-Extended',
-  'Bingbot',
-  'Amazonbot',
-  'Applebot-Extended',
-];
 const robots = [
   ...AI_CRAWLERS.flatMap((ua) => [`User-agent: ${ua}`, 'Allow: /', '']),
   'User-agent: *',
   'Allow: /',
   'Disallow: /api/',
   '',
-  `Sitemap: ${SITE_URL}/sitemap.xml`,
+  `Sitemap: ${siteUrl}/sitemap.xml`,
   '',
 ].join('\n');
 writeFileSync(resolve(root, 'public/robots.txt'), robots);
 
 console.log(
-  `sitemap.xml: ${urls.length} URLs (${brandSlugs.length} brands · ${products.length} products) · robots.txt written (${SITE_URL})`,
+  `sitemap.xml: ${urls.length} URLs (${brandCount} brands · ${productCount} products, ` +
+    `${rangeCount} of them ranges) · robots.txt written (${siteUrl})`,
 );

@@ -28,19 +28,19 @@ jobs:
       # from the repo (originals live outside version control until the Phase 3
       # pipeline commits optimised derivatives), so image references in this build
       # would 404 — a green run is NOT a deployable artefact until Phase 3.
-      - name: "Gate: every emitted page has a real, non-empty h1"
-        run: |
-          missing=$(grep -rL '<h1' dist --include='*.html' || true)
-          if [ -n "$missing" ]; then
-            echo "Pages missing <h1>:" && echo "$missing"
-            exit 1
-          fi
-          empty=$(grep -rlE '<h1[^>]*>\s*</h1>' dist --include='*.html' || true)
-          if [ -n "$empty" ]; then
-            echo "Pages with EMPTY <h1>:" && echo "$empty"
-            exit 1
-          fi
-          echo "OK: $(find dist -name '*.html' | wc -l) HTML files, all with non-empty <h1>"
+      #
+      # This is the Phase 2 SEO/structured-data gate: title/description/canonical/
+      # hreflang/h1 shape on every emitted page (the old standalone "every page has
+      # a real, non-empty h1" step is a strict subset of this — one-and-only-one
+      # non-empty <h1> is check #1 below — so it is retired, not weakened), plus
+      # the full JSON-LD gate (single @graph, no dangling/duplicate @id, no
+      # offers/price/InStock, no Product on the nine range routes, no Pakistan
+      # place/address, breadcrumb/JSON-LD parity, and every emitted @type/property
+      # checked against the committed schema.org vocabulary subset). Zero errors
+      # AND zero warnings, per docs/11-SEO-VALIDATION.md; see that file for exactly
+      # what this does and does not prove versus a live Rich Results Test run.
+      - name: "Gate: SEO + structured data (scripts/validate-seo.mjs)"
+        run: npm run validate:seo
 
       - name: "Gate: no stale blacknova slug in output"
         run: |

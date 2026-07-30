@@ -1,11 +1,26 @@
 <!doctype html>
 <html lang="en" dir="ltr">
   <head>
-    <meta charset="UTF-8" />
+    <!--
+      This template deliberately declares NO document title, NO meta description
+      and NO character encoding.
+
+      vite-react-ssg splices each route's head (react-helmet-async output) in
+      immediately after this head tag, so anything hardcoded here is emitted *in
+      addition to* the per-page tags — which is how the 404 page came to ship two
+      document titles. src/seo/Seo.tsx is the single source of every head tag,
+      including the encoding declaration: it has to be emitted by helmet because
+      the injected block runs to a couple of kilobytes and would otherwise push a
+      template-level declaration past the 1024-byte window in which a parser
+      looks for one.
+
+      Nothing user-facing is parsed from this shell in dev (the body is an empty
+      root div; ES modules are decoded as UTF-8 regardless of the response's
+      content type), so the dev server needs no declaration here either.
+      Re-adding any of the three tags duplicates it on all 116 prerendered pages.
+    -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0A0A0A" />
-    <title>Leading IT — Control, refined.</title>
-    <meta name="description" content="Premium distributor of luxury home and cinema automation across Pakistan and the UAE. Crestron, Basalte, Marantz, Black Nova, Blustream and more." />
   </head>
   <body class="bg-ink-950 text-bone-100 antialiased">
     <div id="root"></div>

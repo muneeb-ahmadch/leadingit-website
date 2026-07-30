@@ -99,7 +99,7 @@ const pkInUse = [
   'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=2000&q=80',
 ];
 
-// ─── U&K Sound helpers ──────────────────────────────────────────────────────
+// ─── UandKSound helpers ──────────────────────────────────────────────────────
 // Real cinema-room lifestyle photography + official product cutouts, downloaded
 // from uandksound.com (never hotlinked). Series flagships anchor each card.
 const uk = (name: string) => `/products/uandksound/${name}`;
@@ -109,7 +109,7 @@ const ukBlack = (img: string, name = 'Matte Black'): Finish => ({
   swatch: 'linear-gradient(135deg,#2a2a2a,#0a0a0a)',
   productImage: img,
 });
-// AMT (Air Motion Transformer) tweeter — figures from U&K Sound's own tweeter
+// AMT (Air Motion Transformer) tweeter — figures from UandKSound's own tweeter
 // technology note; used across the Air-Motion series (M8, M6).
 const AMT_TWEETER_SPEC: SpecGroup = {
   label: 'AMT Air Motion Tweeter',
@@ -3271,7 +3271,7 @@ export const PRODUCTS: Product[] = [
     inUse: pkInUse,
   },
 
-  // ─── U&K Sound ────────────────────────────────────────────────────────────
+  // ─── UandKSound ────────────────────────────────────────────────────────────
   {
     slug: 'reference-series',
     brandSlug: 'uandksound',
@@ -3281,8 +3281,8 @@ export const PRODUCTS: Product[] = [
     description:
       'The Reference Series is the culmination of a long research project with sound engineers from the film industry. A high-density enclosure meets THX standards, an oversized-magnet woofer delivers exceptional impact, and a same-plane horn tweeter locates every effect with precision. Its modular configuration is built to sit behind large projection screens without compromise.',
     metaDescription:
-      'U&K Sound Reference Series cinema speakers — horn-loaded M1200LCR, M800SR and M1800SW subwoofer, THX-standard enclosures. Distributed in the UAE and Pakistan by Leading IT.',
-    keywords: ['U&K Sound Reference Series', 'M1200LCR', 'M1800SW subwoofer', 'U&K Sound cinema speakers UAE', 'U&K Sound Pakistan', 'horn-loaded cinema loudspeaker'],
+      'UandKSound Reference Series cinema speakers — horn-loaded M1200LCR, M800SR and M1800SW subwoofer, THX-standard enclosures. Distributed in the UAE and Pakistan by Leading IT.',
+    keywords: ['UandKSound Reference Series', 'M1200LCR', 'M1800SW subwoofer', 'UandKSound cinema speakers UAE', 'UandKSound Pakistan', 'horn-loaded cinema loudspeaker'],
     hero: uk('reference-m1200lcr.png'),
     finishes: [ukBlack(uk('reference-m1200lcr.png'), 'Black Yarn Paint')],
     specs: [
@@ -3317,10 +3317,10 @@ export const PRODUCTS: Product[] = [
     collection: 'Cinema Series · M8',
     tagline: 'Three-way flagship, Air Motion tweeter.',
     description:
-      'The M8 Series renews U&K Sound\'s flagship models with hand-selected components and a meticulously built crossover network. Every model is a three-way design with a 12 dB/oct divider, crowned by an AMT Air Motion Transformer tweeter that makes the sound leap forward. The extra-slim M850-N cabinet adapts to any custom installation, partnered by the 1200 W Class D M1500-N subwoofer.',
+      'The M8 Series renews UandKSound\'s flagship models with hand-selected components and a meticulously built crossover network. Every model is a three-way design with a 12 dB/oct divider, crowned by an AMT Air Motion Transformer tweeter that makes the sound leap forward. The extra-slim M850-N cabinet adapts to any custom installation, partnered by the 1200 W Class D M1500-N subwoofer.',
     metaDescription:
-      'U&K Sound M8 Series three-way cinema speakers with AMT Air Motion tweeter — M850N, M820IW and M1500N subwoofer. Supplied in the UAE and Pakistan by Leading IT.',
-    keywords: ['U&K Sound M8 Series', 'M850N', 'M1500N subwoofer', 'AMT Air Motion tweeter', 'U&K Sound UAE', 'U&K Sound Pakistan'],
+      'UandKSound M8 Series three-way cinema speakers with AMT Air Motion tweeter — M850N, M820IW and M1500N subwoofer. Supplied in the UAE and Pakistan by Leading IT.',
+    keywords: ['UandKSound M8 Series', 'M850N', 'M1500N subwoofer', 'AMT Air Motion tweeter', 'UandKSound UAE', 'UandKSound Pakistan'],
     hero: uk('m8-m850n.png'),
     finishes: [ukBlack(uk('m8-m850n.png'), 'Satin Black')],
     specs: [
@@ -3358,8 +3358,8 @@ export const PRODUCTS: Product[] = [
     description:
       'Following the concept of the M8 Series, the M6 Series mounts on — or flush to — the wall, in an extra-slim cabinet designed for complex custom installations. Its legacy Air Motion tweeter delivers more precise, cleaner high frequencies, giving the range an acoustic performance and aesthetic commitment without compromise. Full enjoyment, whether a film or a favourite artist, with none of the installation complexity.',
     metaDescription:
-      'U&K Sound M6 Series slim on-wall and in-wall cinema speakers with Air Motion tweeter — M610N, M620N, in-wall models and M1200N subwoofer. Distributed in the UAE and Pakistan by Leading IT.',
-    keywords: ['U&K Sound M6 Series', 'M620N', 'M610IW', 'M1200N subwoofer', 'Air Motion tweeter', 'U&K Sound UAE Pakistan'],
+      'UandKSound M6 Series slim on-wall and in-wall cinema speakers with Air Motion tweeter — M610N, M620N, in-wall models and M1200N subwoofer. Distributed in the UAE and Pakistan by Leading IT.',
+    keywords: ['UandKSound M6 Series', 'M620N', 'M610IW', 'M1200N subwoofer', 'Air Motion tweeter', 'UandKSound UAE Pakistan'],
     hero: uk('m6-m620n.png'),
     finishes: [ukBlack(uk('m6-m620n.png'), 'Satin Black')],
     specs: [
@@ -3406,8 +3406,8 @@ export const PRODUCTS: Product[] = [
     description:
       'The full-range S Series are compact wall-mount loudspeakers built around an advanced crossover — massive air-core coils, high-purity copper wire and low-distortion capacitors preserve every nuance of the signal, behind a ribbon tweeter. A premium MDF enclosure and a robust mounting-lock system let installers complete horizontal or vertical installation quickly and easily. Standard finish is matte black.',
     metaDescription:
-      'U&K Sound S Series compact wall-mount cinema speakers with ribbon tweeter — S6 I, S6 II and S1200 I subwoofer. Supplied in the UAE and Pakistan by Leading IT.',
-    keywords: ['U&K Sound S Series', 'S6 I', 'S6 II', 'S1200 I subwoofer', 'ribbon tweeter speaker', 'U&K Sound UAE Pakistan'],
+      'UandKSound S Series compact wall-mount cinema speakers with ribbon tweeter — S6 I, S6 II and S1200 I subwoofer. Supplied in the UAE and Pakistan by Leading IT.',
+    keywords: ['UandKSound S Series', 'S6 I', 'S6 II', 'S1200 I subwoofer', 'ribbon tweeter speaker', 'UandKSound UAE Pakistan'],
     hero: uk('s-s6ii.png'),
     finishes: [ukBlack(uk('s-s6ii.png'), 'Matte Black')],
     specs: [
@@ -3444,8 +3444,8 @@ export const PRODUCTS: Product[] = [
     description:
       'The E Series sets a fresh standard for in-wall and in-ceiling performance. Voice- and timbre-matched with one another and the rest of the range, every model features an ultra-low-profile, paintable micro-perforated grille for near-invisible integration, held by neodymium magnets. PRX Poly Resin CrossPoint molds, a Smooth Visual Flangeless System and gold-plated binding posts complete a truly custom-grade speaker.',
     metaDescription:
-      'U&K Sound E Series in-wall and in-ceiling custom speakers with paintable micro-perforated grilles — E610, E620, E650 and E1200I subwoofer. Distributed in the UAE and Pakistan by Leading IT.',
-    keywords: ['U&K Sound E Series', 'E620IW', 'E610C in-ceiling', 'E1200I subwoofer', 'invisible in-wall speaker', 'U&K Sound UAE Pakistan'],
+      'UandKSound E Series in-wall and in-ceiling custom speakers with paintable micro-perforated grilles — E610, E620, E650 and E1200I subwoofer. Distributed in the UAE and Pakistan by Leading IT.',
+    keywords: ['UandKSound E Series', 'E620IW', 'E610C in-ceiling', 'E1200I subwoofer', 'invisible in-wall speaker', 'UandKSound UAE Pakistan'],
     hero: uk('e-e620iw.png'),
     finishes: [ukBlack(uk('e-e620iw.png'), 'Black · Paintable Grille')],
     specs: [
@@ -3489,10 +3489,10 @@ export const PRODUCTS: Product[] = [
     collection: 'M Series · Amplification',
     tagline: 'Multichannel muscle for the reference cinema.',
     description:
-      'The M Series is U&K Sound\'s amplification platform — fully balanced Class A/AB stages (M2300, M7300) alongside high-current Class D designs (M4500D, M7300D). Ultra-low noise, per-channel transformers and an exceptional signal-to-noise ratio deliver noiseless, effortless power at every level. A 12 V trigger daisy-chains multiple stages for the most complex installations, making them the natural partner for the Reference Series.',
+      'The M Series is UandKSound\'s amplification platform — fully balanced Class A/AB stages (M2300, M7300) alongside high-current Class D designs (M4500D, M7300D). Ultra-low noise, per-channel transformers and an exceptional signal-to-noise ratio deliver noiseless, effortless power at every level. A 12 V trigger daisy-chains multiple stages for the most complex installations, making them the natural partner for the Reference Series.',
     metaDescription:
-      'U&K Sound M Series multichannel power amplifiers — Class A/AB M2300 and M7300, Class D M4500D (750W) and M7300D. Supplied in the UAE and Pakistan by Leading IT.',
-    keywords: ['U&K Sound M Series amplifier', 'M4500D', 'M7300D', 'M7300', 'multichannel cinema amplifier', 'U&K Sound UAE Pakistan'],
+      'UandKSound M Series multichannel power amplifiers — Class A/AB M2300 and M7300, Class D M4500D (750W) and M7300D. Supplied in the UAE and Pakistan by Leading IT.',
+    keywords: ['UandKSound M Series amplifier', 'M4500D', 'M7300D', 'M7300', 'multichannel cinema amplifier', 'UandKSound UAE Pakistan'],
     hero: uk('m-m4500d.png'),
     finishes: [ukBlack(uk('m-m4500d.png'), 'Black')],
     specs: [

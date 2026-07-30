@@ -9,7 +9,9 @@
     "prebuild": "node scripts/gen-sitemap.mjs",
     "build": "tsc -b && vite-react-ssg build",
     "preview": "vite preview",
-    "lint": "tsc -b --noEmit && eslint ."
+    "lint": "tsc -b --noEmit && eslint .",
+    "validate:seo": "node scripts/validate-seo.mjs",
+    "gen:schema-vocab": "node scripts/gen-schema-vocab-subset.mjs"
   },
   "dependencies": {
     "@fontsource/cormorant-garamond": "^5.1.0",
