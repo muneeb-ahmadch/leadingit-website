@@ -161,7 +161,7 @@ export const PRODUCTS: Product[] = [
     collection: '4-Series™ Rack-Mount Control System',
     tagline: 'A powerful 4-Series™ control engine for the connected home.',
     description:
-      'The CP4 is a secure, high-performance control processor with a powerful 4-Series™ control engine. Designed to integrate and automate technology within any modern networked home, commercial building or government facility, it runs up to ten programs at once with numerous integrated control ports on board.',
+      'The CP4 is the rack-mount processor a Crestron installation is built around. One unit runs as many as ten programs at the same time, and the onboard ports let it drive audio, video, lighting, shades and climate without extra gateways. Leading IT specifies, programs and supports it for villas, offices and government fit-outs in Dubai and across Pakistan.',
     category: 'control',
     hero: cr('cp4.png'),
     finishes: [{ id: 'black', name: 'Black', swatch: crBlack, productImage: cr('cp4.png') }],
@@ -194,7 +194,7 @@ export const PRODUCTS: Product[] = [
     collection: '4-Series™ Processor for Crestron Home®',
     tagline: 'The rack-mount core of a Crestron Home® system.',
     description:
-      'The CP4-R is a secure, high-performance, rack-mountable control processor with the embedded Crestron Home® operating system. Designed exclusively as the core of a Crestron Home system, its enhanced 4-Series™ multicore processing handles larger home automation, home theater, multiroom video and MDU applications.',
+      'The CP4-R ships with the Crestron Home operating system already on board, so it is the core of a Crestron Home installation rather than a blank processor to be programmed from scratch. Its multicore 4-Series CPU is sized for the larger jobs — whole-villa automation, a dedicated cinema, multiroom video, and apartment blocks. Onboard ports reach audio, video, lighting, motorised shades, thermostats, door locks and sensors directly.',
     category: 'control',
     hero: cr('cp4-r.png'),
     finishes: [{ id: 'black', name: 'Black', swatch: crBlack, productImage: cr('cp4-r.png') }],
@@ -227,7 +227,7 @@ export const PRODUCTS: Product[] = [
     collection: '4-Series™ DIN Rail Control System',
     tagline: 'The 4-Series™ engine, sized for the DIN rail.',
     description:
-      'The DIN-AP4 provides a secure, high-performance control processor with a powerful 4-Series™ control engine and numerous integrated control ports, designed specifically for DIN rail mounting. It serves as the core processor for a complete DIN rail automation system, with Apple HomeKit, BACnet and XiO Cloud provisioning.',
+      'The DIN-AP4 puts a full 4-Series control engine on the DIN rail, so the processor sits in the distribution board next to the breakers instead of in a rack. It anchors an all-DIN automation system alongside Crestron dimming, switching and motor modules. Apple HomeKit, BACnet and XiO Cloud provisioning are supported.',
     category: 'control',
     hero: cr('din-ap4.png'),
     finishes: [{ id: 'light-gray', name: 'Light Gray', swatch: crGray, productImage: cr('din-ap4.png') }],
@@ -260,7 +260,7 @@ export const PRODUCTS: Product[] = [
     collection: 'DIN Rail System for Crestron Home®',
     tagline: 'A Crestron Home® core that lives on the DIN rail.',
     description:
-      'The DIN-AP4-R is a secure, high-performance control system with a powerful 4-Series™ control engine, designed for DIN rail mounting and built to function as the core of a Crestron Home® system. Enhanced processing handles small to medium home automation, home theater, multiroom video and MDU applications.',
+      'The DIN-AP4-R is the Crestron Home core for jobs that have no rack. It mounts on the DIN rail in the electrical enclosure and runs small to medium homes, cinema rooms, multiroom video and apartment units. Onboard ports reach lighting, shades, climate, locks and sensors directly.',
     category: 'control',
     hero: cr('din-ap4-r.png'),
     finishes: [{ id: 'light-gray', name: 'Light Gray', swatch: crGray, productImage: cr('din-ap4-r.png') }],
@@ -295,7 +295,7 @@ export const PRODUCTS: Product[] = [
     collection: '4-Channel Dimmer · DIN Rail',
     tagline: 'Four channels of dimming from a single feed.',
     description:
-      'The DIN-1DIM4 is a DIN rail mounted lighting control module with four channels of dimming. A single model supports both 120 V and 220–277 V electronic and magnetic low-voltage, incandescent, neon/cold-cathode, 2-wire dimmable fluorescent and non-dimmable loads up to 5 A per channel, 10 A total.',
+      'Four dimming channels off a single supply feed, in a module that clips onto the DIN rail. One part number covers both 120 V and 220–277 V installations. Each channel carries up to 5 A, 10 A across the module, across electronic and magnetic low-voltage, incandescent, neon and cold-cathode, two-wire dimmable fluorescent and non-dimmable loads.',
     category: 'lighting',
     hero: cr('din-1dim4.png'),
     finishes: [{ id: 'light-gray', name: 'Light Gray', swatch: crGray, productImage: cr('din-1dim4.png') }],
@@ -328,7 +328,7 @@ export const PRODUCTS: Product[] = [
     collection: '4-Channel Universal Dimmer · DIN Rail',
     tagline: 'Forward and reverse phase, all in one module.',
     description:
-      'The DIN-1DIMU4 is a 4-channel universal lighting control module engineered to dim both forward and reverse phase loads. A single model accommodates 120 V and 220–240 V electronic and magnetic low-voltage, incandescent, neon/cold-cathode, 2-wire dimmable fluorescent and non-dimmable loads up to 5 A per channel, 10 A total.',
+      'The DIN-1DIMU4 handles forward-phase and reverse-phase loads on the same four-channel module, so a mixed retrofit does not need two different dimmer types. Each channel detects the load type connected to it and picks its own operating mode. Ratings are 5 A per channel and 10 A total, at either 120 V or 220–240 V.',
     category: 'lighting',
     hero: cr('din-1dimu4.png'),
     finishes: [{ id: 'light-gray', name: 'Light Gray', swatch: crGray, productImage: cr('din-1dimu4.png') }],
@@ -361,7 +361,7 @@ export const PRODUCTS: Product[] = [
     collection: '2-Channel Motor Control · DIN Rail',
     tagline: 'Drapes, shades and screens under precise command.',
     description:
-      'The DIN-2MC2 is a 2-channel motor control module for bidirectional motors driving drapes, shades, projection screens, lifts, skylights and gates. Each channel supports up/down or open/close control of a conventional three-wire bidirectional motor up to 1/2 HP at voltages up to 240 volts.',
+      'Two motor channels for the things in a house that move: curtain tracks, blinds, a projection screen, a TV lift, a rooflight, a gate. Each channel drives one conventional three-wire bidirectional motor up to 1/2 HP at up to 240 V, in either direction. Timing and interlock logic is built in, so the module will not energise both directions at once.',
     category: 'lighting',
     hero: cr('din-2mc2.png'),
     finishes: [{ id: 'light-gray', name: 'Light Gray', swatch: crGray, productImage: cr('din-2mc2.png') }],
@@ -394,7 +394,7 @@ export const PRODUCTS: Product[] = [
     collection: '8-Channel High-Voltage Switch · DIN Rail',
     tagline: 'Eight switched channels with isolated inputs.',
     description:
-      'The DIN-8SW8-I is an 8-channel lighting control module for non-dimmable lighting and fan switching. Eight isolated digital inputs let standard momentary switches trigger events with or without a control system. A single model supports 120 V and 220–240 V, handling incandescent loads up to 10 A, fluorescent up to 5 A and 1/2 HP motor loads per channel.',
+      'Eight switched channels for lighting circuits that do not dim, and for fans. Alongside the Cresnet connection there are eight isolated local inputs, so ordinary momentary wall switches can trigger circuits directly — useful where a room needs to keep working if the control system is offline. One part number covers 120 V and 220–240 V, at up to 10 A incandescent, 5 A fluorescent or 1/2 HP motor per channel.',
     category: 'lighting',
     hero: cr('din-8sw8-i.png'),
     finishes: [{ id: 'light-gray', name: 'Light Gray', swatch: crGray, productImage: cr('din-8sw8-i.png') }],
@@ -427,7 +427,7 @@ export const PRODUCTS: Product[] = [
     collection: 'DALI® Interface · DIN Rail',
     tagline: 'A DALI-2™ certified bridge to a full DALI loop.',
     description:
-      'The DIN-DLI is a DALI-2™ certified DALI® interface for Crestron control systems, controlling one DALI loop of up to 64 devices. Housed in a compact 3M DIN-rail enclosure, it drives DT0–DT8 Tc DALI devices over Cresnet® or Ethernet with PoE, and commissions devices through an intuitive web user interface.',
+      'The DIN-DLI is how a Crestron system talks to a DALI lighting loop — one loop, up to 64 addressable fittings, with DALI-2 certification behind it. It occupies 3 modules of DIN rail and connects back over Cresnet or Ethernet with PoE. Commissioning is done in a browser rather than with a separate tool.',
     category: 'lighting',
     hero: cr('din-dli.png'),
     finishes: [{ id: 'light-gray', name: 'Light Gray', swatch: crGray, productImage: cr('din-dli.png') }],
@@ -460,7 +460,7 @@ export const PRODUCTS: Product[] = [
     collection: 'KNX Secure IP Gateway · DIN Rail',
     tagline: 'The 4-Series™ system, fluent in KNX.',
     description:
-      'The DIN-KXI is an IP-based KNX interface that lets a 4-Series™ control system communicate with a KNX system. It addresses and controls up to 1,000 datapoints, receives power over the KNX bus, and doubles as a programming interface for KNX devices using ETS5 or ETS6 software.',
+      'Plenty of Gulf and Pakistani projects are already wired in KNX. The DIN-KXI lets a 4-Series Crestron system address up to 1,000 KNX datapoints over IP, so that existing bus becomes part of the same user interface instead of a second system. It draws its power from the KNX bus, supports AES-128 KNX Security, and doubles as the programming interface for KNX devices in ETS5 or ETS6.',
     category: 'lighting',
     hero: cr('din-kxi.png'),
     finishes: [{ id: 'light-gray', name: 'Light Gray', swatch: crGray, productImage: cr('din-kxi.png') }],
@@ -495,7 +495,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Ethernet-to-Cresnet® Bridge with PoE',
     tagline: 'Cresnet® reliability, carried over high-speed Ethernet.',
     description:
-      'The DIN-CENCN-2-POE works with a Crestron® control system to maximise Cresnet® network reliability and performance. It carries Cresnet data over high-speed Ethernet and provides two isolated Cresnet subnets, built-in network diagnostics and versatile power management with PoE.',
+      'Long Cresnet runs and crowded buses are where control systems get flaky. This module carries Cresnet data over Ethernet instead and splits the load into two isolated subnets, each with its own address space and up to 20 client devices. Six Cresnet connectors make terminating multiple lines straightforward. A front-panel test button and a browser diagnostics page report wiring faults and power shortfalls, and the unit can be powered by PoE, PoE+ or 24 V DC.',
     category: 'network',
     hero: cr('din-cencn-2-poe.png'),
     finishes: [{ id: 'light-gray', name: 'Light Gray', swatch: crGray, productImage: cr('din-cencn-2-poe.png') }],
@@ -528,7 +528,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Cresnet® Distribution Hub · DIN Rail',
     tagline: 'The backbone of a large Cresnet® network.',
     description:
-      'The DIN-HUB is a DIN rail-mounted Cresnet® hub designed to simplify the configuration of large Cresnet networks. DIN rail mounting enables modular installation alongside Crestron DIN Rail lighting and automation control modules and other third-party DIN rail devices.',
+      'A Cresnet bus runs about 20 devices before it needs help. The DIN-HUB adds three more segments and lets each one take power either from the host supply or from its own, which keeps a large villa or a hotel floor on one control network. It clips onto the DIN rail beside Crestron lighting modules and third-party DIN devices.',
     category: 'network',
     hero: cr('din-hub.png'),
     finishes: [{ id: 'light-gray', name: 'Light Gray', swatch: crGray, productImage: cr('din-hub.png') }],
@@ -560,7 +560,7 @@ export const PRODUCTS: Product[] = [
     collection: '60 W Cresnet® Power Supply · DIN Rail',
     tagline: 'Clean, front-wired power for the Cresnet® bus.',
     description:
-      'The DIN-PWS60 is a 60 watt Cresnet® power supply that snaps onto a standard DIN rail for wall-mount enclosures. All wiring connects through screw terminals along the top and bottom, clearly accessible from the front, with six Cresnet power ports provided.',
+      'Sixty watts of Cresnet power in a DIN-rail module, for feeding processors, keypads and sensors on the bus. Six Cresnet ports fan the supply out, and Cresnet data passes through the unit unaffected. Every terminal is a screw terminal reachable from the front of the board, so an electrician can wire and service it without pulling the module.',
     category: 'network',
     hero: cr('din-pws60.png'),
     finishes: [{ id: 'light-gray', name: 'Light Gray', swatch: crGray, productImage: cr('din-pws60.png') }],
@@ -593,9 +593,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'crestron',
     name: 'DSP-1280',
     collection: 'Crestron Avia™ 12×8 DSP',
-    tagline: 'A revolutionary platform for exceptional sound.',
+    tagline: 'Twelve in, eight out, configured before the rack ships.',
     description:
-      'The Crestron® Avia™ family of digital signal processors leverages the highest-quality components and the expertise of veteran audio engineers to deliver a platform that is easy to integrate and configure. The DSP-1280 offers twelve mic/line inputs and eight balanced outputs, with an intuitive graphical workspace conceived to inspire exceptional results quickly.',
+      'Twelve mic/line inputs, eight balanced outputs, and the mixing and routing to get any of them to any of the others. The DSP-1280 is configured in the Avia Audio Tool, over USB or the LAN, or built offline as a virtual DSP and uploaded later — practical when the rack is in Dubai and the engineer is not. Because it is a Crestron device, its controls and meters come across into the touch-panel interface instead of being programmed twice.',
     category: 'audio',
     hero: cr('dsp-1280.png'),
     finishes: [{ id: 'black', name: 'Black', swatch: crBlack, productImage: cr('dsp-1280.png') }],
@@ -628,7 +628,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Crestron Avia™ 12×8 DSP with Dante®',
     tagline: 'Avia™ processing, networked over Dante®.',
     description:
-      'The DSP-1281 brings the Crestron® Avia™ processing platform to networked audio, pairing twelve mic/line inputs and eight balanced outputs with a 32×32 Dante® audio network interface. Veteran audio engineering and an intuitive graphical workspace make sophisticated sound systems fast to design and deploy.',
+      'The DSP-1281 is the DSP-1280 with Dante on board: the same twelve mic/line inputs and eight balanced outputs, plus 32 channels in and 32 out over the audio network at up to 24-bit 48 kHz. That is how you add inputs without adding a second rack — link units over Dante and the channel count grows. AES67 is supported for interoperating with non-Dante equipment.',
     category: 'audio',
     hero: cr('dsp-1281.png'),
     finishes: [{ id: 'black', name: 'Black', swatch: crBlack, productImage: cr('dsp-1281.png') }],
@@ -661,7 +661,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Crestron Avia™ 8×6 DSP',
     tagline: 'Reference processing for intimate rooms.',
     description:
-      'The DSP-860 delivers Crestron® Avia™ processing, mixing and routing for all audio signal types with comprehensive controls over each signal. Native Crestron integration substantially reduces programming, exporting components as Smart Graphics files with ready-to-use touch screen controls and meters.',
+      'Eight mic/line inputs and six outputs, with eight internal auxiliary buses for the mixes behind them — the right size for a boardroom, a majlis or a single-zone venue rather than a whole building. Conversion is 24-bit at 48 kHz, with 20 Hz–20 kHz response inside ±0.5 dB. Components configured in the Avia Audio Tool export straight into the Crestron touch-panel project, faders and meters included, and up to 32 live VU meters can run on a panel at once.',
     category: 'audio',
     hero: cr('dsp-860.png'),
     finishes: [{ id: 'black', name: 'Black', swatch: crBlack, productImage: cr('dsp-860.png') }],
@@ -694,9 +694,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'crestron',
     name: 'GLS-OIRLCL-C-CN',
     collection: 'Occupancy & Daylight Sensor · Cresnet®',
-    tagline: 'A nearly invisible eye for light and presence.',
+    tagline: 'Presence and daylight, from one ceiling point.',
     description:
-      'This ceiling-mount sensor delivers occupancy or vacancy detection paired with an integrated closed-loop photosensor for Crestron systems, enabling automation of lighting, HVAC and more by room occupancy and ambient light. Its miniaturised flush design nearly disappears into the ceiling, with daylight harvesting and XiO Cloud room-usage monitoring.',
+      'One ceiling sensor doing two jobs: passive-infrared presence detection over an area up to 450 sq ft, and a closed-loop photocell reading how much daylight is already in the room. If daylight is above the threshold you set, the photocell overrides the occupancy signal and the lights stay off. It can also be set to vacancy-only, so lights switch off automatically but never on. It reports to the Crestron system over Cresnet and is set up in Crestron Toolbox or with the optional IR remote.',
     category: 'sensors',
     hero: cr('gls-oirlcl.png'),
     finishes: [{ id: 'white', name: 'White', swatch: crWhite, productImage: cr('gls-oirlcl.png') }],
@@ -729,7 +729,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Horizon® Wireless Thermostat',
     tagline: 'Climate control, finished to match the room.',
     description:
-      'The HZ-THSTAT is a wall-mounted heating and cooling thermostat with integrated humidistat, capable of controlling two-stage heat/cool and heat-pump systems, 2- and 4-pipe FCU systems, floor warming and humidity systems. A 3.5 in. LCD touch screen and integrated sensors keep the display crisp across lighting conditions, with Wi-Fi integration into Crestron automation.',
+      'A wall thermostat with a humidistat in the same housing, which is the combination that matters in Gulf humidity. It drives two-stage heating and cooling, two-stage heat pumps with two auxiliary heat stages, 2-pipe and 4-pipe fan-coil systems, floor warming and humidity control. The 3.5-inch LCD touch screen is used to commission it against the HVAC plant and then to read temperature and humidity. Proximity and ambient-light sensors adjust the display to the room, and it joins the Crestron system over Wi-Fi.',
     category: 'sensors',
     hero: cr('hz-thstat.png'),
     finishes: [
@@ -768,7 +768,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Horizon® 2 Keypad · Cresnet®',
     tagline: 'Where the home meets the hand.',
     description:
-      'The HZ2-KPCN Horizon® 2 keypad provides Cresnet® network control of lighting, shading, audio and other amenities. Its design matches the entire line of Horizon dimmers, switches and keypads, and it is available with default or custom engraving, RGB LED feedback, and a range of textured, glass and metal finishes.',
+      'A wired keypad on the Cresnet bus, for lights, blinds, audio and whatever else the system runs. It comes with default engraving on a five-button assembly, or custom engraving on any button layout, and the RGB LEDs give feedback on what is actually on. Textured, glass and metal finishes mean it can be specified to match the ironmongery in the rest of the room rather than fighting it.',
     category: 'keypads',
     hero: cr('hz2-kpcn-glass-black.png'),
     finishes: [
@@ -811,7 +811,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Horizon® 2 Faceplate · 1-Gang',
     tagline: 'The finishing frame for every Horizon® device.',
     description:
-      'Horizon® 2 faceplates are an essential component of every Horizon 2 installation, giving each device a finished appearance with customisable design elements. Available in textured (white, black, almond), glass (white, black) and metal finishes (brushed black, brushed brass, dark bronze, dark nickel), the trim is matched to the faceplate throughout.',
+      'The faceplate is not an accessory here — a Horizon 2 keypad, dimmer or switch is not finished until one is fitted. This is the single-gang version, and the trim matches the plate rather than contrasting with it. Choose textured white, black or almond; glass in white or black; or metal in brushed black, brushed brass, dark bronze or dark nickel.',
     category: 'keypads',
     hero: cr('hz2-fp-glass-black.png'),
     finishes: [
@@ -854,7 +854,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Cameo® Keypad · International',
     tagline: 'A customisable keypad for the European wall box.',
     description:
-      'The Crestron® Cameo® International keypad offers an attractive, customisable wall-mount keypad for controlling lighting, shades, AV and other functions in residential or commercial spaces. It installs in a single-gang European or UK electrical box, in a choice of almond, black or white textured finishes, integrating through a wired Cresnet® connection.',
+      'The Cameo international keypad fits a single-gang European or UK box, which is what is actually in the wall on most UAE and Pakistan projects. Buttons are configurable in several sizes with optional backlit engraving, and auto-brightness keeps the legends readable from daylight through to night. White LEDs report real system state, not just the last button pressed. It connects over wired Cresnet to a Crestron control system or Crestron Home, and two rear sensing inputs take contact-closure devices such as door switches and motion detectors.',
     category: 'keypads',
     hero: cr('c2ni-cb-black.png'),
     finishes: [{ id: 'black', name: 'Textured Black', swatch: crBlack, productImage: cr('c2ni-cb-black.png') }],
@@ -889,7 +889,7 @@ export const PRODUCTS: Product[] = [
     collection: '10.1" Wall Mount Touch Screen',
     tagline: 'A ten-inch canvas for the whole home.',
     description:
-      'The TSW-1080 wall mount touch screen serves residential and enterprise applications with a 10.1-inch capacitive display, programmable virtual controls and HTML5 support. PoE and Wi-Fi connectivity, proximity sensing, auto-brightness and real-time status make it the interface for boardrooms, homes and command centres.',
+      'Ten inches of capacitive glass on the wall, running either a Crestron interface with custom-programmable buttons or an HTML5 project of your own design. One cable does it if the switch supplies PoE; otherwise it joins over Wi-Fi. Crestron’s mounting range covers new-build back boxes and retrofits into existing walls, including flush glass and mullion mounts.',
     category: 'touchscreens',
     hero: cr('tsw-1080.png'),
     finishes: [
@@ -925,7 +925,7 @@ export const PRODUCTS: Product[] = [
     collection: '8.1" Wall Mount Touch Screen',
     tagline: 'Eight inches of glass, edge to edge.',
     description:
-      'The TSW-880 wall mount touch screen serves residential and enterprise applications with an 8.1-inch capacitive display, custom programmable buttons and HTML5 UI support. PoE and Wi-Fi connectivity, proximity-sensing wake and automatic brightness deliver an intuitive interface in any light.',
+      'The 8.1-inch panel in the same family — 204 mm of capacitive display, custom-programmable control buttons, and support for an HTML5 interface built specifically for the project. PoE or Wi-Fi for the connection, and the same accessory range for new walls and retrofits. Sized for a bedroom wall or a meeting room where a ten-inch panel would dominate.',
     category: 'touchscreens',
     hero: cr('tsw-880.png'),
     finishes: [
@@ -961,7 +961,7 @@ export const PRODUCTS: Product[] = [
     collection: '7" Wall Mount Touch Screen',
     tagline: 'Stylish, versatile, seven inches wide.',
     description:
-      'The TSW-770 is a stylish, versatile wall mount touch screen featuring web browsing, Crestron HTML5 and Smart Graphics® technology, custom-programmable icons, H.265/H.264 streaming video, a Rava® SIP intercom, Wi-Fi and PoE+ power. Built-in applications cover room scheduling, conferencing and home control, and it is Wall-Smart® compatible.',
+      'Seven inches at 1280 × 800 on a 16:10 active-matrix LCD, which is the size most villa corridors and bedrooms end up wanting. It handles a Crestron HTML5 or Smart Graphics interface, web pages, H.265 and H.264 streams from a door camera, and Rava SIP intercom calls. Wi-Fi or PoE for connectivity. Crestron positions it as the alternative to fixing a consumer tablet to the wall, and the mounting range is the reason: it is designed to be part of the wall, not stuck on it.',
     category: 'touchscreens',
     hero: cr('tsw-770.png'),
     finishes: [
@@ -997,7 +997,7 @@ export const PRODUCTS: Product[] = [
     collection: '5" Wall Mount Touch Screen',
     tagline: 'The compact interface for retrofit and new build.',
     description:
-      'The TSW-570 is a stylish, versatile wall mount touch screen ideal for residential and enterprise applications. Its 5 in. capacitive display supports custom-programmable control buttons, Smart Graphics® software and HTML5-based custom UI projects, with PoE connectivity and mounting accessories that simplify new and retrofit installations.',
+      'Five inches of capacitive display, for the places a bigger panel does not belong — a lift lobby, a guest bathroom corridor, beside a bed. It runs custom-programmable control buttons, Smart Graphics interfaces and HTML5 projects, the same as its larger siblings. PoE means one cable, and the accessory range covers both new-build boxes and retrofit into finished walls.',
     category: 'touchscreens',
     hero: cr('tsw-570.png'),
     finishes: [
@@ -1033,7 +1033,7 @@ export const PRODUCTS: Product[] = [
     collection: '8.1" Room Scheduling Touch Screen',
     tagline: 'Room status, read across the hallway.',
     description:
-      'The TSS-880 touch screen enhances and simplifies room scheduling across the enterprise. Installed outside meeting or huddle rooms, it shows clear availability with integrated light bars and connects to Microsoft Exchange, Google Calendar, 25Live and Ad Astra. Enterprise-grade security, XiO Cloud management and PoE+ round out a single-cable install.',
+      'This one goes outside the room, not inside it. Light bars down both sides show red for occupied and green for free — readable from the side as well as head-on, so you can see it walking down a corridor, and programmable to other RGB colours if the branding calls for it. It books and reads meetings directly from Microsoft Exchange (Outlook and Microsoft 365), Google Calendar, CollegeNET 25Live or Ad Astra, with further providers added by firmware update. Backgrounds and logos are customisable, and PoE+ keeps it to one cable.',
     category: 'touchscreens',
     hero: cr('tss-880.png'),
     finishes: [
@@ -1068,9 +1068,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'basalte',
     name: 'Sentido',
     collection: 'Design Switch',
-    tagline: 'The light switch reinvented.',
+    tagline: 'Two buttons, or four, in metal you can specify.',
     description:
-      'Sentido is Basalte’s touch-sensitive design switch to intuitively control lights and music at the slightest touch. Handmade in Belgium in two- or four-button designs, its high-end finishes blend beautifully with any exclusive interior.',
+      'Sentido replaces the light switch with a touch surface: press it for lights or music, press the whole plate to kill every light in the room at once. It is made in Belgium, in a two-button or four-button layout, with a temperature sensor and a multicolour LED built in. Finishes run from brushed aluminium and satin white to bronze, brushed brass, rosé and fer forgé, so it can be specified against the joinery rather than in spite of it. It speaks KNX, Crestron and Lutron.',
     metaDescription:
       'Basalte Sentido touch-sensitive design switch — KNX, Crestron and Lutron compatible, handmade in Belgium. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['Basalte Sentido', 'Sentido design switch', 'Basalte Sentido UAE', 'Basalte Sentido Pakistan', 'luxury light switch'],
@@ -1117,9 +1117,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'basalte',
     name: 'Fibonacci',
     collection: 'Design Switch',
-    tagline: 'The new reference.',
+    tagline: 'The labels light as you walk up to it.',
     description:
-      'Fibonacci is Basalte’s avant-garde touch-sensitive switch, inspired by the golden ratio. As you approach, its backlit laser-engraved labels gently illuminate to welcome you home — customisable icons and text in a range of high-end finishes.',
+      'Fibonacci is a touch switch whose proportions follow the golden ratio, which is why it reads as a piece of the wall rather than a control. Its labels are laser-engraved and backlit, and they illuminate as you approach instead of glowing all night. The icons and text are specified per project, so a switch can say what it actually does. Available in Basalte’s high-end finish range, and compatible with KNX, Crestron and Lutron HomeWorks.',
     metaDescription:
       'Basalte Fibonacci touch-sensitive design switch with backlit laser-engraved labels — KNX, Crestron and Lutron compatible. Supplied in the UAE and Pakistan by Leading IT.',
     keywords: ['Basalte Fibonacci', 'Fibonacci design switch', 'Basalte Fibonacci UAE', 'Basalte Fibonacci Pakistan', 'luxury keypad'],
@@ -1165,9 +1165,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'basalte',
     name: 'Deseo',
     collection: 'Design Thermostat',
-    tagline: 'An intelligent design thermostat.',
+    tagline: 'Climate, lights and music on one plate.',
     description:
-      'Deseo is a design thermostat and room controller to intuitively command your home climate, lighting and even music at the lightest touch. A multicolour OLED display and a variety of high-quality finishes let it blend beautifully into any interior.',
+      'Deseo is a thermostat that also runs the room. Set the temperature, dim the lights, start the music — all from one touch plate, so a bedroom wall needs one device instead of three. A multicolour OLED display shows the setpoint and the actual reading. It comes in the same high-quality finish range as the rest of the Basalte line, and works with KNX and Crestron systems.',
     metaDescription:
       'Basalte Deseo touch-sensitive design thermostat and room controller with multicolour OLED display — KNX and Crestron compatible. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['Basalte Deseo', 'Deseo thermostat', 'Basalte Deseo UAE', 'Basalte Deseo Pakistan', 'design thermostat'],
@@ -1205,9 +1205,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'basalte',
     name: 'Auro',
     collection: 'Motion Sensor',
-    tagline: 'The almost invisible motion sensor.',
+    tagline: 'Fits flush. Doubles as a night light.',
     description:
-      'Auro is a small, fast and almost invisible flush-fitting motion sensor that automatically switches on lights in hallways, dressings and restrooms. Integrated LEDs let it double as a night light, and a wide variety of finishes lets it disappear into any interior.',
+      'Auro switches the lights on when someone walks into a hallway, a dressing room or a cloakroom, and off again when they leave. It fits flush to the ceiling or wall, and integrated LEDs let it work as a low-level night light on its own. Finishes include white and black plus Basalte’s high-quality metal range, so it can be matched to the switches in the same corridor.',
     metaDescription:
       'Basalte Auro flush-fitting motion sensor with integrated night light — Crestron, Lutron HomeWorks and KNX compatible. Supplied in the UAE and Pakistan by Leading IT.',
     keywords: ['Basalte Auro', 'Auro motion sensor', 'Basalte Auro UAE', 'Basalte Auro Pakistan', 'design motion sensor'],
@@ -1245,9 +1245,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'basalte',
     name: 'Eve',
     collection: 'iPad Mount',
-    tagline: 'The elegant iPad mount.',
+    tagline: 'An iPad that stays on the wall and stays charged.',
     description:
-      'Eve is an elegant iPad mount for the intelligent home, precision-machined from solid aluminium. It keeps the iPad securely mounted yet permanently charged — always there to control lighting, music and more in luxury homes, hotels and offices.',
+      'Eve fixes an iPad to the wall as a permanent touch panel and keeps it charged while it is there — no dock to lift it out of, no flat battery at 8pm. It is precision-machined from solid aluminium and finished to the same standard as Basalte’s switches. Specified for houses, hotel suites and offices where a wall-mounted tablet has to look deliberate.',
     metaDescription:
       'Basalte Eve elegant iPad wall mount, precision-machined from solid aluminium with permanent charging. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['Basalte Eve', 'Eve iPad mount', 'Basalte Eve UAE', 'Basalte Eve Pakistan', 'luxury iPad wall mount'],
@@ -1285,9 +1285,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'basalte',
     name: 'Miro',
     collection: 'Design Remote',
-    tagline: 'The only remote you’ll ever need.',
+    tagline: 'A handheld that runs the room, not just the TV.',
     description:
-      'Miro is Basalte’s design remote — turn on the TV, fill the room with music or dim the lights from the palm of your hand. An interactive 2" super-black touch display, buttons and joystick balance in a slim aluminium body, connected over Basalte Beam.',
+      'Miro puts the room in one hand: switch on the television, start the music, take the lights down. A 2-inch super-black touch display sits above physical buttons and a joystick, in an aluminium body slim enough to leave on the arm of a chair. It reaches the system over Basalte Beam, a low-power wireless network, so it needs no line of sight.',
     metaDescription:
       'Basalte Miro design remote with 2" touch display and aluminium body, connected via Basalte Beam wireless. Supplied in the UAE and Pakistan by Leading IT.',
     keywords: ['Basalte Miro', 'Miro remote', 'Basalte Miro UAE', 'Basalte Miro Pakistan', 'design remote control'],
@@ -1325,9 +1325,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'basalte',
     name: 'Aalto',
     collection: 'Speaker Collection',
-    tagline: 'Powerful design speakers.',
+    tagline: 'Build the system from one family.',
     description:
-      'Aalto is an elegant collection of powerful speakers for high-end interiors — in-wall, on-wall and freestanding models, soundbars and stands, crowned by the Aalto F5 flagship. Crafted in Belgium in exclusive finishes and fabrics, with integrated Bluetooth.',
+      'Aalto is a speaker family you specify as a set rather than a single model: in-wall, on-wall and freestanding cabinets, soundbars, and stands for placing a speaker on a cabinet or on the floor. Aalto F5 is the largest of them. They are built in Belgium and dressed in Basalte’s own finishes and fabrics, which is the point — they are meant to be seen. Bluetooth is built in, with direct access for guests as well as the owner.',
     metaDescription:
       'Basalte Aalto design speaker collection — in-wall, on-wall and freestanding, crafted in Belgium with integrated Bluetooth. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['Basalte Aalto', 'Aalto speakers', 'Basalte Aalto UAE', 'Basalte Aalto Pakistan', 'design speakers'],
@@ -1366,9 +1366,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'basalte',
     name: 'Plano',
     collection: 'In-wall Speakers',
-    tagline: 'In-wall design speakers.',
+    tagline: 'Two sizes: one for surrounds, one for the front stage.',
     description:
-      'Plano is a unique collection of high-performance, passive in-wall speakers. The compact Plano R3 serves smaller rooms and surround duty while the reference Plano R5 anchors the front stage — AMT ribbon tweeters, aluminium mid-woofers and kevlar bass woofers throughout.',
+      'Plano is a passive in-wall speaker range, so the amplification stays in the rack and the wall holds only the driver assembly. Plano R3 is the compact one, for smaller rooms or surround positions; Plano R5 is the larger reference cabinet, intended for front left and right or a centre channel. Both use an AMT ribbon tweeter for wide dispersion and directivity, aluminium mid-woofers with an aluminium phase plug, and Kevlar bass woofers.',
     metaDescription:
       'Basalte Plano high-performance passive in-wall speakers with AMT ribbon tweeter and kevlar woofers. Supplied in the UAE and Pakistan by Leading IT.',
     keywords: ['Basalte Plano', 'Plano in-wall speakers', 'Basalte Plano UAE', 'Basalte Plano Pakistan', 'in-wall design speakers'],
@@ -1538,9 +1538,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'blustream',
     name: 'Precision 48',
     collection: '48Gbps 8K Active HDMI Cable',
-    tagline: 'Guaranteed 48Gbps, however long the run.',
+    tagline: '48Gbps at 10, 15 or 30 metres.',
     description:
-      'Precision 48 is Blustream’s 48Gbps active optical HDMI cable, engineered for guaranteed Ultra High Speed performance over long runs. Integrated circuits measure, analyse and adjust the video signal to sustain the full 48Gbps bandwidth — carrying 8K/60 and 4K/120 HDMI 2.1 with full HDR, eARC and CEC through a slim, EMI/RFI-resistant active-optic-copper build.',
+      'Long HDMI runs are where 8K falls over. Precision 48 is an active optic copper cable with integrated circuits in the connector that keep the signal inside spec at 10 m, 15 m and 30 m — HDMI 2.1 at 8K/60 and 4K/120, with 10-, 12- and 16-bit colour and eARC. The construction resists EMI and RFI, which matters in a riser shared with mains and lighting circuits. It is certified Ultra High Speed by HDMI Licensing rather than only rated by the manufacturer.',
     metaDescription:
       'Blustream Precision 48 — 48Gbps 8K active optical HDMI 2.1 cable with eARC, HDR and integrated signal conditioning. Supplied in the UAE and Pakistan by Leading IT.',
     keywords: ['Blustream Precision 48', '48Gbps HDMI cable', '8K AOC HDMI cable', 'Blustream Precision 48 UAE', 'Blustream Precision 48 Pakistan'],
