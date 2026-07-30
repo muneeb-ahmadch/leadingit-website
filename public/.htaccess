@@ -85,8 +85,10 @@ ErrorDocument 404 /404.html
 
 <IfModule mod_rewrite.c>
   # Flag hashed Vite build output (/assets/*) for the immutable long-cache rule below.
-  # Only /assets/* is content-hashed; unhashed static files (e.g. product/brand imagery,
-  # pending the Phase 3 pipeline) must NOT get an immutable 1-year TTL.
+  # Only /assets/* is content-hashed; unhashed static files must NOT get an immutable
+  # 1-year TTL. That includes the committed product/brand derivatives under /products/
+  # and /brands/, which scripts/build-images.mjs emits at stable paths — a stale hero
+  # would be cached for a year with no way to bust it.
   RewriteRule ^assets/ - [E=ASSET_CACHE:1]
 </IfModule>
 
@@ -113,17 +115,18 @@ ErrorDocument 404 /404.html
   # must never be forced to HTTPS-only.
   Header always set Strict-Transport-Security "max-age=86400" env=HTTPS
   Header always set X-Frame-Options "SAMEORIGIN"
-  # ── TEMPORARY — REMOVE IN PHASE 3 ──────────────────────────────────────────────────
-  # img-src includes https://images.unsplash.com because ~24 hero/section images still
-  # hotlink Unsplash pending the Phase 3 local image pipeline (CLAUDE.md asset rules /
-  # ORCHESTRATOR-BRIEF.md §5). Delete that origin from img-src the moment nothing under
-  # src/ references images.unsplash.com any more.
+  # The remote stock-photo img-src exemption was removed on 2026-07-30, when the Phase 3
+  # image pipeline (scripts/build-images.mjs) landed and the last of the 26 hotlinks went.
+  # Nothing under src/ references a remote image host any more and every image is served
+  # from this origin, so img-src is now 'self' plus data:. Do not re-add a remote image
+  # origin: an image we cannot serve ourselves is one we have no licence trail for
+  # (CLAUDE.md asset rules / ORCHESTRATOR-BRIEF.md §5).
   # script-src/style-src include 'unsafe-inline': vite-react-ssg injects small inline
   # <script> hydration-data tags and Tailwind/framer-motion emit inline styles — both are
   # build output, not user input, but this is a known CSP weakening. A stricter nonce- or
   # hash-based policy needs a build-time change (out of scope here; app code) — flagged for
   # frontend-engineer / Phase 2.
-  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://images.unsplash.com; font-src 'self'; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'"
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'"
   # ─────────────────────────────────────────────────────────────────────────────────
   Header unset X-Powered-By
 </IfModule>

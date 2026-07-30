@@ -7,7 +7,7 @@ export type Brand = {
   tagline: string;
   category: BrandCategory;
   story: string;
-  heroImage: string; // unsplash url for prototype
+  heroImage: string; // site-relative path to a committed derivative (scripts/build-images.mjs)
   accent: string; // brand-specific accent for hover micro-color
 };
 
@@ -20,8 +20,7 @@ export const BRANDS: Brand[] = [
     category: 'interfaces',
     story:
       'For four decades Crestron has defined the architecture of integrated control — from the residences of New York to the towers of the Gulf. We deliver Crestron across Pakistan and the UAE with full programming, design and lifecycle support.',
-    heroImage:
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=80',
+    heroImage: '/products/crestron/lifestyle/horizon-keypad-bathroom.jpg',
     accent: '#E03A3E',
   },
   {
@@ -32,8 +31,13 @@ export const BRANDS: Brand[] = [
     category: 'interfaces',
     story:
       'Blustream engineers HDMI distribution and matrix systems with broadcast-grade integrity. The invisible backbone of multi-room cinema and corporate AV.',
-    heroImage:
-      'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=2000&q=80',
+    // No official lifestyle/in-room photography exists for Blustream (infrastructure
+    // hardware — matrices, transmitters, wall plates — that the manufacturer has
+    // never shot in a room; docs/12-PROVENANCE/image-url-map.md Row B2, NO ASSET
+    // EXISTS). Using the brand's own official product render already hosted at
+    // /products/blustream/ rather than leaving this required field empty, which
+    // would break the unrelated BrandsIndex/Home cards this field also feeds.
+    heroImage: '/products/blustream/dante-matrix.png',
     accent: '#1FA3D6',
   },
   {
@@ -44,8 +48,7 @@ export const BRANDS: Brand[] = [
     category: 'interfaces',
     story:
       'Basalte makes the switches, panels and audio speakers that disappear into architecture — and the moments where the building meets the hand. Anodized aluminium, sculpted glass, and an obsession with finish.',
-    heroImage:
-      'https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=2000&q=80',
+    heroImage: '/products/basalte/deseo-hero.jpg',
     accent: '#C9A961',
   },
   {
@@ -147,8 +150,13 @@ export const BRANDS: Brand[] = [
     category: 'cinema',
     story:
       'JVC projectors define the reference for home cinema — D-ILA imaging, native contrast that approaches the absolute, and a color palette engineered for film. The screen at the end of every well-designed cinema room.',
-    heroImage:
-      'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=2000&q=80',
+    // The only official asset (a UK press banner) is unsuitable: burned-in
+    // marketing copy, burned-in logo badges, a composited (non-physical) scene,
+    // and 1115px width (docs/12-PROVENANCE/image-url-map.md Row B4, UNSUITABLE).
+    // Using the brand's own official product render already hosted at
+    // /products/jvc/ rather than leaving this required field empty, which would
+    // break the unrelated BrandsIndex/Home cards this field also feeds.
+    heroImage: '/products/jvc/dla-nz900.png',
     accent: '#B11F23',
   },
 ];

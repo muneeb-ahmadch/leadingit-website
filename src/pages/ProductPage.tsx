@@ -50,6 +50,12 @@ export function ProductPage() {
   if (!product || !brand) return <Navigate to={href('/brands')} replace />;
 
   const activeFinish = product.finishes.find((f) => f.id === finishId) ?? product.finishes[0];
+  // Some products have no "in use" imagery — e.g. JVC and the Crestron equipment-
+  // rack placeholder have no official install photography at all
+  // (docs/12-PROVENANCE/image-url-map.md). Both the section and its sticky-nav
+  // link are dropped rather than rendering an empty gallery frame or a dead anchor.
+  const hasInUse = product.inUse.length > 0;
+  const sections = hasInUse ? SECTIONS : SECTIONS.filter((s) => s.id !== 'in-use');
 
   const meta = productMeta(product, brand);
   const crumbs = productCrumbs(brand.name, brand.slug, product.name, product.slug);
@@ -146,7 +152,7 @@ export function ProductPage() {
       {/* sticky section nav */}
       <nav className="sticky top-16 z-30 bg-ink-950/85 backdrop-blur-md border-y border-white/5">
         <div className="container-luxe flex gap-8 overflow-x-auto py-4">
-          {SECTIONS.map((s) => (
+          {sections.map((s) => (
             <a
               key={s.id}
               href={`#${s.id}`}
@@ -243,30 +249,32 @@ export function ProductPage() {
       </section>
 
       {/* in use */}
-      <section id="in-use" className="container-luxe pb-32">
-        <Reveal>
-          <Eyebrow>{t('product.navInUse')}</Eyebrow>
-          <h2 className="mt-4 font-serif text-hero">{t('product.inUseTitle')}</h2>
-        </Reveal>
-        <div className="mt-12 grid md:grid-cols-3 gap-6">
-          {product.inUse.map((src, i) => {
-            const isRender = /\/products\/.*\.(png|webp)$/i.test(src);
-            return (
-              <Reveal key={src} delay={i * 0.08}>
-                <div className="relative aspect-[4/5] bg-ink-900 overflow-hidden">
-                  {isRender && <div className="absolute inset-0 bg-warm-radial opacity-70" />}
-                  <img
-                    src={src}
-                    alt=""
-                    className={`relative h-full w-full ${isRender ? 'object-contain p-8' : 'object-cover'}`}
-                    loading="lazy"
-                  />
-                </div>
-              </Reveal>
-            );
-          })}
-        </div>
-      </section>
+      {hasInUse && (
+        <section id="in-use" className="container-luxe pb-32">
+          <Reveal>
+            <Eyebrow>{t('product.navInUse')}</Eyebrow>
+            <h2 className="mt-4 font-serif text-hero">{t('product.inUseTitle')}</h2>
+          </Reveal>
+          <div className="mt-12 grid md:grid-cols-3 gap-6">
+            {product.inUse.map((src, i) => {
+              const isRender = /\/products\/.*\.(png|webp)$/i.test(src);
+              return (
+                <Reveal key={src} delay={i * 0.08}>
+                  <div className="relative aspect-[4/5] bg-ink-900 overflow-hidden">
+                    {isRender && <div className="absolute inset-0 bg-warm-radial opacity-70" />}
+                    <img
+                      src={src}
+                      alt=""
+                      className={`relative h-full w-full ${isRender ? 'object-contain p-8' : 'object-cover'}`}
+                      loading="lazy"
+                    />
+                  </div>
+                </Reveal>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* design your keypad (Black Nova) */}
       {brand.slug === 'black-nova' && (

@@ -5,9 +5,11 @@ import { brandId, pageUrl } from './ids';
 /**
  * `Brand` node for a brand hub (`/brands/<slug>/`).
  *
- * Deliberately omitted: `logo`, and `image` too. `Brand.heroImage` in
- * `src/data/brands.ts` is lifestyle/stock photography (several are still
- * Unsplash hotlinks — see docs/OPEN-QUESTIONS.md #4), not an official brand
+ * Deliberately omitted: `logo`, and `image` too. As of Phase 3 every
+ * `Brand.heroImage` in `src/data/brands.ts` is a committed local derivative with
+ * recorded provenance (`docs/12-PROVENANCE/image-url-map.md`) — the Unsplash
+ * hotlinks are gone — but that changes nothing here, because the objection was
+ * never "it is not ours". It is lifestyle photography, not an official brand
  * mark or a verified photograph of the brand itself; asserting it as `logo`
  * or `image` would fabricate a claim that this photo depicts the
  * Crestron/Blustream/Basalte/etc. entity — exactly the failure a live audit

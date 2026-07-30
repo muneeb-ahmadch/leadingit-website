@@ -18,12 +18,23 @@ export type ItemListEntry = {
  * `src/seo/meta.ts`'s `ownImage()` applies to `og:image` (a site-relative path
  * is genuinely ours; anything else is not) mirrored here rather than
  * reinvented. Unlike `ownImage()`, there is no "fall back to a default": a
- * `ListItem` with no `image` is a valid, safe entry; a stock photo (several
- * `Brand.heroImage` values in `src/data/brands.ts` are still Unsplash
- * hotlinks — docs/OPEN-QUESTIONS.md #4) asserted, machine-readably, as a
- * photograph of the Crestron/Blustream/Basalte/JVC entity is not — that is
- * fabricating a value to fill a schema property, which CLAUDE.md forbids
- * outright. An absent `image` is safe; a borrowed one is a liability.
+ * `ListItem` with no `image` is a valid, safe entry, and a borrowed one is a
+ * liability.
+ *
+ * Phase 3 changed what this guard lets through, so read this before touching it.
+ * Every `Brand.heroImage` is now a committed local derivative with recorded
+ * provenance (`docs/12-PROVENANCE/image-url-map.md`), so all nine pass and brand
+ * `ListItem` entries now carry an `image` where some were previously suppressed.
+ * That is intended: each one is official manufacturer photography, downloaded
+ * rather than hotlinked, with a source URL on file.
+ *
+ * The guard is still only a proxy, though — it tests "is this ours to serve", not
+ * "does this depict what we are attaching it to". That distinction is why
+ * `brand.ts` still refuses to emit `Brand.image`/`logo`: a lifestyle interior is
+ * a fair illustration of a *list entry for a brand hub page*, but asserting it as
+ * a photograph of the Crestron/Basalte corporate entity would fabricate a claim.
+ * If this guard is ever strengthened, strengthen it toward provenance, not away
+ * from site-relative.
  */
 function firstPartyImage(src: string | undefined): string | undefined {
   return src && src.startsWith('/') ? src : undefined;

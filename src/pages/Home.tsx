@@ -1,10 +1,11 @@
 import { useTranslation } from 'react-i18next';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { useRef } from 'react';
 import { ButtonLink } from '@/components/primitives/Button';
 import { Reveal } from '@/components/primitives/Reveal';
 import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { Parallax } from '@/components/primitives/Parallax';
+import { ResponsiveImage } from '@/components/media/ResponsiveImage';
 import { BRANDS } from '@/data/brands';
 import { DeviceFrame } from '@/features/litHome/DeviceFrame';
 import { LitHomeDemo } from '@/features/litHome/LitHomeDemo';
@@ -14,11 +15,19 @@ import { href } from '@/seo/paths';
 import { homeMeta } from '@/seo/meta';
 import { buildWebPage } from '@/seo/jsonld/webpage';
 
-const HERO_IMAGE =
-  'https://images.unsplash.com/photo-1758915753332-cab59126742c?auto=format&fit=crop&w=2400&q=85';
+// Real private-cinema and Basalte lifestyle photography (raw/products/**,
+// manufacturer/dealer-sourced — see docs/12-PROVENANCE/image-url-map.md),
+// reused here as decorative full-bleed backgrounds (`alt=""`, no product is
+// named or claimed in these two sections). Optimised derivatives are emitted
+// by `scripts/build-images.mjs`; widths below are exactly what it produced
+// for these two assets — see the doc comment on `ResponsiveImage`.
+const HERO_IMAGE = '/products/uandksound/cinema-theatre.jpg';
+const HERO_IMAGE_WIDTHS = [480, 960, 1600];
+const HERO_IMAGE_HEIGHT = 1069;
 
-const LIFESTYLE_IMAGE =
-  'https://images.unsplash.com/photo-1724582586529-62622e50c0b3?auto=format&fit=crop&w=2400&q=85';
+const LIFESTYLE_IMAGE = '/products/basalte/fibonacci-scene.jpg';
+const LIFESTYLE_IMAGE_WIDTHS = [480, 960, 1600];
+const LIFESTYLE_IMAGE_HEIGHT = 800;
 
 export function Home() {
   const { t } = useTranslation();
@@ -27,10 +36,11 @@ export function Home() {
   const meta = homeMeta();
   const heroRef = useRef<HTMLDivElement>(null);
   const hydrated = useHydrated();
+  const reduced = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
-  const heroY = useTransform(scrollYProgress, [0, 1], [0, 120]);
-  const heroScale = useTransform(scrollYProgress, [0, 1], [1.05, 1.15]);
-  const heroFade = useTransform(scrollYProgress, [0, 1], [1, 0.4]);
+  const heroY = useTransform(scrollYProgress, [0, 1], reduced ? [0, 0] : [0, 120]);
+  const heroScale = useTransform(scrollYProgress, [0, 1], reduced ? [1, 1] : [1.05, 1.15]);
+  const heroFade = useTransform(scrollYProgress, [0, 1], reduced ? [1, 1] : [1, 0.4]);
 
   return (
     <>
@@ -52,11 +62,14 @@ export function Home() {
           style={hydrated ? { y: heroY, scale: heroScale, opacity: heroFade } : undefined}
           className="absolute inset-0 scale-105"
         >
-          <img
+          <ResponsiveImage
             src={HERO_IMAGE}
+            widths={HERO_IMAGE_WIDTHS}
+            height={HERO_IMAGE_HEIGHT}
             alt=""
+            sizes="100vw"
             className="h-full w-full object-cover"
-            loading="eager"
+            priority
           />
           <div className="absolute inset-0 bg-gradient-to-b from-ink-950/40 via-ink-950/30 to-ink-950" />
           <div className="absolute inset-0 bg-warm-radial" />
@@ -158,11 +171,13 @@ export function Home() {
       {/* LIFESTYLE MOMENT */}
       <section className="relative h-[80svh] min-h-[520px] overflow-hidden grain">
         <Parallax distance={60} className="absolute inset-0">
-          <img
+          <ResponsiveImage
             src={LIFESTYLE_IMAGE}
+            widths={LIFESTYLE_IMAGE_WIDTHS}
+            height={LIFESTYLE_IMAGE_HEIGHT}
             alt=""
+            sizes="100vw"
             className="h-full w-full object-cover"
-            loading="lazy"
           />
         </Parallax>
         <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/30 to-transparent" />
@@ -191,6 +206,12 @@ export function Home() {
                   <img
                     src={b.heroImage}
                     alt={b.name}
+                    // Intrinsic size varies per brand asset; width/height here
+                    // encode the enclosing `aspect-[4/5]` box so the attribute
+                    // pair is never absent (CLS), while the box itself (not
+                    // these numbers) is what actually reserves the layout.
+                    width={480}
+                    height={600}
                     className="h-full w-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000 ease-out-luxe"
                     loading="lazy"
                   />

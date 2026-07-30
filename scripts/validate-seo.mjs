@@ -516,10 +516,12 @@ function checkNoPricing() {
  * photograph) — but that was a per-builder fix. `src/seo/jsonld/product.ts`,
  * for one, builds `Product.image` straight through `absoluteUrl()` with no
  * such guard at all; it is first-party today only because every current
- * catalog record happens to use a first-party `hero`/`finishes[].productImage`
- * (docs/OPEN-QUESTIONS.md #4 tracks the ones that are still Unsplash — those
- * are used for `inUse` galleries only, never `hero`/`finishes`, today). That
- * is a fact about the current data, not a guarantee the code enforces. This
+ * catalog record happens to use a first-party `hero`/`finishes[].productImage`.
+ * As of Phase 3 that is true of every image reference in the data files —
+ * the 26 remote hotlinks are gone, `raw/` originals are converted to committed
+ * derivatives by `scripts/build-images.mjs`, and provenance is recorded in
+ * `docs/12-PROVENANCE/image-url-map.md`. That is still a fact about the current
+ * data, not a guarantee the code enforces. This
  * check is the sitewide regression gate that guarantee is missing: it inspects
  * every typed JSON-LD node this site emits, not just the ones a specific
  * builder happens to gate.

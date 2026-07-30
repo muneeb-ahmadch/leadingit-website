@@ -30,9 +30,11 @@ export const NOW_PLAYING = {
   album: 'Dystopia',
   artist: 'Artist Name',
   song: 'Song Name',
-  // local placeholder used in Audio detail — abstract cover art
-  artUrl:
-    'https://images.unsplash.com/photo-1518972559570-1cfdb89cd0b6?auto=format&fit=crop&w=900&q=80',
+  // Procedurally generated placeholder (scripts/build-images.mjs
+  // buildSyntheticAssets) — a soft gold radial gradient tile in the site's own
+  // palette, not sourced photography, since this is display-only UI chrome for
+  // the demo, not real album art.
+  artUrl: '/lithome/now-playing-art.jpg',
 };
 
 export const formatTime = (s: number): string => {

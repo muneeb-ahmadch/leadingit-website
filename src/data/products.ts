@@ -2,7 +2,7 @@ export type Finish = {
   id: string;
   name: string;
   swatch: string; // css color or gradient
-  productImage: string; // unsplash url for prototype
+  productImage: string; // site-relative path to a committed derivative (scripts/build-images.mjs)
 };
 
 export type SpecGroup = {
@@ -52,10 +52,11 @@ export const CATEGORIES_BY_BRAND: Record<string, ProductCategory[]> = {
 
 // Shared lifestyle galleries + finish helpers reused across the electronics
 // brands (prototype placeholders — swap for real lifestyle assets in build phase).
+// Marantz's own PDP_Rich-Content library, Cinema 50 product page (docs/12-PROVENANCE/image-url-map.md Rows P1-P3).
 const mzInUse = [
-  'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2000&q=80',
-  'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=2000&q=80',
-  'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=2000&q=80',
+  '/products/marantz/lifestyle/cinema-50-credenza.jpg',
+  '/products/marantz/lifestyle/cinema-50-black-credenza.jpg',
+  '/products/marantz/lifestyle/cinema-50-oak-sideboard.jpg',
 ];
 const mzBlack = (img: string): Finish => ({
   id: 'black',
@@ -83,20 +84,26 @@ const pkBrown = (img: string): Finish => ({
   productImage: img,
 });
 
+// Denon's own AVR-X3800H product page (docs/12-PROVENANCE/image-url-map.md Rows P4-P6).
 const dnInUse = [
-  'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2000&q=80',
-  'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=2000&q=80',
-  'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=2000&q=80',
+  '/products/denon/lifestyle/avr-x3800h-scene.jpg',
+  '/products/denon/lifestyle/avr-x3800h-scene-angle.jpg',
+  '/products/denon/lifestyle/avr-x3800h-console-detail.jpg',
 ];
-const jvInUse = [
-  'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=2000&q=80',
-  'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=2000&q=80',
-  'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2000&q=80',
-];
+// No official in-room JVC photography exists on any JVC channel searched — every
+// published asset is a device render, an OSD screenshot, a technical diagram, or
+// (the one room-context image) a composited press banner with burned-in
+// marketing copy and logo badges. Gallery intentionally empty rather than
+// hotlinked or filled with an unrelated image (docs/12-PROVENANCE/image-url-map.md
+// Rows P7-P9, NO ASSET EXISTS). ProductPage.tsx hides the "In use" section when
+// a product's inUse array is empty.
+const jvInUse: string[] = [];
+// Polk's own Reserve-R700 lifestyle library, the only brand of the nine with an
+// explicitly named lifestyle set (docs/12-PROVENANCE/image-url-map.md Rows P10-P12).
 const pkInUse = [
-  'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=2000&q=80',
-  'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=2000&q=80',
-  'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=2000&q=80',
+  '/products/polk-audio/lifestyle/reserve-home-theatre-insitu.jpg',
+  '/products/polk-audio/lifestyle/reserve-r700-black-interior.jpg',
+  '/products/polk-audio/lifestyle/reserve-r700-walnut-interior.jpg',
 ];
 
 // ─── UandKSound helpers ──────────────────────────────────────────────────────
@@ -138,15 +145,19 @@ const bn = (name: string) => `/products/black-nova/${name}`;
 // luxury-interior / equipment-room placeholders (prototype only) — swap for real
 // Crestron install photography in the build phase.
 const cr = (name: string) => `/products/crestron/${name}`;
-const crRack = [
-  'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=2000&q=80',
-  'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2000&q=80',
-  'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=2000&q=80',
-];
+// No official Crestron equipment-rack photography exists on any Crestron channel
+// searched (the only plausible source, Crestron's Residential Co-Marketing Portal,
+// is a login-gated Widen DAM — an access question, not a licensing one). Gallery
+// intentionally empty rather than hotlinked or filled with an unrelated
+// rack-shaped stock photo (docs/12-PROVENANCE/image-url-map.md Rows P13-P15, NO
+// ASSET EXISTS). ProductPage.tsx hides the "In use" section when a product's
+// inUse array is empty.
+const crRack: string[] = [];
+// Crestron's own Horizon Keypads featured-solution page (docs/12-PROVENANCE/image-url-map.md Rows P16-P18).
 const crInterior = [
-  'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=80',
-  'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=2000&q=80',
-  'https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=2000&q=80',
+  '/products/crestron/lifestyle/horizon-keypad-bedroom-brass.jpg',
+  '/products/crestron/lifestyle/horizon-keypad-kitchen-glass-black.jpg',
+  '/products/crestron/lifestyle/horizon-keypad-white-backlit.jpg',
 ];
 // Housing swatches shared across the Crestron catalog.
 const crBlack = 'linear-gradient(135deg,#2a2a2a,#0a0a0a)';
@@ -1274,9 +1285,12 @@ export const PRODUCTS: Product[] = [
         { name: 'Eve Curve', value: 'Freestanding, with rotation system' },
       ] },
     ],
+    // eve-interior.jpg and eve-details.jpg dropped: both are Basalte's
+    // deliberately defocused backdrop plates for their product-cutout composite
+    // (1600x1800 in 48KB / 1600x1700 in 56KB, an order of magnitude below every
+    // other Basalte asset) and show no product in frame
+    // (docs/12-PROVENANCE/image-url-map.md Part 4).
     inUse: [
-      '/products/basalte/eve-interior.jpg',
-      '/products/basalte/eve-details.jpg',
       '/products/basalte/eve-moves.jpg',
     ],
   },
@@ -1314,9 +1328,10 @@ export const PRODUCTS: Product[] = [
         { name: 'Charging', value: 'Wireless base, 6 premium finishes' },
       ] },
     ],
+    // eve-interior.jpg dropped: a deliberately defocused backdrop plate with no
+    // product in frame (docs/12-PROVENANCE/image-url-map.md Part 4).
     inUse: [
       '/products/basalte/miro-intro.jpg',
-      '/products/basalte/eve-interior.jpg',
       '/products/basalte/sentido-scene.jpg',
     ],
   },

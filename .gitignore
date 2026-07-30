@@ -38,12 +38,17 @@ secrets/
 # Source-resolution photography and unprocessed assets
 /raw/
 
-# TRANSITIONAL (lift for optimised output when the Phase 3 image pipeline lands):
-# un-optimised originals live in raw/; the copies here are local dev working files.
-# Only build-optimised AVIF/WebP derivatives ever get committed.
-/public/products/
-/public/brands/
+# Phase 3 image pipeline (scripts/build-images.mjs) landed 2026-07-30:
+# /public/products/, /public/brands/ and /public/lithome/ now hold ONLY its
+# committed AVIF/WebP/raster-fallback output, never source-resolution
+# originals (those stay in gitignored /raw/ above) — see
+# docs/13-IMAGE-BUDGET.md. The transitional rule that used to gitignore these
+# two directories is lifted; do not reinstate it.
 
 # Build-generated (emitted by scripts/gen-sitemap.mjs at prebuild)
 /public/sitemap.xml
 /public/robots.txt
+
+# Build-generated (emitted by scripts/build-images.mjs; content-hash cache,
+# not an asset — regenerated locally, never needed by CI or the deployed site)
+/public/.image-pipeline-cache.json
