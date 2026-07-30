@@ -9,6 +9,7 @@
     "sitemap": "node scripts/gen-sitemap.mjs",
     "prebuild": "node scripts/gen-sitemap.mjs",
     "build": "tsc -b && vite-react-ssg build",
+    "postbuild": "node scripts/clean-build-artifacts.mjs",
     "preview": "vite preview",
     "lint": "tsc -b --noEmit && eslint .",
     "validate:seo": "node scripts/validate-seo.mjs",

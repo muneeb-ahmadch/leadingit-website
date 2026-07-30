@@ -63,6 +63,25 @@ ErrorDocument 404 /404.html
   Require all denied
 </FilesMatch>
 
+# FilesMatch above only ever tests the request's BASENAME, so it cannot see a dot that
+# is on a DIRECTORY instead of the final segment: /.vite/ssr-manifest.json has basename
+# "ssr-manifest.json" (no leading dot) even though the directory is dot-prefixed, and
+# sails straight through the rule above. `npm run build`'s postbuild step
+# (scripts/clean-build-artifacts.mjs) already deletes Vite's dist/.vite/ manifests
+# before anything is uploaded, so this should never be reachable in practice — this is
+# the second layer of "belt and braces" in case a future build config or a manual
+# upload reintroduces a dot-prefixed directory (.vite/, .git/, .svn/, etc). Path-level,
+# so it must be checked against the full REQUEST_URI via mod_rewrite, not FilesMatch.
+# /.well-known/ is exempted: cPanel AutoSSL's HTTP domain-control validation writes a
+# token file under /.well-known/pki-validation/ (and ACME clients under
+# /.well-known/acme-challenge/) that must stay publicly fetchable or certificate
+# issuance/renewal breaks.
+<IfModule mod_rewrite.c>
+  RewriteCond %{REQUEST_URI} !^/\.well-known/
+  RewriteCond %{REQUEST_URI} (^|/)\.
+  RewriteRule ^ - [F,L]
+</IfModule>
+
 # ─────────────────────────────────────────────────────────────
 # Compression
 # ─────────────────────────────────────────────────────────────
