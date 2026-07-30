@@ -5,6 +5,7 @@ import { Reveal } from '@/components/primitives/Reveal';
 import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { ArrowRight } from 'lucide-react';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { ResponsiveImage } from '@/components/media/ResponsiveImage';
 import { Seo } from '@/seo/Seo';
 import { href } from '@/seo/paths';
 import { brandsIndexMeta } from '@/seo/meta';
@@ -84,11 +85,11 @@ export function BrandsIndex() {
                     to={href(`/brands/${b.slug}`)}
                     className="group relative block bg-ink-900 aspect-[4/5] overflow-hidden"
                   >
-                    <img
+                    <ResponsiveImage
                       src={b.heroImage}
                       alt={b.name}
+                      sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                       className="absolute inset-0 h-full w-full object-cover opacity-40 group-hover:opacity-60 group-hover:scale-105 transition-all duration-1000 ease-out-luxe"
-                      loading="lazy"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/40 to-transparent" />
                     <div className="relative h-full p-8 flex flex-col justify-end">

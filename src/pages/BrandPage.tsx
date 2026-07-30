@@ -9,6 +9,8 @@ import { ButtonLink } from '@/components/primitives/Button';
 import { ArrowRight } from 'lucide-react';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { InternalLinks, type InternalLink } from '@/components/InternalLinks';
+import { ResponsiveImage } from '@/components/media/ResponsiveImage';
+import { BRAND_HERO_ALT } from '@/components/media/altText';
 import { Seo } from '@/seo/Seo';
 import { KEYPAD_DESIGNER_PATH, href } from '@/seo/paths';
 import { brandMeta } from '@/seo/meta';
@@ -29,13 +31,13 @@ function ProductCard({ brandSlug, product, delay }: { brandSlug: string; product
       >
         <div className="relative aspect-[4/3] overflow-hidden bg-ink-900">
           {isRender && <div className="absolute inset-0 bg-warm-radial opacity-60" />}
-          <img
+          <ResponsiveImage
             src={product.hero}
             alt={product.name}
+            sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
             className={`relative h-full w-full opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000 ease-out-luxe ${
               isRender ? 'object-contain p-8' : 'object-cover'
             }`}
-            loading="lazy"
           />
         </div>
         <div className="p-6">
@@ -111,14 +113,15 @@ export function BrandPage() {
         ]}
       />
 
-      {/* hero */}
+      {/* hero — this brand hub's LCP candidate: exactly one fetchpriority="high" per page. */}
       <section className="relative h-[80svh] min-h-[560px] overflow-hidden grain">
         {heroIsRender && <div className="absolute inset-0 bg-warm-radial opacity-80" />}
-        <img
+        <ResponsiveImage
           src={brand.heroImage}
-          alt=""
+          alt={BRAND_HERO_ALT[brand.heroImage] ?? brand.name}
+          sizes="100vw"
           className={`absolute inset-0 h-full w-full ${heroIsRender ? 'object-contain p-10 md:p-20 lg:pb-40' : 'object-cover'}`}
-          loading="eager"
+          priority
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/60 to-ink-950/30" />
         <div className="relative h-full container-luxe flex flex-col justify-end pb-20">
@@ -226,11 +229,11 @@ export function BrandPage() {
                     </div>
                   </div>
                   <div className="relative aspect-square hidden lg:block">
-                    <img
+                    <ResponsiveImage
                       src="/products/black-nova/alba-design.png"
-                      alt=""
+                      alt="Black Nova Alba keypad, designer preview"
+                      sizes="50vw"
                       className="absolute inset-0 h-full w-full object-contain"
-                      loading="lazy"
                     />
                   </div>
                 </div>

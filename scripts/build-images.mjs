@@ -42,6 +42,15 @@ const TARGETS = [
 ];
 
 const CACHE_PATH = path.join(ROOT, 'public/.image-pipeline-cache.json');
+// Committed dimensions manifest — the single source of truth
+// `src/components/media/ResponsiveImage.tsx` reads at render time (both SSG
+// build and hydration) for intrinsic `width`/`height` and the srcset `widths`
+// ladder, keyed by the exact public path callers already hardcode in
+// `src/data/products.ts` / `src/data/brands.ts` (e.g.
+// `/products/marantz/lifestyle/cinema-50-credenza.jpg`). Unlike the
+// content-hash cache above, this MUST be committed: `raw/` does not exist in
+// a fresh CI checkout, so nothing else could ever regenerate it there.
+const MANIFEST_PATH = path.join(ROOT, 'src/components/media/image-manifest.generated.json');
 // Bump whenever the encode recipe (quality ladders, width cap, budget bytes,
 // PNG/AVIF/WebP options) changes, so the content-hash cache below correctly
 // treats every existing output as stale and re-encodes it — an unchanged raw
@@ -128,6 +137,37 @@ async function saveCache(cache) {
   await fs.writeFile(CACHE_PATH, JSON.stringify(cache, null, 2) + '\n');
 }
 
+async function loadManifest() {
+  try {
+    return JSON.parse(await fs.readFile(MANIFEST_PATH, 'utf8'));
+  } catch {
+    return {};
+  }
+}
+
+async function saveManifest(manifest) {
+  await fs.mkdir(path.dirname(MANIFEST_PATH), { recursive: true });
+  const sorted = Object.fromEntries(Object.keys(manifest).sort().map((k) => [k, manifest[k]]));
+  await fs.writeFile(MANIFEST_PATH, JSON.stringify(sorted, null, 2) + '\n');
+}
+
+/** Public URL path (e.g. `/products/marantz/lifestyle/cinema-50-credenza.jpg`)
+ * for a file written to `destDir/filename`, matching the literal strings
+ * `src/data/products.ts` / `src/data/brands.ts` already hardcode. */
+function toPublicPath(destDir, filename) {
+  const rel = path.relative(path.join(ROOT, 'public'), destDir).split(path.sep).join('/');
+  return `/${rel ? `${rel}/` : ''}${filename}`;
+}
+
+/** Metadata-only (no re-encode) height lookup, used to backfill the manifest
+ * for assets the content-hash cache is skipping this run. */
+async function capHeightFor(srcPath, capWidth) {
+  const meta = await sharp(srcPath).metadata();
+  const srcWidth = meta.width ?? capWidth;
+  const srcHeight = meta.height ?? capWidth;
+  return Math.round((srcHeight * capWidth) / srcWidth);
+}
+
 async function sha1(filePath) {
   const buf = await fs.readFile(filePath);
   return crypto.createHash('sha1').update(buf).digest('hex');
@@ -149,18 +189,30 @@ function widthsBelow(capWidth) {
   return RESPONSIVE_WIDTHS.filter((w) => w < capWidth);
 }
 
-async function processRaster(srcPath, destDir, base, ext, cache, stats) {
+async function processRaster(srcPath, destDir, base, ext, cache, stats, manifest) {
   const relKey = path.relative(ROOT, srcPath);
   const hash = await sha1(srcPath);
   const cacheEntry = cache[relKey];
+  const publicPath = toPublicPath(destDir, `${base}${ext}`);
+
   if (cacheEntry && cacheEntry.hash === hash && cacheEntry.version === PIPELINE_VERSION) {
     stats.skipped++;
+    // Backfill the manifest for assets whose encode is being skipped but that
+    // predate the manifest (or a prior run's cache entry lacks capHeight) —
+    // a cheap metadata-only read, never a re-encode.
+    if (!manifest[publicPath]) {
+      const capHeight = cacheEntry.capHeight ?? (await capHeightFor(srcPath, cacheEntry.capWidth));
+      cacheEntry.capHeight = capHeight;
+      manifest[publicPath] = { widths: cacheEntry.widths, height: capHeight };
+    }
     return;
   }
 
   const meta = await sharp(srcPath).metadata();
   const srcWidth = meta.width ?? MAX_WIDTH;
+  const srcHeight = meta.height ?? MAX_WIDTH;
   const capWidth = Math.min(srcWidth, MAX_WIDTH);
+  const capHeight = Math.round((srcHeight * capWidth) / srcWidth);
   const fallbackFormat = ext === '.png' ? 'png' : 'jpeg';
 
   await fs.mkdir(destDir, { recursive: true });
@@ -185,7 +237,9 @@ async function processRaster(srcPath, destDir, base, ext, cache, stats) {
     if (overBudget) stats.overBudgetCount++;
   }
 
-  cache[relKey] = { hash, version: PIPELINE_VERSION, capWidth, widths: [...widthsBelow(capWidth), capWidth] };
+  const widths = [...widthsBelow(capWidth), capWidth];
+  cache[relKey] = { hash, version: PIPELINE_VERSION, capWidth, capHeight, widths };
+  manifest[publicPath] = { widths, height: capHeight };
   stats.processed++;
   stats.bytesOut += totalBytes;
 }
@@ -211,16 +265,17 @@ async function processSvg(srcPath, destDir, filename, cache, stats) {
 // that file as display-only UI chrome, not real device/album data). Generated
 // procedurally so it needs no sourced photography: a soft warm-gold radial
 // gradient matching the site's dark-luxury palette, 480x480, well under budget.
-async function buildSyntheticAssets(cache, stats) {
+async function buildSyntheticAssets(cache, stats, manifest) {
   const destDir = path.join(ROOT, 'public/lithome');
   const relKey = 'synthetic:now-playing-art';
   const recipeHash = 'gold-radial-v1';
+  const size = 480;
+  manifest[toPublicPath(destDir, 'now-playing-art.jpg')] = { widths: [size], height: size };
   if (cache[relKey]?.hash === recipeHash) {
     stats.skipped++;
     return;
   }
   await fs.mkdir(destDir, { recursive: true });
-  const size = 480;
   const svg = Buffer.from(
     `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
       <defs>
@@ -248,6 +303,7 @@ async function buildSyntheticAssets(cache, stats) {
 
 async function main() {
   const cache = await loadCache();
+  const manifest = await loadManifest();
   const stats = { processed: 0, skipped: 0, bytesOut: 0, overBudget: [], overBudgetCount: 0 };
 
   for (const { src, dest } of TARGETS) {
@@ -265,7 +321,7 @@ async function main() {
       const filename = path.basename(filePath);
 
       if (RASTER_EXT.has(ext)) {
-        await processRaster(filePath, destDir, base, ext, cache, stats);
+        await processRaster(filePath, destDir, base, ext, cache, stats, manifest);
       } else if (PASSTHROUGH_EXT.has(ext)) {
         await processSvg(filePath, destDir, filename, cache, stats);
       } else {
@@ -274,8 +330,9 @@ async function main() {
     }
   }
 
-  await buildSyntheticAssets(cache, stats);
+  await buildSyntheticAssets(cache, stats, manifest);
   await saveCache(cache);
+  await saveManifest(manifest);
 
   console.log(
     `[build-images] processed ${stats.processed}, skipped ${stats.skipped} (unchanged), ` +

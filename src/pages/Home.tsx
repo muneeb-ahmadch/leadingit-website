@@ -18,16 +18,10 @@ import { buildWebPage } from '@/seo/jsonld/webpage';
 // Real private-cinema and Basalte lifestyle photography (raw/products/**,
 // manufacturer/dealer-sourced — see docs/12-PROVENANCE/image-url-map.md),
 // reused here as decorative full-bleed backgrounds (`alt=""`, no product is
-// named or claimed in these two sections). Optimised derivatives are emitted
-// by `scripts/build-images.mjs`; widths below are exactly what it produced
-// for these two assets — see the doc comment on `ResponsiveImage`.
+// named or claimed in these two sections). `ResponsiveImage` reads intrinsic
+// dimensions and the srcset ladder from the committed generated manifest.
 const HERO_IMAGE = '/products/uandksound/cinema-theatre.jpg';
-const HERO_IMAGE_WIDTHS = [480, 960, 1600];
-const HERO_IMAGE_HEIGHT = 1069;
-
 const LIFESTYLE_IMAGE = '/products/basalte/fibonacci-scene.jpg';
-const LIFESTYLE_IMAGE_WIDTHS = [480, 960, 1600];
-const LIFESTYLE_IMAGE_HEIGHT = 800;
 
 export function Home() {
   const { t } = useTranslation();
@@ -64,8 +58,6 @@ export function Home() {
         >
           <ResponsiveImage
             src={HERO_IMAGE}
-            widths={HERO_IMAGE_WIDTHS}
-            height={HERO_IMAGE_HEIGHT}
             alt=""
             sizes="100vw"
             className="h-full w-full object-cover"
@@ -173,8 +165,6 @@ export function Home() {
         <Parallax distance={60} className="absolute inset-0">
           <ResponsiveImage
             src={LIFESTYLE_IMAGE}
-            widths={LIFESTYLE_IMAGE_WIDTHS}
-            height={LIFESTYLE_IMAGE_HEIGHT}
             alt=""
             sizes="100vw"
             className="h-full w-full object-cover"
@@ -203,17 +193,11 @@ export function Home() {
             <Reveal key={b.slug} delay={i * 0.1}>
               <a href={href(`/brands/${b.slug}`)} className="group block">
                 <div className="aspect-[4/5] bg-ink-800 overflow-hidden">
-                  <img
+                  <ResponsiveImage
                     src={b.heroImage}
                     alt={b.name}
-                    // Intrinsic size varies per brand asset; width/height here
-                    // encode the enclosing `aspect-[4/5]` box so the attribute
-                    // pair is never absent (CLS), while the box itself (not
-                    // these numbers) is what actually reserves the layout.
-                    width={480}
-                    height={600}
+                    sizes="(min-width: 768px) 33vw, 100vw"
                     className="h-full w-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000 ease-out-luxe"
-                    loading="lazy"
                   />
                 </div>
                 <div className="mt-5">

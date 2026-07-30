@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Play, Pause, SkipBack, SkipForward, VolumeX, Plus, Minus, Radio } from 'lucide-react';
+import { ResponsiveImage } from '@/components/media/ResponsiveImage';
 import { DetailShell } from './DetailShell';
 import { NOW_PLAYING, formatTime } from '../data';
 import type { LitAction, RoomState } from '../state';
@@ -29,13 +30,10 @@ export function AudioSourceDetail({ room, roomName, dispatch, onClose }: Props) 
         <div className="grid md:grid-cols-2 gap-10 items-center flex-1">
           {/* Album art */}
           <div className="mx-auto w-full max-w-[280px] aspect-square rounded-md overflow-hidden border border-white/[0.06] bg-ink-800/60">
-            <img
-              src={NOW_PLAYING.artUrl}
-              alt={NOW_PLAYING.album}
-              className="w-full h-full object-cover"
-              loading="lazy"
-              draggable={false}
-            />
+            {/* Procedurally generated gradient (scripts/build-images.mjs
+                buildSyntheticAssets), not real album art — decorative demo
+                chrome, so alt="" rather than asserting a fictional album cover. */}
+            <ResponsiveImage src={NOW_PLAYING.artUrl} alt="" className="w-full h-full object-cover" />
           </div>
 
           {/* Track + transport */}

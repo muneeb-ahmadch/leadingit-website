@@ -9,6 +9,8 @@ import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { ButtonLink } from '@/components/primitives/Button';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { InternalLinks, type InternalLink } from '@/components/InternalLinks';
+import { ResponsiveImage } from '@/components/media/ResponsiveImage';
+import { productAlt, inUseAlt } from '@/components/media/altText';
 import { useHydrated } from '@/lib/hydration';
 import { Seo } from '@/seo/Seo';
 import { KEYPAD_DESIGNER_PATH, href } from '@/seo/paths';
@@ -133,16 +135,24 @@ export function ProductPage() {
             <div className="relative aspect-square bg-ink-900 overflow-hidden">
               <div className="absolute inset-0 bg-warm-radial opacity-70" />
               <AnimatePresence mode="wait">
-                <motion.img
+                <motion.div
                   key={activeFinish.id}
-                  src={activeFinish.productImage}
-                  alt={`${product.name} in ${activeFinish.name}`}
                   initial={hydrated ? { opacity: 0, scale: 1.04 } : false}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  className="absolute inset-0 h-full w-full object-contain p-10 md:p-16"
-                />
+                  className="absolute inset-0"
+                >
+                  {/* This is the page's LCP candidate on all 99 product routes:
+                      exactly one fetchpriority="high" image per page. */}
+                  <ResponsiveImage
+                    src={activeFinish.productImage}
+                    alt={productAlt(brand.name, product.name, activeFinish.name)}
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    className="h-full w-full object-contain p-10 md:p-16"
+                    priority
+                  />
+                </motion.div>
               </AnimatePresence>
             </div>
           </Reveal>
@@ -207,16 +217,23 @@ export function ProductPage() {
             <div className="relative aspect-[5/4] bg-ink-950 overflow-hidden">
               <div className="absolute inset-0 bg-warm-radial opacity-70" />
               <AnimatePresence mode="wait">
-                <motion.img
+                <motion.div
                   key={activeFinish.id}
-                  src={activeFinish.productImage}
-                  alt={activeFinish.name}
                   initial={hydrated ? { opacity: 0, scale: 1.04 } : false}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                  className="absolute inset-0 h-full w-full object-contain p-10 md:p-16"
-                />
+                  className="absolute inset-0"
+                >
+                  {/* Below the fold — never priority; the hero above already
+                      claims this page's one fetchpriority="high". */}
+                  <ResponsiveImage
+                    src={activeFinish.productImage}
+                    alt={productAlt(brand.name, product.name, activeFinish.name)}
+                    sizes="(min-width: 768px) 66vw, 100vw"
+                    className="h-full w-full object-contain p-10 md:p-16"
+                  />
+                </motion.div>
               </AnimatePresence>
             </div>
           </div>
@@ -262,11 +279,11 @@ export function ProductPage() {
                 <Reveal key={src} delay={i * 0.08}>
                   <div className="relative aspect-[4/5] bg-ink-900 overflow-hidden">
                     {isRender && <div className="absolute inset-0 bg-warm-radial opacity-70" />}
-                    <img
+                    <ResponsiveImage
                       src={src}
-                      alt=""
+                      alt={inUseAlt(src, brand.name, product.name)}
+                      sizes="(min-width: 768px) 33vw, 100vw"
                       className={`relative h-full w-full ${isRender ? 'object-contain p-8' : 'object-cover'}`}
-                      loading="lazy"
                     />
                   </div>
                 </Reveal>

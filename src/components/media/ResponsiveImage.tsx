@@ -12,22 +12,24 @@
  *   /products/x/y-{w}.avif     -- smaller AVIF variant at width `w`
  *   /products/x/y-{w}.webp     -- smaller WebP variant at width `w`
  *
- * `widths` must be the exact widths the pipeline produced for this asset,
- * ascending, with the last entry equal to the image's real (capped) intrinsic
- * width — that largest entry maps to the unsuffixed `.avif`/`.webp` file, every
- * smaller one maps to the `-{w}` suffixed file. Passing a width the pipeline
- * did not emit will 404 that `<source>` candidate; there is no runtime
- * fallback for a mismatch, by design, so it fails loudly during development.
+ * Intrinsic `width`/`height` and the exact srcset `widths` ladder are never
+ * hand-typed by callers — they are read from `image-manifest.generated.json`,
+ * which `scripts/build-images.mjs` emits and commits alongside the derivatives
+ * themselves (`raw/` does not exist in CI, so this file is the only source of
+ * truth there). An asset missing from the manifest is a build-time throw, not
+ * a silent guess: guessing dimensions is exactly the CLS bug this component
+ * exists to prevent.
  */
+import manifest from './image-manifest.generated.json';
+
+type ManifestEntry = { widths: number[]; height: number };
+const MANIFEST = manifest as Record<string, ManifestEntry>;
+
 type Props = {
   /** Path to the raster fallback, e.g. `/products/uandksound/cinema-theatre.jpg`. */
   src: string;
-  /** Ascending widths this exact asset was generated at (see doc comment above). */
-  widths: number[];
-  /** Real intrinsic height at `widths[widths.length - 1]`, for the CLS box. */
-  height: number;
   alt: string;
-  /** `sizes` attribute — required whenever `widths` has more than one entry. */
+  /** `sizes` attribute — required whenever the asset has more than one emitted width. */
   sizes?: string;
   className?: string;
   /** Marks this as the page's LCP image: fetchpriority=high + eager + sync decode. */
@@ -39,7 +41,18 @@ function withSuffix(src: string, width: number, largest: number, ext: 'avif' | '
   return width === largest ? `${base}.${ext}` : `${base}-${width}.${ext}`;
 }
 
-export function ResponsiveImage({ src, widths, height, alt, sizes, className, priority = false }: Props) {
+export function ResponsiveImage({ src, alt, sizes, className, priority = false }: Props) {
+  const entry = MANIFEST[src];
+  if (!entry) {
+    throw new Error(
+      `ResponsiveImage: "${src}" is not in image-manifest.generated.json — run ` +
+        `"node scripts/build-images.mjs" against raw/ and commit the regenerated manifest.`,
+    );
+  }
+  const { widths, height } = entry;
+  if (widths.length > 1 && !sizes) {
+    throw new Error(`ResponsiveImage: "${src}" has ${widths.length} widths and needs a "sizes" prop.`);
+  }
   const largest = widths[widths.length - 1];
   const avifSrcSet = widths.map((w) => `${withSuffix(src, w, largest, 'avif')} ${w}w`).join(', ');
   const webpSrcSet = widths.map((w) => `${withSuffix(src, w, largest, 'webp')} ${w}w`).join(', ');

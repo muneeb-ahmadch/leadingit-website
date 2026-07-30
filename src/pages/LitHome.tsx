@@ -41,10 +41,7 @@ const FEATURES = [
 // Real Basalte lifestyle photography (raw/products/basalte/deseo-sfeer.jpg,
 // manufacturer/dealer-sourced — docs/12-PROVENANCE/image-url-map.md), reused
 // as a decorative full-bleed band (`alt=""`, no product named/claimed here).
-// Widths match exactly what scripts/build-images.mjs emitted for this asset.
 const LIFESTYLE = '/products/basalte/deseo-sfeer.jpg';
-const LIFESTYLE_WIDTHS = [480, 960, 1600];
-const LIFESTYLE_HEIGHT = 900;
 
 export function LitHomePage() {
   const { t } = useTranslation();
@@ -131,8 +128,6 @@ export function LitHomePage() {
         <Parallax distance={60} className="absolute inset-0">
           <ResponsiveImage
             src={LIFESTYLE}
-            widths={LIFESTYLE_WIDTHS}
-            height={LIFESTYLE_HEIGHT}
             alt=""
             sizes="100vw"
             className="h-full w-full object-cover"
