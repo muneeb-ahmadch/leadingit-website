@@ -126,9 +126,10 @@ const AMT_TWEETER_SPEC: SpecGroup = {
 // Official renders, layout SVGs and material swatches downloaded from
 // Black Nova's official site (never hotlinked) into public/products/black-nova/. Finish and
 // layout names were taken verbatim from each collection page's markup — no
-// invented data. Black Nova is an Italian company based in Milan; its Smart
-// Design keypads are hand-finished (anodisation, galvanic bath plating, hand
-// brushing) with the natural variation of a handcrafted product.
+// invented data. Black Nova is an Italian company based in Milan and its Smart
+// Design collections are made in Italy; the *metal* finishes (anodisation,
+// galvanic bath plating, hand brushing) are artisanal and vary slightly between
+// batches (blacknova.co/about/, blacknova.co/alba/).
 const bn = (name: string) => `/products/black-nova/${name}`;
 
 // ─── Crestron helpers ───────────────────────────────────────────────────────
@@ -177,7 +178,7 @@ export const PRODUCTS: Product[] = [
         { name: 'IR / serial', value: '8 outputs · 3 COM ports' },
       ] },
       { label: 'Network & Power', rows: [
-        { name: 'Ethernet', value: 'Gigabit, IPv4/IPv6, BACnet, SNMP v3' },
+        { name: 'Ethernet', value: 'Gigabit, IPv4/IPv6, SNMP v3, BACnet (licence required)' },
         { name: 'Cresnet®', value: 'Master mode, 1 A @ 24 VDC' },
         { name: 'Mounting', value: '1 RU rack or freestanding' },
       ] },
@@ -227,7 +228,7 @@ export const PRODUCTS: Product[] = [
     collection: '4-Series™ DIN Rail Control System',
     tagline: 'The 4-Series™ engine, sized for the DIN rail.',
     description:
-      'The DIN-AP4 puts a full 4-Series control engine on the DIN rail, so the processor sits in the distribution board next to the breakers instead of in a rack. It anchors an all-DIN automation system alongside Crestron dimming, switching and motor modules. Apple HomeKit, BACnet and XiO Cloud provisioning are supported.',
+      'The DIN-AP4 puts a full 4-Series control engine on the DIN rail, so the processor sits in the distribution board next to the breakers instead of in a rack. It anchors an all-DIN automation system alongside Crestron dimming, switching and motor modules. Apple HomeKit and XiO Cloud provisioning are supported, and BACnet for a building management system with a BACnet and IP license.',
     category: 'control',
     hero: cr('din-ap4.png'),
     finishes: [{ id: 'light-gray', name: 'Light Gray', swatch: crGray, productImage: cr('din-ap4.png') }],
@@ -909,13 +910,13 @@ export const PRODUCTS: Product[] = [
       ] },
       { label: 'Network & Power', rows: [
         { name: 'Ethernet', value: 'Gigabit with PoE+' },
-        { name: 'Wi-Fi', value: '802.11ax (Wi-Fi 6E)' },
+        { name: 'Wi-Fi', value: '802.11ax (Wi-Fi 6), 2.4 / 5 GHz' },
         { name: 'Memory', value: '8 GB RAM · 40 GB storage' },
       ] },
     ],
     inUse: crInterior,
     metaDescription:
-      'Crestron TSW-1080 10.1" wall mount touch screen with PoE+, Wi-Fi 6E and Rava® SIP. Distributed and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron TSW-1080 10.1" wall mount touch screen with PoE+, Wi-Fi 6 (802.11ax) and Rava® SIP. Distributed and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron TSW-1080', '10 inch touch screen', 'Crestron touch panel', 'TSW-1080 UAE', 'TSW-1080 Pakistan'],
   },
   {
@@ -945,13 +946,13 @@ export const PRODUCTS: Product[] = [
       ] },
       { label: 'Network & Power', rows: [
         { name: 'Ethernet', value: 'Gigabit with PoE+' },
-        { name: 'Wi-Fi', value: 'Wi-Fi 6E' },
+        { name: 'Wi-Fi', value: '802.11ax (Wi-Fi 6), 2.4 / 5 GHz' },
         { name: 'Memory', value: '8 GB RAM · 40 GB storage' },
       ] },
     ],
     inUse: crInterior,
     metaDescription:
-      'Crestron TSW-880 8.1" wall mount touch screen with PoE+, Wi-Fi 6E and Rava® SIP. Supplied and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron TSW-880 8.1" wall mount touch screen with PoE+, Wi-Fi 6 (802.11ax) and Rava® SIP. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron TSW-880', '8 inch touch screen', 'Crestron touch panel', 'TSW-880 UAE', 'TSW-880 Pakistan'],
   },
   {
@@ -959,7 +960,7 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'crestron',
     name: 'TSW-770',
     collection: '7" Wall Mount Touch Screen',
-    tagline: 'Stylish, versatile, seven inches wide.',
+    tagline: 'Seven inches, set into the wall rather than onto it.',
     description:
       'Seven inches at 1280 × 800 on a 16:10 active-matrix LCD, which is the size most villa corridors and bedrooms end up wanting. It handles a Crestron HTML5 or Smart Graphics interface, web pages, H.265 and H.264 streams from a door camera, and Rava SIP intercom calls. Wi-Fi or PoE for connectivity. Crestron positions it as the alternative to fixing a consumer tablet to the wall, and the mounting range is the reason: it is designed to be part of the wall, not stuck on it.',
     category: 'touchscreens',
@@ -1053,7 +1054,6 @@ export const PRODUCTS: Product[] = [
       ] },
       { label: 'Network & Power', rows: [
         { name: 'Ethernet', value: 'Gigabit with PoE+' },
-        { name: 'Wi-Fi', value: 'Wi-Fi 6E' },
         { name: 'Security', value: '802.1X, TLS' },
       ] },
     ],
@@ -1497,7 +1497,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Video over IP · AV Distribution',
     tagline: 'AV distribution that scales with the building.',
     description:
-      'Blustream’s Video over IP range distributes and switches AV across standard network infrastructure, scaling from a handful of screens to hundreds. Zero-latency SDVoE transceivers, 1Gb 4K systems with Dante and 100Mbps HD endpoints share a common control architecture for video walls, matrix switching, KVM and digital signage.',
+      'Blustream’s Video over IP range distributes and switches AV across standard network infrastructure, scaling from a handful of screens to hundreds. SDVoE transceivers carry uncompressed 4K at 100 microseconds of latency; 1Gb 4K systems with Dante and 100Mbps HD endpoints share the same control architecture for video walls, matrix switching, KVM and digital signage.',
     metaDescription:
       'Blustream Video over IP range — SDVoE, 1Gb 4K with Dante and HD endpoints for video wall, matrix and KVM. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['Blustream Video over IP', 'Blustream SDVoE', 'Blustream AV over IP UAE', 'Blustream AV over IP Pakistan', 'video wall distribution'],
@@ -1518,7 +1518,7 @@ export const PRODUCTS: Product[] = [
       ] },
       { label: 'Performance', rows: [
         { name: 'Resolution', value: 'Up to 4K 60Hz 4:4:4' },
-        { name: 'Latency', value: 'Zero-latency (SDVoE) to <120ms' },
+        { name: 'Latency', value: '100 µs uncompressed (SDVoE) to <120ms' },
         { name: 'Features', value: 'Video wall, KVM, multiview' },
       ] },
       { label: 'Network & Audio', rows: [
@@ -1583,11 +1583,11 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'black-nova',
     name: 'ALBA',
     collection: 'ALBA Collection · Push-Button Keypads',
-    tagline: 'The epitome of elegance and functionality.',
+    tagline: 'A push-button keypad that answers with a click.',
     description:
-      'ALBA is Black Nova’s push-button keypad in metal and glass — instant tactile feedback beneath engraved icons, an independently dimmable RGB backlight, and a body hand-finished in Milan. From the compact ALBA 2 to the multipurpose ALBA M1 with its temperature interface, one refined object commands the entire room.',
+      'ALBA is Black Nova’s push-button keypad, built from a glass or anodised-aluminium frame with a glass faceplate specified separately. Large buttons answer every press with a subtle confirming click, engraved icons stay legible in the dark, and each backlight takes its own colour and brightness. Layouts run from the two-key ALBA 2 to the ALBA M1, whose monochrome OLED turns the keypad into a temperature control interface.',
     metaDescription:
-      'Black Nova ALBA push-button keypad in metal and glass — ALBA 2, 4, 6, 8 and M1 layouts, eight hand-finished finishes. Distributed in the UAE and Pakistan by Leading IT.',
+      'Black Nova ALBA push-button keypad — ALBA 2, 4, 6, 8 and M1 layouts, six frame colours in glass or metal. Supplied and installed by Leading IT for the UAE and Pakistan.',
     keywords: ['Black Nova ALBA', 'ALBA keypad', 'ALBA 8', 'ALBA M1', 'Black Nova keypad UAE', 'Black Nova Pakistan', 'luxury keypad Dubai'],
     hero: bn('alba-on.png'),
     finishes: [
@@ -1595,33 +1595,32 @@ export const PRODUCTS: Product[] = [
       { id: 'ice-white', name: 'Ice White (Glass)', swatch: 'linear-gradient(135deg,#f2efe9,#cdc8bd)', productImage: bn('alba-mat-iw.png') },
       { id: 'venetian-gold', name: 'Venetian Gold (Glass)', swatch: 'linear-gradient(135deg,#d8c48f,#a98a52)', productImage: bn('alba-mat-vg.png') },
       { id: 'mars-black', name: 'Mars Black (Metal)', swatch: 'linear-gradient(135deg,#3a3a3c,#131313)', productImage: bn('alba-mat-mmb.png') },
-      { id: 'silver', name: 'Silver · York Black (Metal)', swatch: 'linear-gradient(135deg,#d8dade,#9a9ea3)', productImage: bn('alba-mat-mas-yb.png') },
-      { id: 'silver-ice', name: 'Silver · Ice White (Metal)', swatch: 'linear-gradient(135deg,#e2e4e7,#a9adb2)', productImage: bn('alba-mat-mas-iw.png') },
-      { id: 'bronze-gold', name: 'Bronze Gold · Venetian Gold (Metal)', swatch: 'linear-gradient(135deg,#c9a15f,#7d5b32)', productImage: bn('alba-mat-mbg-vg.png') },
-      { id: 'bronze-york', name: 'Bronze Gold · York Black (Metal)', swatch: 'linear-gradient(135deg,#b98f52,#5f4526)', productImage: bn('alba-mat-mbg-yb.png') },
+      { id: 'silver', name: 'Aluminium Silver (Metal) · York Black faceplate', swatch: 'linear-gradient(135deg,#d8dade,#9a9ea3)', productImage: bn('alba-mat-mas-yb.png') },
+      { id: 'silver-ice', name: 'Aluminium Silver (Metal) · Ice White faceplate', swatch: 'linear-gradient(135deg,#e2e4e7,#a9adb2)', productImage: bn('alba-mat-mas-iw.png') },
+      { id: 'bronze-gold', name: 'Bronze Gold (Metal) · Venetian Gold faceplate', swatch: 'linear-gradient(135deg,#c9a15f,#7d5b32)', productImage: bn('alba-mat-mbg-vg.png') },
+      { id: 'bronze-york', name: 'Bronze Gold (Metal) · York Black faceplate', swatch: 'linear-gradient(135deg,#b98f52,#5f4526)', productImage: bn('alba-mat-mbg-yb.png') },
     ],
     specs: [
       { label: 'Layouts', rows: [
         { name: 'ALBA 2', value: 'Max 4 addressable push buttons' },
         { name: 'ALBA 4', value: 'Max 12 addressable push buttons' },
-        { name: 'ALBA 6', value: 'Max 12 addressable push buttons' },
         { name: 'ALBA 8', value: 'Max 12 addressable push buttons' },
-        { name: 'ALBA M1', value: 'Multipurpose · temperature interface' },
+        { name: 'ALBA M1', value: 'Multipurpose · temperature control interface · max 6 addressable push buttons · monochrome OLED' },
       ] },
       { label: 'Materials & Craft', rows: [
-        { name: 'Construction', value: 'Metal & glass' },
-        { name: 'Glass finishes', value: 'York Black, Ice White, Venetian Gold' },
-        { name: 'Metal finishes', value: 'Mars Black, Silver, Bronze Gold' },
+        { name: 'Construction', value: 'Glass or anodised aluminium frame, anti-fingerprint surface finishing' },
+        { name: 'Frame colours', value: 'York Black, Ice White, Venetian Gold (glass); Mars Black, Aluminium Silver, Bronze Gold (metal)' },
+        { name: 'Faceplate colours', value: 'York Black, Ice White, Venetian Gold (glass)' },
         { name: 'Finishing', value: 'Anodisation, galvanic bath plating, hand brushing' },
         { name: 'Origin', value: 'Made in Italy' },
       ] },
       { label: 'Interaction', rows: [
         { name: 'Buttons', value: 'Push-button, instant tactile feedback' },
         { name: 'Icons', value: 'Engraved icons and text' },
-        { name: 'Backlight', value: 'Independently dimmable RGB, auto-dim' },
+        { name: 'Backlight', value: 'Individually programmable colour and brightness per backlight' },
       ] },
       { label: 'Integration', rows: [
-        { name: 'Systems', value: 'Crestron, KNX, Control4, Savant, Lutron HomeWorks QS' },
+        { name: 'Protocols', value: 'KNX, BN RS-485 or Cresnet' },
         { name: 'Socket frames', value: 'Legrand Arteor & Mosaic compatible' },
         { name: 'Modules', value: '1, 2 and 3-module frame versions' },
       ] },
@@ -1633,9 +1632,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'black-nova',
     name: 'ARIA',
     collection: 'ARIA Collection · Glass Touch Keypads',
-    tagline: 'A tribute to minimalist aesthetics.',
+    tagline: 'Glass, reduced to a single smooth surface.',
     description:
-      'ARIA is a glass touch keypad reduced to pure geometry — straight lines, pure shapes and a completely smooth surface. Fast-response touch points sit beneath engraved icons and text, lit by a customisable LED backlight that dims automatically when the room is at rest.',
+      'ARIA reduces the keypad to a single sheet of glass. Touch points respond immediately under engraved icons and text, each backlight takes its own colour and intensity, and the whole panel dims itself once the room settles. The ARIA 12 adds a slider function; the ARIA M1 carries a monochrome OLED for temperature control.',
     metaDescription:
       'Black Nova ARIA glass touch keypad — ARIA M1, ARIA 12 and ARIA Slider layouts with engraved icons and customisable LED backlight. Supplied in the UAE and Pakistan by Leading IT.',
     keywords: ['Black Nova ARIA', 'ARIA keypad', 'ARIA 12', 'ARIA Slider', 'glass touch keypad', 'Black Nova UAE', 'Black Nova Pakistan'],
@@ -1647,14 +1646,13 @@ export const PRODUCTS: Product[] = [
     ],
     specs: [
       { label: 'Layouts', rows: [
-        { name: 'ARIA M1', value: 'Max 6 addressable touch points' },
-        { name: 'ARIA 12', value: 'Max 12 addressable touch points' },
-        { name: 'ARIA Slider', value: 'Max 12 addressable touch points' },
+        { name: 'ARIA M1', value: 'Multipurpose · temperature control interface · max 6 addressable touch points · monochrome OLED' },
+        { name: 'ARIA 12', value: '12 addressable touch points with slider function' },
       ] },
       { label: 'Materials & Craft', rows: [
         { name: 'Construction', value: 'Glass, completely smooth surface' },
         { name: 'Finishes', value: 'York Black, Ice White, Venetian Gold' },
-        { name: 'Finishing', value: 'Hand-finished, made in Italy' },
+        { name: 'Origin', value: 'Made in Italy' },
       ] },
       { label: 'Interaction', rows: [
         { name: 'Touch', value: 'Fast-response touch points' },
@@ -1662,7 +1660,7 @@ export const PRODUCTS: Product[] = [
         { name: 'Backlight', value: 'Customisable colour & intensity, auto-dim' },
       ] },
       { label: 'Integration', rows: [
-        { name: 'Systems', value: 'Crestron, KNX, Control4, Savant, Lutron HomeWorks QS' },
+        { name: 'Protocols', value: 'KNX, BN RS-485 or Cresnet' },
         { name: 'Socket frames', value: 'Legrand Arteor & Mosaic compatible' },
         { name: 'Privacy', value: 'Advanced design for security and user privacy' },
       ] },
@@ -1673,8 +1671,8 @@ export const PRODUCTS: Product[] = [
     slug: 'any',
     brandSlug: 'black-nova',
     name: 'ANY',
-    collection: 'ANY · Smart Touch Panel',
-    tagline: 'One control, any function, anywhere.',
+    collection: 'ANY · Multipage Smart Keypad',
+    tagline: 'Every room function, on one panel.',
     description:
       'ANY is Black Nova’s smart touch panel — a design masterpiece built around an 841-LED matrix and a multitouch capacitive surface. Proximity, gesture and ambient-light sensors let it wake as you approach and dim into the night, while its display and thermostat functions bring an entire room under one considered control.',
     metaDescription:
@@ -1684,14 +1682,14 @@ export const PRODUCTS: Product[] = [
     finishes: [
       { id: 'york-black', name: 'York Black (Glass)', swatch: 'linear-gradient(135deg,#2b2b2d,#0a0a0a)', productImage: bn('any-hb.png') },
       { id: 'ice-white', name: 'Ice White (Glass)', swatch: 'linear-gradient(135deg,#f2efe9,#cdc8bd)', productImage: bn('any-hw.png') },
-      { id: 'marble', name: 'Marble', swatch: 'linear-gradient(135deg,#e7e3da,#b7ada0)', productImage: bn('any-off.png') },
+      { id: 'marble', name: 'White Marble (on request)', swatch: 'linear-gradient(135deg,#e7e3da,#b7ada0)', productImage: bn('any-off.png') },
     ],
     specs: [
       { label: 'Display', rows: [
         { name: 'Matrix', value: '841-LED matrix' },
         { name: 'Touch', value: 'Multitouch capacitive screen' },
         { name: 'Colour', value: 'Up to 16.7 million colours' },
-        { name: 'Behaviour', value: 'Bright by day, dimmed at night' },
+        { name: 'Behaviour', value: 'Adjusts display brightness to ambient light' },
       ] },
       { label: 'Sensors', rows: [
         { name: 'Proximity', value: 'Wakes on approach' },
@@ -1700,13 +1698,12 @@ export const PRODUCTS: Product[] = [
         { name: 'Climate', value: 'Full thermostat functions' },
       ] },
       { label: 'Materials & Craft', rows: [
-        { name: 'Finishes', value: 'York Black & Ice White glass; marble' },
+        { name: 'Finishes', value: 'Ice White or York Black glass with matching metal frame; marble and wood on request' },
         { name: 'Blend-in', value: 'Displayed controls gently diffused into the interior' },
-        { name: 'Origin', value: 'Hand-finished, made in Italy' },
+        { name: 'Origin', value: 'Made in Italy' },
       ] },
       { label: 'Integration', rows: [
-        { name: 'Systems', value: 'Crestron, KNX, Control4, Savant, Lutron HomeWorks QS' },
-        { name: 'Role', value: 'One room, one control' },
+        { name: 'Protocols', value: 'KNX or Cresnet' },
       ] },
     ],
     inUse: [bn('any-on.png'), bn('any-mg.png'), bn('any-hb.png')],
@@ -1716,9 +1713,9 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'black-nova',
     name: 'AXES',
     collection: 'AXES Collection · Hospitality Touch Panels',
-    tagline: 'A touch of the sublime.',
+    tagline: 'Hospitality control, finished to the brand.',
     description:
-      'AXES is a family of glass touch panels built for hospitality — guest-room controls, door keypads and card holders with room-presence indicators that match a hotel’s brand identity exactly. Engraved icons, fast-response touch and night-dimming backlight bring a sophisticated allure to the world’s most high-end properties.',
+      'AXES is Black Nova’s hospitality family: guest-room touch panels, door panels with an RGB accessibility status indicator, numeric keypads and card holders that can carry a Mifare-compatible reader. Engraved icons and per-point programmable backlights let a whole floor be finished to one hotel’s brand identity.',
     metaDescription:
       'Black Nova AXES hospitality touch panels — AXES TT, 9, CH, DR, KN and N3 for guest rooms, doors and card holders. Supplied in the UAE and Pakistan by Leading IT.',
     keywords: ['Black Nova AXES', 'AXES touch panel', 'AXES TT', 'AXES KN', 'hotel keypad', 'hospitality touch panel', 'Black Nova UAE Pakistan'],
@@ -1730,27 +1727,26 @@ export const PRODUCTS: Product[] = [
     ],
     specs: [
       { label: 'Layouts', rows: [
-        { name: 'AXES TT', value: 'Max 10 addressable touch points' },
+        { name: 'AXES TT', value: 'Temperature control interface · 7-segment 4-digit display · max 10 addressable touch points' },
         { name: 'AXES 9', value: 'Max 9 addressable touch points' },
-        { name: 'AXES CH', value: 'Card holder · max 5 touch points' },
-        { name: 'AXES DR', value: 'Door · RGB presence indicator' },
-        { name: 'AXES KN', value: 'Numeric keypad' },
-        { name: 'AXES N3', value: 'Max 3 addressable touch points' },
+        { name: 'AXES CH', value: 'Card holder with RGB accessibility status indicator · max 5 addressable touch points' },
+        { name: 'AXES DR', value: 'Door panel · RGB accessibility status indicator · Mifare-compatible RFID reader' },
+        { name: 'AXES KN', value: 'Numeric keypad · max 12 addressable touch points' },
+        { name: 'AXES N3', value: 'Outdoor panel with XL number · max 3 addressable touch points' },
       ] },
       { label: 'Hospitality', rows: [
         { name: 'Solution', value: 'Door & card-holder keypads with presence indicators' },
-        { name: 'Comfort', value: 'Night-dimming backlight for guests' },
+        { name: 'Backlight', value: 'Individually programmable colour and brightness per touch point' },
         { name: 'Branding', value: 'Panels matched to hotel brand identity' },
-        { name: 'Layouts', value: 'Combines with outlets and specialty sockets' },
       ] },
       { label: 'Materials & Craft', rows: [
-        { name: 'Construction', value: 'Glass, engraved icons' },
+        { name: 'Construction', value: 'Glass faceplate with customisable background colours, engraved icons' },
         { name: 'Finishes', value: 'York Black, Ice White, Venetian Gold' },
-        { name: 'Origin', value: 'Hand-finished, made in Italy' },
+        { name: 'Origin', value: 'Made in Italy' },
       ] },
       { label: 'Integration', rows: [
-        { name: 'Systems', value: 'Crestron, KNX, Control4, Savant, Lutron HomeWorks QS' },
-        { name: 'Security', value: 'Advanced security with minimalist design' },
+        { name: 'Protocols', value: 'KNX, BN RS-485 or Cresnet' },
+        { name: 'Security', value: 'Product design for a high level of security and guest privacy' },
       ] },
     ],
     inUse: [bn('axes-tt.png'), bn('axes-on.png'), bn('axes-base.png')],
@@ -1762,13 +1758,16 @@ export const PRODUCTS: Product[] = [
     collection: 'BLACK JACK · Capsule Collection with Meljac',
     tagline: 'Italian innovation, French metalwork.',
     description:
-      'BLACK JACK is a capsule collection created with Meljac of France — the perfect blend of Italian innovation and heritage French metalwork. Iconic push buttons carry an independently dimmable RGB backlight, temperature and humidity sensing, and the multipurpose M1 OLED display, all set into hand-finished Meljac metal.',
+      'BLACK JACK is Black Nova’s capsule collection with La Maison Meljac. The frame and buttons are brass, finished in Mat Noir, Nickel Brossé, Champagne or Médaille Allemand, with round or square buttons. Every keypad carries a dimmable RGB backlight and temperature and humidity sensors; the M1 pairs six of them with a monochrome OLED that can show temperature, media or room information from the controller.',
     metaDescription:
       'Black Nova BLACK JACK keypad — a capsule collection with Meljac of France, RGB backlight, temperature & humidity sensors and the M1 OLED display. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['Black Nova Black Jack', 'Black Jack keypad', 'Black Jack M1', 'Meljac keypad', 'Black Nova Meljac', 'Black Nova UAE', 'Black Nova Pakistan'],
     hero: bn('bj-m1.png'),
     finishes: [
-      { id: 'meljac-metal', name: 'Meljac Hand-Finished Metal', swatch: 'linear-gradient(135deg,#4a4a4c,#1b1b1c)', productImage: bn('bj-kp-4b.png') },
+      { id: 'mat-noir', name: 'Mat Noir (Brass)', swatch: 'linear-gradient(135deg,#3a3a3c,#141415)', productImage: bn('bj-kp-4b.png') },
+      { id: 'nickel-brosse', name: 'Nickel Brossé (Brass)', swatch: 'linear-gradient(135deg,#d3d5d8,#95999e)', productImage: bn('bj-kp-4b.png') },
+      { id: 'champagne', name: 'Champagne (Brass)', swatch: 'linear-gradient(135deg,#e0cfae,#b39a6f)', productImage: bn('bj-kp-4b.png') },
+      { id: 'medaille-allemand', name: 'Médaille Allemand (Brass)', swatch: 'linear-gradient(135deg,#c9a97a,#8a6a42)', productImage: bn('bj-kp-4b.png') },
     ],
     specs: [
       { label: 'Layouts', rows: [
@@ -1776,7 +1775,8 @@ export const PRODUCTS: Product[] = [
         { name: 'Black Jack 4', value: 'Max 4 addressable push buttons' },
         { name: 'Black Jack 6', value: 'Max 6 addressable push buttons' },
         { name: 'Black Jack 8', value: 'Max 8 addressable push buttons' },
-        { name: 'Black Jack M1', value: 'Multipurpose OLED display' },
+        { name: 'Black Jack M1', value: 'Multipurpose monochrome OLED · max 6 addressable push buttons' },
+        { name: 'Button shape', value: 'ROUND or SQUARE front-end, specified per keypad' },
       ] },
       { label: 'Sensors & Display', rows: [
         { name: 'Sensing', value: 'Temperature and humidity sensors' },
@@ -1784,12 +1784,14 @@ export const PRODUCTS: Product[] = [
         { name: 'M1 display', value: 'Temperature, media, guest & room info' },
       ] },
       { label: 'Materials & Craft', rows: [
-        { name: 'Collaboration', value: 'Capsule collection with Meljac, France' },
-        { name: 'Finish', value: 'Hand-finished Meljac metal, natural variation' },
+        { name: 'Collaboration', value: 'Capsule collection with La Maison Meljac' },
+        { name: 'Frame material', value: 'Brass with anti-fingerprint surface finishing' },
+        { name: 'Finishes', value: 'Mat Noir, Nickel Brossé, Champagne, Médaille Allemand (all brass)' },
         { name: 'Origin', value: 'Italian design, made in Italy' },
       ] },
       { label: 'Integration', rows: [
         { name: 'Protocols', value: 'KNX, RS485, Crestron Connect' },
+        { name: 'Third-party systems', value: 'Integrated with Lutron Homeworks QS, Control4, Dinalyte and Schneider Electric' },
         { name: 'Flush mounting', value: 'Trufig and Wall-Smart platforms' },
       ] },
     ],
