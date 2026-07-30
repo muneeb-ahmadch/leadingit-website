@@ -118,16 +118,16 @@ const ukBlack = (img: string, name = 'Matte Black'): Finish => ({
 });
 // AMT (Air Motion Transformer) tweeter — figures from UandKSound's own tweeter
 // technology note; used across the Air-Motion series (M8, M6).
-const AMT_TWEETER_SPEC: SpecGroup = {
-  label: 'AMT Air Motion Tweeter',
-  rows: [
-    { name: 'Principle', value: 'Folded diaphragm, Air Motion Transformer' },
-    { name: 'Radiation area', value: '8–13× a dome tweeter' },
-    { name: 'Air velocity', value: '≈5× a dome tweeter' },
-    { name: 'HF extension', value: 'Beyond 20 kHz (to 30–40 kHz)' },
-    { name: 'Character', value: 'Low distortion, fast transients' },
-  ],
-};
+// An `AMT Air Motion Tweeter` spec group used to be appended to m8-series and
+// m6-series here, carrying "Radiation area 8–13× a dome tweeter", "Air velocity
+// ≈5× a dome tweeter" and "HF extension beyond 20 kHz (to 30–40 kHz)". Removed
+// 2026-07-30: uandksound publishes no numeric AMT detail anywhere on its site —
+// the only AMT sentences are "our legacy Air Motion tweeter" (M6 pages) and
+// "Some UandKSound tweeters now use Air Motion Transformer Technology" (M850N).
+// Those four figures were therefore unsourced numbers rendered as manufacturer
+// specs on two indexable routes. Do not reinstate without a manufacturer source
+// (their own M6/M8 manual link, /wp-content/uploads/2024/06/Manual-M6-y-M8-OK.pdf,
+// is a 404 on their side). See docs/12-PROVENANCE/copy-reuse-audit-cinema.md.
 
 // ─── Black Nova helpers ─────────────────────────────────────────────────────
 // Official renders, layout SVGs and material swatches downloaded from
@@ -3116,12 +3116,23 @@ export const PRODUCTS: Product[] = [
         { name: 'Woofer', value: '4" Turbine Cone' },
       ] },
       { label: 'Performance', rows: [
-        { name: 'Sensitivity', value: '85.5 dB (2.83 V/1 m)' },
+        // Polk's table reads "Sensitivity (2.83V/1m) | 85.5dB (when wall
+        // mounted)". Ours carried the measurement condition from the header but
+        // dropped the mounting qualifier from the value — and for an up-firing
+        // height module the mounting condition is the material part of the
+        // figure (QA MINOR-4). Both are now carried.
+        { name: 'Sensitivity', value: '85.5 dB (2.83 V/1 m, wall mounted)' },
         { name: 'Recommended power', value: '45 – 100 W' },
       ] },
       { label: 'Placement', rows: [
         { name: 'Role', value: 'Dolby Atmos height, up-firing' },
-        { name: 'Pairing', value: 'Reserve towers & bookshelves' },
+        // Polk names four models — "Wall-mount or pair with R700, R600, R500 &
+        // R200". "Reserve towers & bookshelves" swept in the R100 and the
+        // R400/R350/R300 centres, which an integrator could order against: the
+        // same failure already fixed on signature-elite-es90 (QA MINOR-5).
+        // Unlike the ES90, the R900 page publishes NO exclusion, so no
+        // "Not compatible" row is asserted here — checked, not assumed.
+        { name: 'Pairing', value: 'R700, R600, R500, R200 — or wall-mount' },
       ] },
     ],
     inUse: pkInUse,
@@ -3320,10 +3331,18 @@ export const PRODUCTS: Product[] = [
     hero: uk('reference-m1200lcr.png'),
     finishes: [ukBlack(uk('reference-m1200lcr.png'), 'Black Yarn Paint')],
     specs: [
-      // The "500 – 1000 W" range matched none of the three figures the
-      // manufacturer publishes, "coated paper" and the ±1.5 dB tolerance are
-      // not published at all, and 97 dB is a woofer figure rather than a system
-      // SPL. Every row below is the official published value (audit D-15/D-17).
+      // Every row below is re-derived per model from the manufacturer's own
+      // "Información adicional" table (uandksound.com/product/<model>/), verified
+      // 2026-07-30. What was wrong before, and is worth not repeating: the power
+      // values were synthesised ranges matching none of the three ratings the
+      // manufacturer publishes (AES / RMS / Peak) — M800SR read "450 – 900 W"
+      // against an official 260 W RMS / 700 W Peak, which would mis-size an
+      // amplifier; "coated paper" was ours, the published material is composite
+      // pulp; the ±1.5 dB tolerances were invented, the published figure is
+      // ±3 dB; and sensitivity figures were labelled as system SPL.
+      // Ratings are now split and labelled rather than collapsed into a range:
+      // a range hides which rating is which, which is how the wrong number
+      // survived three audits (D-15/D-17, then QA MAJOR-4/5/6).
       { label: 'M1200LCR · LCR', rows: [
         { name: 'Impedance', value: '8 Ω' },
         { name: 'Frequency', value: '45 Hz – 20 kHz (±3 dB)' },
@@ -3334,17 +3353,22 @@ export const PRODUCTS: Product[] = [
       ] },
       { label: 'M800SR · Surround', rows: [
         { name: 'Impedance', value: '8 Ω' },
-        { name: 'Frequency', value: '70 Hz – 20 kHz' },
-        { name: 'Power', value: '450 – 900 W' },
-        { name: 'Drivers', value: '2× 8" coated paper, horn tweeter' },
-        { name: 'SPL', value: '95 dB ±1.5 dB' },
+        { name: 'Frequency', value: '60 Hz – 22 kHz (±3 dB)' },
+        { name: 'Power (AES)', value: '150 W' },
+        { name: 'Power (RMS)', value: '260 W' },
+        { name: 'Power (peak)', value: '700 W' },
+        { name: 'Drivers', value: '2× 8" composite pulp, 1.74" tweeter' },
+        { name: 'Sensitivity', value: '95 dB (2.83 V/1 m)' },
       ] },
       { label: 'M1800SW · Subwoofer', rows: [
         { name: 'Impedance', value: '8 Ω' },
-        { name: 'Frequency', value: '25 – 500 Hz' },
-        { name: 'Power', value: '800 – 1600 W' },
-        { name: 'Driver', value: '1× 18" coated paper' },
-        { name: 'Enclosure', value: 'Bass reflex / MDF' },
+        { name: 'Frequency', value: '25 Hz – 500 Hz (±3 dB)' },
+        { name: 'Power (AES)', value: '500 W' },
+        { name: 'Power (RMS)', value: '800 W' },
+        { name: 'Power (peak)', value: '1600 W' },
+        { name: 'Driver', value: '1× 18" composite pulp' },
+        { name: 'Sensitivity', value: '96 dB (2.83 V/1 m)' },
+        { name: 'Enclosure', value: 'Passive bass reflex / MDF' },
       ] },
     ],
     inUse: [uk('cinema-wall.jpg'), uk('cinema-theatre.jpg'), uk('cinema-rack.jpg')],
@@ -3354,43 +3378,67 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'uandksound',
     name: 'M8 Series',
     collection: 'Cinema Series · M8',
-    tagline: 'Three-way flagship, Air Motion tweeter.',
+    // "Air Motion tweeter" was removed from this tagline and the copy below: the
+    // M850N page hedges — "SOME UandKSound tweeters now use Air Motion Transformer
+    // Technology" — and its own table publishes a 1" tweeter with a brushed
+    // aluminium oxide treble panel. Asserting AMT flatly for this series claims
+    // more than the manufacturer does. It stays on M6, where all four model pages
+    // do state it (verified 2026-07-30).
+    tagline: 'Three-way on-wall and in-wall, crossed at 12 dB/octave.',
     description:
-      'M8 Series is the three-way tier of the UandKSound cinema range, crossed over at 12 dB/octave with an Air Motion Transformer tweeter. The M850N on-wall model runs 2 × 8" and 2 × 4" composite-pulp drivers in a 150 mm-deep sealed cabinet at 90 dB and 45 Hz–22 kHz ±3 dB; the M820IW is the in-wall equivalent. The matching M1500N subwoofer is a 15" Class D design rated 1200 W peak with room EQ.',
+      'M8 Series is the three-way tier of the UandKSound cinema range, crossed over at 12 dB/octave. The M850N on-wall model runs 2 × 8" and 2 × 4" composite-pulp drivers behind a 1" brushed aluminium oxide treble panel, rated 90 dB and 45 Hz–22 kHz ±3 dB; the M820IW is the in-wall equivalent. The matching M1500N subwoofer is a 15" Class D design rated 1200 W peak with room EQ.',
     metaDescription:
-      'UandKSound M8 Series three-way cinema speakers with AMT Air Motion tweeter — M850N, M820IW and M1500N subwoofer. Supplied in the UAE and Pakistan by Leading IT.',
-    keywords: ['UandKSound M8 Series', 'M850N', 'M1500N subwoofer', 'AMT Air Motion tweeter', 'UandKSound UAE', 'UandKSound Pakistan'],
+      'UandKSound M8 Series three-way on-wall and in-wall cinema speakers — M850N, M820IW and the M1500N subwoofer. Supplied in the UAE and Pakistan by Leading IT.',
+    keywords: ['UandKSound M8 Series', 'M850N', 'M820IW in-wall', 'M1500N subwoofer', 'three-way cinema speaker', 'UandKSound UAE', 'UandKSound Pakistan'],
     hero: uk('m8-m850n.png'),
     finishes: [ukBlack(uk('m8-m850n.png'), 'Satin Black')],
     specs: [
+      // Re-derived per model on 2026-07-30 from the manufacturer's own
+      // "Información adicional" tables. M850N: uandksound.com/product/m850n/,
+      // which also publishes the M820IW and M1500N tables — neither model has a
+      // product page of its own (the site's `m820iw`/`m1500n` slugs do not
+      // exist; the M820IW PDP is served, mislabelled, from /product/e1200i/).
+      // Full transcription of every table in
+      // docs/12-PROVENANCE/copy-reuse-audit-cinema.md § "Phase 3 spec remediation".
+      // Ratings are split and labelled because the manufacturer publishes three
+      // discrete figures (AES / RMS / Peak) and never a range: a range hides
+      // which rating is which and mis-sizes an amplifier (QA MAJOR-6, D-17).
+      // "AMT tweeter" is NOT asserted here — the M850N page only says "some
+      // UandKSound tweeters" use AMT and neither table labels its tweeter that
+      // way, unlike the M6 pages and the M500SR table. The record's
+      // `description` still claims it and needs an orchestrator decision.
       { label: 'M850N · Three-way', rows: [
         { name: 'Impedance', value: '4 Ω' },
-        { name: 'Frequency', value: '45 Hz – 22 kHz' },
-        // Was "300 – 600 W", which matches no published figure (audit D-15);
-        // the official ratings are 100 W AES / 200 W RMS / 400 W peak (D-17).
+        { name: 'Frequency', value: '45 Hz – 22 kHz (±3 dB)' },
+        { name: 'Power (AES)', value: '100 W' },
         { name: 'Power (RMS)', value: '200 W' },
         { name: 'Power (peak)', value: '400 W' },
-        { name: 'Drivers', value: '2× 4" / 2× 8", AMT tweeter' },
-        { name: 'SPL', value: '90 dB ±1.5 dB' },
+        { name: 'Drivers', value: '2× 8" + 2× 4" composite pulp, 1" tweeter' },
+        { name: 'Sensitivity', value: '90 dB (2.83 V/1 m)' },
+        { name: 'Enclosure', value: 'Sealed box / MDF' },
       ] },
       { label: 'M820IW · In-wall', rows: [
         { name: 'Impedance', value: '4 Ω' },
-        { name: 'Frequency', value: '45 Hz – 22 kHz' },
-        { name: 'Power', value: '160 – 320 W' },
-        { name: 'Drivers', value: '1× 4" / 1× 8", AMT tweeter' },
-        { name: 'Depth', value: '130 mm' },
+        { name: 'Frequency', value: '45 Hz – 22 kHz (±3 dB)' },
+        { name: 'Power (AES)', value: '90 W' },
+        { name: 'Power (RMS)', value: '150 W' },
+        { name: 'Power (peak)', value: '300 W' },
+        { name: 'Drivers', value: '1× 8" + 1× 4" composite pulp, 1" tweeter' },
+        { name: 'Sensitivity', value: '90 dB (2.83 V/1 m)' },
+        { name: 'Size', value: 'W273 × D125 × H456 mm' },
       ] },
       { label: 'M1500N · Subwoofer', rows: [
-        // Was "20 Hz – 250 Hz"; the published response is 25 Hz – 300 Hz, and
-        // the amplifier is rated 300 W AES / 800 W RMS / 1200 W peak (D-15/D-17).
-        { name: 'Frequency', value: '25 Hz – 300 Hz' },
-        { name: 'Driver', value: '1× 15" / 38.1 cm coated paper' },
-        { name: 'Power (RMS)', value: '800 W, Class D' },
+        { name: 'Frequency', value: '25 Hz – 300 Hz (±3 dB)' },
+        { name: 'Driver', value: '1× 15" composite pulp' },
+        { name: 'Power (AES)', value: '300 W' },
+        { name: 'Power (RMS)', value: '800 W' },
         { name: 'Power (peak)', value: '1200 W' },
-        { name: 'Enclosure', value: 'MDF, room EQ' },
+        { name: 'Amplifier', value: 'Class D, EQ room regulation' },
+        { name: 'Sensitivity', value: '90 dB (2.83 V/1 m)' },
+        { name: 'Enclosure', value: 'Bass reflex / MDF' },
+        { name: 'Input voltage', value: '120/230 V' },
         { name: 'Weight', value: '44.5 kg' },
       ] },
-      AMT_TWEETER_SPEC,
     ],
     inUse: [uk('amt-tweeter.jpg'), uk('cinema-inwall.jpg'), uk('cinema-theatre.jpg')],
   },
@@ -3408,44 +3456,72 @@ export const PRODUCTS: Product[] = [
     hero: uk('m6-m620n.png'),
     finishes: [ukBlack(uk('m6-m620n.png'), 'Satin Black')],
     specs: [
+      // Re-derived per model on 2026-07-30 from each model's own
+      // "Información adicional" table: uandksound.com/product/{m610n, m620n,
+      // m610iw, m600iw, m1200n}/. Transcriptions in
+      // docs/12-PROVENANCE/copy-reuse-audit-cinema.md § "Phase 3 spec remediation".
+      // Power is split into the three ratings the manufacturer publishes rather
+      // than collapsed into a range (QA MAJOR-6). Three of these four speakers
+      // were previously listed at 160 – 320 W against a published 160 W *peak* —
+      // a 2× over-statement that would have mis-sized an amplifier.
+      // "Air Motion tweeter" is the manufacturer's own wording, published in the
+      // prose of all four M6 model pages ("our legacy Air Motion tweeter").
       { label: 'M610N · On-wall', rows: [
         { name: 'Impedance', value: '4 Ω' },
-        { name: 'Frequency', value: '55 Hz – 22 kHz' },
-        { name: 'Power', value: '160 – 320 W' },
-        { name: 'Drivers', value: '1× 4" / 1× 6.5", AMT tweeter' },
+        { name: 'Frequency', value: '55 Hz – 22 kHz (±3 dB)' },
+        { name: 'Power (AES)', value: '80 W' },
+        { name: 'Power (RMS)', value: '100 W' },
+        { name: 'Power (peak)', value: '160 W' },
+        { name: 'Drivers', value: '1× 6.5" + 1× 4" composite pulp, 1" Air Motion tweeter' },
+        { name: 'Sensitivity', value: '89 dB (2.83 V/1 m)' },
       ] },
       { label: 'M620N · On-wall', rows: [
         { name: 'Impedance', value: '4 Ω' },
-        { name: 'Frequency', value: '45 Hz – 22 kHz' },
-        // Official: 80 W AES / 160 W RMS / 320 W peak — the single "Power"
-        // range hid two different ratings (audit D-17).
+        { name: 'Frequency', value: '45 Hz – 22 kHz (±3 dB)' },
+        { name: 'Power (AES)', value: '80 W' },
         { name: 'Power (RMS)', value: '160 W' },
         { name: 'Power (peak)', value: '320 W' },
-        { name: 'Drivers', value: '2× 4" / 2× 6.5", AMT tweeter' },
+        { name: 'Drivers', value: '2× 6.5" + 2× 4" composite pulp, 1" Air Motion tweeter' },
+        { name: 'Sensitivity', value: '89 dB (2.83 V/1 m)' },
+        { name: 'Size', value: 'W260 × D132 × H708 mm' },
       ] },
       { label: 'M610IW · In-wall', rows: [
         { name: 'Impedance', value: '4 Ω' },
-        { name: 'Frequency', value: '45 Hz – 22 kHz' },
-        { name: 'Power', value: '160 – 320 W' },
-        { name: 'Drivers', value: '1× 4" / 1× 6.5", AMT tweeter' },
+        // Published response is 55 Hz – 22 kHz; ours read 45 Hz, which is the
+        // M620N's figure, not this model's.
+        { name: 'Frequency', value: '55 Hz – 22 kHz (±3 dB)' },
+        { name: 'Power (AES)', value: '80 W' },
+        { name: 'Power (RMS)', value: '100 W' },
+        { name: 'Power (peak)', value: '160 W' },
+        { name: 'Drivers', value: '1× 6.5" + 1× 4" composite pulp, 1" Air Motion tweeter' },
+        { name: 'Sensitivity', value: '89 dB (2.83 V/1 m)' },
+        { name: 'Size', value: 'W260 × D105 × H427 mm' },
       ] },
       { label: 'M600IW · In-wall', rows: [
         { name: 'Impedance', value: '4 Ω' },
-        { name: 'Frequency', value: '70 Hz – 20 kHz' },
-        { name: 'Power', value: '80 – 160 W' },
-        { name: 'Driver', value: '1× 6.5"' },
+        // Published response is 70 Hz – 22 kHz; ours read 20 kHz at the top.
+        { name: 'Frequency', value: '70 Hz – 22 kHz (±3 dB)' },
+        { name: 'Power (AES)', value: '80 W' },
+        { name: 'Power (RMS)', value: '100 W' },
+        { name: 'Power (peak)', value: '160 W' },
+        { name: 'Driver', value: '1× 6.5" composite pulp, 1" Air Motion tweeter' },
+        { name: 'Sensitivity', value: '89 dB (2.83 V/1 m)' },
+        { name: 'Size', value: 'W260 × D90 × H311 mm' },
       ] },
       { label: 'M1200N · Subwoofer', rows: [
-        // Was "30 Hz – 250 Hz" and "30.27 kg"; official figures are
-        // 25 Hz – 300 Hz and 30.3 kg, amplifier 200 W AES / 800 W RMS /
-        // 1200 W peak (audit D-15/D-17).
-        { name: 'Frequency', value: '25 Hz – 300 Hz' },
-        { name: 'Driver', value: '1× 12" / 30 cm coated paper' },
-        { name: 'Power (RMS)', value: '800 W, Class D' },
+        { name: 'Frequency', value: '25 Hz – 300 Hz (±3 dB)' },
+        // Published woofer material is composite pulp, not coated paper, and
+        // the manufacturer never prints the 30 cm conversion (QA MAJOR-5).
+        { name: 'Driver', value: '1× 12" composite pulp' },
+        { name: 'Power (AES)', value: '200 W' },
+        { name: 'Power (RMS)', value: '800 W' },
         { name: 'Power (peak)', value: '1200 W' },
+        { name: 'Amplifier', value: 'Class D' },
+        { name: 'Sensitivity', value: '90 dB (2.83 V/1 m)' },
+        { name: 'Enclosure', value: 'Bass reflex / MDF' },
+        { name: 'Input voltage', value: '120/230 V' },
         { name: 'Weight', value: '30.3 kg' },
       ] },
-      AMT_TWEETER_SPEC,
     ],
     inUse: [uk('cinema-inwall.jpg'), uk('amt-tweeter.jpg'), uk('cinema-installation.jpg')],
   },
@@ -3454,35 +3530,66 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'uandksound',
     name: 'S Series',
     collection: 'Cinema Series · S',
-    tagline: 'Compact wall-mount, ribbon-clear articulation.',
+    // "Ribbon" appeared in four fields here and on no S Series page. The published
+    // treble spec is a 1" driver with a "Directional polymer compressed treble"
+    // panel (uandksound.com/product/s6ii/, verified 2026-07-30). Every S Series
+    // model also carries a "MODEL TEMPORARILY DISCONTINUED" banner — see OQ #21,
+    // which is a page-level decision for Muneeb, not a copy fix.
+    tagline: 'Compact wall-mount, directional treble panel.',
     description:
-      'The full-range S Series are compact wall-mount loudspeakers built around an advanced crossover — massive air-core coils, high-purity copper wire and low-distortion capacitors preserve every nuance of the signal, behind a ribbon tweeter. A premium MDF enclosure and a robust mounting-lock system let installers complete horizontal or vertical installation quickly and easily. Standard finish is matte black.',
+      'The S Series are compact full-range wall-mount loudspeakers, each pairing 6.5" drivers with a 1" directional polymer compressed treble panel. The MDF enclosure and mounting-lock system take horizontal or vertical orientation, so the same model serves a front or a surround position. Standard finish is matte black.',
     metaDescription:
-      'UandKSound S Series compact wall-mount cinema speakers with ribbon tweeter — S6 I, S6 II and S1200 I subwoofer. Supplied in the UAE and Pakistan by Leading IT.',
-    keywords: ['UandKSound S Series', 'S6 I', 'S6 II', 'S1200 I subwoofer', 'ribbon tweeter speaker', 'UandKSound UAE Pakistan'],
+      'UandKSound S Series compact wall-mount cinema speakers — S6 I, S6 II and the S1200 I subwoofer. Supplied in the UAE and Pakistan by Leading IT.',
+    keywords: ['UandKSound S Series', 'S6 I', 'S6 II', 'S1200 I subwoofer', 'compact wall-mount cinema speaker', 'UandKSound UAE Pakistan'],
     hero: uk('s-s6ii.png'),
     finishes: [ukBlack(uk('s-s6ii.png'), 'Matte Black')],
     specs: [
+      // Re-derived per model on 2026-07-30 from each model's own
+      // "Información adicional" table: uandksound.com/product/{s6i, s6ii,
+      // s1200i}/. Transcriptions in
+      // docs/12-PROVENANCE/copy-reuse-audit-cinema.md § "Phase 3 spec remediation".
+      // Two corrections worth naming. (1) The "SPL nn dB ±1.5 dB" rows were
+      // wrong twice over: the figure is a *sensitivity* (published as
+      // "SENSITIVITY 89dB/2.83V/1.0M"), and no uandksound page publishes a
+      // ±1.5 dB tolerance at all (QA MINOR/OQ #34). (2) "ribbon tweeter" is not
+      // published on any S Series page — the tables say TWEETER SIZE 1" x1 with
+      // TREBLE PANEL "Directional polymer compressed treble". The word survives
+      // in this record's description/tagline/keywords, which are outside this
+      // pass's remit; flagged to the orchestrator.
+      // All three models carry "MODEL TEMPORARILY DISCONTINUED" on their PDP
+      // (OQ #16) — a page-level decision, so no status row is asserted here.
       { label: 'S6 I', rows: [
         { name: 'Impedance', value: '4 Ω' },
-        { name: 'Frequency', value: '55 Hz – 22 kHz' },
-        { name: 'Power', value: '80 – 160 W' },
-        { name: 'Drivers', value: '2× 6.5", 1" ribbon tweeter' },
-        { name: 'SPL', value: '89 dB ±1.5 dB' },
+        { name: 'Frequency', value: '55 Hz – 22 kHz (±3 dB)' },
+        { name: 'Power (AES)', value: '80 W' },
+        { name: 'Power (RMS)', value: '100 W' },
+        { name: 'Power (peak)', value: '160 W' },
+        { name: 'Drivers', value: '2× 6.5" composite pulp, 1" tweeter' },
+        { name: 'Treble panel', value: 'Directional polymer compressed treble' },
+        { name: 'Sensitivity', value: '89 dB (2.83 V/1 m)' },
       ] },
       { label: 'S6 II', rows: [
         { name: 'Impedance', value: '4 Ω' },
-        { name: 'Frequency', value: '45 Hz – 22 kHz' },
-        { name: 'Power', value: '160 – 320 W' },
-        { name: 'Drivers', value: '4× 6.5", ribbon tweeter' },
-        { name: 'SPL', value: '91 dB ±1.5 dB' },
+        { name: 'Frequency', value: '45 Hz – 22 kHz (±3 dB)' },
+        { name: 'Power (AES)', value: '120 W' },
+        { name: 'Power (RMS)', value: '160 W' },
+        { name: 'Power (peak)', value: '320 W' },
+        { name: 'Drivers', value: '4× 6.5" composite pulp, 1" tweeter' },
+        { name: 'Treble panel', value: 'Directional polymer compressed treble' },
+        { name: 'Sensitivity', value: '91 dB (2.83 V/1 m)' },
       ] },
       { label: 'S1200 I · Subwoofer', rows: [
-        // Published response is 25 Hz – 300 Hz, not 250 Hz (audit D-15).
-        { name: 'Frequency', value: '25 Hz – 300 Hz' },
-        { name: 'Driver', value: '1× 12" / 30 cm coated paper' },
-        { name: 'Power', value: '1200 W Class AB' },
-        { name: 'Enclosure', value: 'MDF material' },
+        { name: 'Frequency', value: '25 Hz – 300 Hz (±3 dB)' },
+        { name: 'Driver', value: '1× 12" composite pulp' },
+        // The old single row, "1200 W Class AB", fused the Peak rating to the
+        // amplifier class and hid the 800 W RMS figure a specifier needs.
+        { name: 'Power (AES)', value: '200 W' },
+        { name: 'Power (RMS)', value: '800 W' },
+        { name: 'Power (peak)', value: '1200 W' },
+        { name: 'Amplifier', value: 'Class AB' },
+        { name: 'Sensitivity', value: '90 dB (2.83 V/1 m)' },
+        { name: 'Enclosure', value: 'Bass reflex / MDF' },
+        { name: 'Input voltage', value: '120/230 V' },
         { name: 'Weight', value: '46.5 kg' },
       ] },
     ],
@@ -3502,35 +3609,71 @@ export const PRODUCTS: Product[] = [
     hero: uk('e-e620iw.png'),
     finishes: [ukBlack(uk('e-e620iw.png'), 'Black · Paintable Grille')],
     specs: [
+      // Re-derived per model on 2026-07-30 from each model's own
+      // "Información adicional" table: uandksound.com/product/{e610iw, e620iw,
+      // e610c, e650fx}/ and — note the slug — /product/e1200i-2/ for the E1200I.
+      // /product/e1200i/ serves the M820IW page, mislabelled, on the
+      // manufacturer's side. Transcriptions in
+      // docs/12-PROVENANCE/copy-reuse-audit-cinema.md § "Phase 3 spec remediation".
+      // The E Series is the one uandksound range whose output power IS published
+      // as an unlabelled range ("OUTPUT POWER 80-160W"), so the ranges below are
+      // the manufacturer's own figure, not a synthesis of two ratings — which is
+      // why they read differently from the AES/RMS/Peak rows on the M and S
+      // records. Row name follows the manufacturer's "OUTPUT POWER".
+      // No cut-out row ships for the two in-ceiling models: theirs is published
+      // as "D204 mm" / "D206 mm", and D is diameter here but depth in every
+      // "W x D x H" string on the same site. Ambiguous, so logged, not guessed.
       { label: 'E610IW · In-wall', rows: [
         { name: 'Impedance', value: '4 Ω' },
-        { name: 'Frequency', value: '45 Hz – 22 kHz' },
-        { name: 'Power', value: '80 – 160 W' },
-        { name: 'Drivers', value: '6.5" + 1" aluminium' },
+        { name: 'Frequency', value: '45 Hz – 22 kHz (±3 dB)' },
+        { name: 'Output power', value: '80 – 160 W' },
+        { name: 'Drivers', value: '1× 6.5" aluminium, 1" aluminium tweeter' },
+        { name: 'Sensitivity', value: '89 dB (2.83 V/1 m)' },
+        { name: 'Tweeter settings', value: '±3 dB' },
+        { name: 'Cut-out', value: 'H286 × W186 mm' },
+        { name: 'Mounting depth', value: '98 mm' },
       ] },
       { label: 'E620IW · In-wall', rows: [
         { name: 'Impedance', value: '4 Ω' },
-        { name: 'Frequency', value: '45 Hz – 22 kHz' },
-        { name: 'Power', value: '160 – 320 W' },
-        { name: 'Drivers', value: '2× 6.5" + 1" aluminium' },
+        { name: 'Frequency', value: '45 Hz – 22 kHz (±3 dB)' },
+        { name: 'Output power', value: '160 – 320 W' },
+        { name: 'Drivers', value: '2× 6.5" aluminium, 1" aluminium tweeter' },
+        { name: 'Sensitivity', value: '89 dB (2.83 V/1 m)' },
+        { name: 'Tweeter settings', value: '±3 dB' },
+        { name: 'Cut-out', value: 'H456 × W186 mm' },
+        { name: 'Size with grille', value: 'H492 × W220 mm' },
+        { name: 'Mounting depth', value: '98 mm' },
       ] },
       { label: 'E610C · In-ceiling', rows: [
         { name: 'Impedance', value: '4 Ω' },
-        { name: 'Frequency', value: '45 Hz – 22 kHz' },
-        { name: 'Power', value: '80 – 160 W' },
-        { name: 'Drivers', value: '6.5" + 1" aluminium' },
+        { name: 'Frequency', value: '45 Hz – 22 kHz (±3 dB)' },
+        { name: 'Output power', value: '80 – 160 W' },
+        { name: 'Drivers', value: '1× 6.5" aluminium, 1" aluminium tweeter' },
+        { name: 'Sensitivity', value: '89 dB (2.83 V/1 m)' },
+        { name: 'Mounting depth', value: '92 mm' },
       ] },
       { label: 'E650FX · In-ceiling', rows: [
         { name: 'Impedance', value: '4 Ω' },
-        { name: 'Frequency', value: '50 Hz – 22 kHz' },
-        { name: 'Power', value: '80 – 120 W' },
-        { name: 'Tweeter', value: '±3 dB adjustable HF' },
+        { name: 'Frequency', value: '50 Hz – 22 kHz (±3 dB)' },
+        { name: 'Output power', value: '80 – 120 W' },
+        { name: 'Drivers', value: '1× 6.5" aluminium, 1" aluminium tweeter' },
+        { name: 'Sensitivity', value: '89 dB (2.83 V/1 m)' },
+        { name: 'Tweeter settings', value: '±3 dB' },
+        { name: 'Mounting depth', value: '121.5 mm' },
       ] },
       { label: 'E1200I · Subwoofer', rows: [
-        { name: 'Frequency', value: '30 Hz – 250 Hz' },
-        { name: 'Driver', value: '1× 12" / 30 cm coated paper' },
-        { name: 'Power', value: '300 W Class AB' },
+        { name: 'Frequency', value: '30 Hz – 250 Hz (±3 dB)' },
+        // "Coated paper" is correct HERE and only here: E1200I is the one model
+        // whose table publishes "WOOFER MATERIAL COATED PAPER". The other four
+        // rows that carried the phrase were ours; those models publish composite
+        // pulp. Deleting this one to satisfy a blanket rule would replace a
+        // published value with nothing. The 30 cm conversion was ours — dropped.
+        { name: 'Driver', value: '1× 12" coated paper' },
+        { name: 'Output power', value: '300 W' },
+        { name: 'Amplifier', value: 'Class AB' },
         { name: 'Enclosure', value: 'Bass reflex / MDF' },
+        { name: 'Input voltage', value: '110/220 V' },
+        { name: 'Weight', value: '15.3 kg' },
       ] },
     ],
     inUse: [uk('e-detail.jpg'), uk('cinema-theatre.jpg'), uk('cinema-installation.jpg')],
