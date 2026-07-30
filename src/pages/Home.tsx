@@ -6,6 +6,7 @@ import { Reveal } from '@/components/primitives/Reveal';
 import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { Parallax } from '@/components/primitives/Parallax';
 import { ResponsiveImage } from '@/components/media/ResponsiveImage';
+import { altFor } from '@/components/media/altText';
 import { BRANDS } from '@/data/brands';
 import { DeviceFrame } from '@/features/litHome/DeviceFrame';
 import { LitHomeDemo } from '@/features/litHome/LitHomeDemo';
@@ -195,7 +196,7 @@ export function Home() {
                 <div className="aspect-[4/5] bg-ink-800 overflow-hidden">
                   <ResponsiveImage
                     src={b.heroImage}
-                    alt={b.name}
+                    alt={altFor(b.heroImage)}
                     sizes="(min-width: 768px) 33vw, 100vw"
                     className="h-full w-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000 ease-out-luxe"
                   />

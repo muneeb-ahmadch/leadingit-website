@@ -102,7 +102,9 @@ export function buildBrandProductsItemList(brand: Brand, products: Product[]): J
 /**
  * `CollectionPage` node for `/brands/`, brand hubs and range pages
  * (`blustream/{dante,wireless-byod,video-over-ip}`,
- * `uandksound/{reference-series,m8-series,m6-series,s-series,e-series,m-series}`).
+ * `uandksound/{reference-series,m8-series,m6-series,e-series,m-series}`).
+ * `uandksound/s-series` was retired 2026-07-31 (OQ #21) — every model is
+ * discontinued at source; the route 301s to the brand hub via public/.htaccess.
  * Thin wrapper over `webpage.ts`'s generic builder with `type: 'CollectionPage'`
  * fixed, plus an optional `mainEntity` link to an `ItemList` node.
  *

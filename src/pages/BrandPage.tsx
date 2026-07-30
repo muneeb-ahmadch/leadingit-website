@@ -10,7 +10,7 @@ import { ArrowRight } from 'lucide-react';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { InternalLinks, type InternalLink } from '@/components/InternalLinks';
 import { ResponsiveImage } from '@/components/media/ResponsiveImage';
-import { BRAND_HERO_ALT } from '@/components/media/altText';
+import { altFor } from '@/components/media/altText';
 import { Seo } from '@/seo/Seo';
 import { KEYPAD_DESIGNER_PATH, href } from '@/seo/paths';
 import { brandMeta } from '@/seo/meta';
@@ -19,6 +19,13 @@ import { buildBrand } from '@/seo/jsonld/brand';
 import { buildBreadcrumbList } from '@/seo/jsonld/breadcrumbList';
 import { buildBrandProductsItemList, buildCollectionPage } from '@/seo/jsonld/itemList';
 import { breadcrumbNodeId, pageUrl } from '@/seo/jsonld/ids';
+
+/**
+ * The render illustrating the keypad-designer CTA on the Black Nova hub. It is
+ * also one of the ALBA product's gallery images, so its alt is resolved through
+ * `altFor()` like every other content image — one file, one description.
+ */
+const BLACK_NOVA_DESIGNER_IMAGE = '/products/black-nova/alba-design.png';
 
 function ProductCard({ brandSlug, product, delay }: { brandSlug: string; product: Product; delay: number }) {
   const { t } = useTranslation();
@@ -33,7 +40,7 @@ function ProductCard({ brandSlug, product, delay }: { brandSlug: string; product
           {isRender && <div className="absolute inset-0 bg-warm-radial opacity-60" />}
           <ResponsiveImage
             src={product.hero}
-            alt={product.name}
+            alt={altFor(product.hero)}
             sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
             className={`relative h-full w-full opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000 ease-out-luxe ${
               isRender ? 'object-contain p-8' : 'object-cover'
@@ -118,7 +125,7 @@ export function BrandPage() {
         {heroIsRender && <div className="absolute inset-0 bg-warm-radial opacity-80" />}
         <ResponsiveImage
           src={brand.heroImage}
-          alt={BRAND_HERO_ALT[brand.heroImage] ?? brand.name}
+          alt={altFor(brand.heroImage)}
           sizes="100vw"
           className={`absolute inset-0 h-full w-full ${heroIsRender ? 'object-contain p-10 md:p-20 lg:pb-40' : 'object-cover'}`}
           priority
@@ -230,8 +237,8 @@ export function BrandPage() {
                   </div>
                   <div className="relative aspect-square hidden lg:block">
                     <ResponsiveImage
-                      src="/products/black-nova/alba-design.png"
-                      alt="Black Nova Alba keypad, designer preview"
+                      src={BLACK_NOVA_DESIGNER_IMAGE}
+                      alt={altFor(BLACK_NOVA_DESIGNER_IMAGE)}
                       sizes="50vw"
                       className="absolute inset-0 h-full w-full object-contain"
                     />

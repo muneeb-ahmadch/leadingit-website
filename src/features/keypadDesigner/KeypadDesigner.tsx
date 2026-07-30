@@ -363,7 +363,10 @@ function SummaryStep({ config }: { config: DesignConfig }) {
   const spec = [
     t('designer.specHeading'),
     `${t('designer.step_collection')}: ${collection?.name ?? ''}`,
-    `${t('designer.step_layout')}: ${layout?.name ?? ''} (${layout?.note ?? ''})`,
+    // `note` is optional: ALBA 6 and ARIA Slider have no published addressable
+    // count (docs/12-PROVENANCE/black-nova.md:238, :269), so the parenthetical is
+    // omitted entirely rather than emitted empty as "ALBA 6 ()".
+    `${t('designer.step_layout')}: ${layout?.name ?? ''}${layout?.note ? ` (${layout.note})` : ''}`,
     `${t('designer.step_finish')}: ${finish?.name ?? ''}`,
     `${t('designer.step_backlight')}: ${backlight?.name ?? ''} · ${config.backlight.intensity}%`,
     ...(hasButtons

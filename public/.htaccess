@@ -34,6 +34,37 @@ RewriteCond %{HTTP_HOST} !^leadingit\.me$ [NC]
 RewriteRule ^(.*)$ https://leadingit.me/$1 [R=301,L,QSA]
 
 # ─────────────────────────────────────────────────────────────
+# Retired routes → 301 (link equity, never a 404)
+# ─────────────────────────────────────────────────────────────
+# A route is retired only when its subject stops existing at the manufacturer — not when copy
+# is thin, not when a page is being rewritten. Each entry records what was retired, why, and
+# when, because a redirect with no reason attached is the one thing nobody dares delete later.
+#
+# These sit BELOW the scheme/host block on purpose. Placed above it, a retired URL requested on
+# http:// or www. would jump straight to the canonical apex target in one hop — marginally
+# shorter, but it would make retired URLs the only paths on the site that skip canonicalisation,
+# a special case future maintainers would have to rediscover. Below it, a retired URL behaves
+# exactly like every other URL here: canonicalise first, then resolve. Every real inbound link
+# and every Googlebot fetch already arrives at https://leadingit.me, so the normal path is a
+# single 301 to the target; only a legacy http/www link pays a second hop, and it pays that on
+# every page of the site, not just this one.
+#
+# They are also above the dot-directory deny block and the DirectorySlash section deliberately.
+# Once a route is retired its directory no longer exists in dist/, so mod_dir's DirectorySlash
+# cannot fire for the slashless form (it only redirects to real directories) — the `/?$` in the
+# pattern is what handles the non-slashed form, and it must be reached before the request falls
+# through to ErrorDocument 404. Nothing above touches /.well-known/ or the AutoSSL exemption.
+#
+# 2026-07-31 — /brands/uandksound/s-series/ (Muneeb, OQ #21). All three S Series models
+# (S6 I, S6 II, S1200 I) are listed under Discontinued Products on uandksound.com and the
+# series is absent from its live collections tree, so the page had no current subject left.
+# Target is the brand hub, which is the closest surviving intent (uandksound loudspeakers) —
+# not /brands/uandksound/m-series/, which is a different series and would be a misleading match.
+# NOTE: /brands/uandksound/m-series/ is NOT retired and must not be added here — M4500D is
+# still current and that route is deliberately retained (docs/05-URL-TAXONOMY.md §Migrations).
+RewriteRule ^brands/uandksound/s-series/?$ https://leadingit.me/brands/uandksound/ [R=301,L,QSA]
+
+# ─────────────────────────────────────────────────────────────
 # Trailing slash / directory index
 # ─────────────────────────────────────────────────────────────
 # Canonical URLs always carry a trailing slash (docs/05-URL-TAXONOMY.md). dirStyle "nested"

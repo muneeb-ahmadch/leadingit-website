@@ -1,15 +1,30 @@
 /**
  * Keypad designer catalog.
  *
- * Collection, layout and finish data derive from the verified Black Nova product
- * catalog (see src/data/products.ts) — the same official source, no invented
- * data. Layout names and their maximum addressable buttons/touch points are
- * taken verbatim from each collection page on Black Nova's official site.
+ * What is sourced, and what is not — read this before adding a value here.
  *
- * IMPORTANT: the *visual* button grid, the curated lucide icon set and the
- * backlight colour presets are illustrative — a re-skin of Black Nova's own
- * "Create your keypad" pipeline. Production engraving uses Black Nova's official
- * icon library and finishing. The designer surfaces a disclaimer to this effect.
+ * SOURCED (from Black Nova's own published material: the collection pages and
+ * the per-layout datasheets, adjudicated row by row in
+ * `docs/12-PROVENANCE/black-nova.md`):
+ *   - collection names (ALBA, ARIA, ANY, AXES, BLACK JACK) and their kind;
+ *   - layout names (ALBA 8, ARIA 12, AXES CH …) — each is a published tile;
+ *   - finishes, which are not stored here at all but read from the verified
+ *     product catalog in `src/data/products.ts` via `finishesFor()`.
+ *
+ * NOT SOURCED — illustrative only, and labelled as such to the visitor by the
+ * designer's own disclaimer:
+ *   - the visual button grid (`cols`/`rows`): an arrangement chosen to preview
+ *     design intent, not a published faceplate drawing;
+ *   - the curated lucide icon set — production engraving uses Black Nova's
+ *     official icon library;
+ *   - the backlight colour presets, which are a curated selection of RGB values.
+ *
+ * Per-layout `note` is OPTIONAL and carries a published figure only. A layout
+ * for which Black Nova publishes no datasheet (ALBA 6, ARIA Slider — the name is
+ * a published tile, the button/touch-point count is not published anywhere
+ * across the 28 official PDFs; `docs/12-PROVENANCE/black-nova.md:238` and `:269`
+ * adjudicate both as OMIT) simply carries no note. Never infer a count from the
+ * numeral in a layout's name, and never carry a figure forward from a sibling.
  */
 import { PRODUCT_BY_SLUG, type Finish } from '@/data/products';
 
@@ -17,10 +32,14 @@ export type LayoutType = 'buttons' | 'display' | 'matrix';
 
 export type Layout = {
   id: string;
-  /** Official model name, e.g. "ALBA 8". */
+  /** Published layout name, e.g. "ALBA 8". */
   name: string;
-  /** Official max addressable buttons / touch points, e.g. "Max 12 addressable push buttons". */
-  note: string;
+  /**
+   * Published descriptor for this layout, e.g. "Max 12 addressable push
+   * buttons" — verbatim from the layout's own datasheet. Omitted entirely where
+   * Black Nova publishes no such figure; the UI then renders nothing.
+   */
+  note?: string;
   type: LayoutType;
   /** Physical grid for `buttons` layouts (illustrative arrangement). */
   cols?: number;
@@ -47,7 +66,9 @@ export const COLLECTIONS: Collection[] = [
     layouts: [
       { id: 'alba-2', name: 'ALBA 2', note: 'Max 4 addressable push buttons', type: 'buttons', cols: 1, rows: 2 },
       { id: 'alba-4', name: 'ALBA 4', note: 'Max 12 addressable push buttons', type: 'buttons', cols: 2, rows: 2 },
-      { id: 'alba-6', name: 'ALBA 6', note: 'Max 12 addressable push buttons', type: 'buttons', cols: 2, rows: 3 },
+      // ALBA 6: published tile, no datasheet — no addressable-button figure exists
+      // to quote (docs/12-PROVENANCE/black-nova.md:238). No note, by design.
+      { id: 'alba-6', name: 'ALBA 6', type: 'buttons', cols: 2, rows: 3 },
       { id: 'alba-8', name: 'ALBA 8', note: 'Max 12 addressable push buttons', type: 'buttons', cols: 2, rows: 4 },
       { id: 'alba-m1', name: 'ALBA M1', note: 'Multipurpose · temperature interface', type: 'display' },
     ],
@@ -60,7 +81,9 @@ export const COLLECTIONS: Collection[] = [
     layouts: [
       { id: 'aria-m1', name: 'ARIA M1', note: 'Max 6 addressable touch points', type: 'buttons', cols: 2, rows: 3 },
       { id: 'aria-12', name: 'ARIA 12', note: 'Max 12 addressable touch points', type: 'buttons', cols: 2, rows: 6 },
-      { id: 'aria-slider', name: 'ARIA Slider', note: 'Max 12 addressable touch points', type: 'buttons', cols: 2, rows: 4 },
+      // ARIA Slider: published tile, no datasheet — the touch-point figure is our
+      // inference, not Black Nova's (docs/12-PROVENANCE/black-nova.md:269). No note.
+      { id: 'aria-slider', name: 'ARIA Slider', type: 'buttons', cols: 2, rows: 4 },
     ],
   },
   {

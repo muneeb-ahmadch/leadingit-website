@@ -64,6 +64,11 @@ export function BrandsIndex() {
       {/* category groups */}
       {CATEGORIES.map((cat) => {
         const items = BRANDS.filter((b) => b.category === cat.id);
+        // The first tile of the first non-empty group is the only image above the
+        // fold, so it is this route's LCP candidate — and the only one on the page
+        // allowed to be eager + fetchpriority="high". Derived, never hard-coded to
+        // a category, so reordering `CATEGORIES` cannot leave the page with two.
+        const isLcpGroup = CATEGORIES.find((c) => BRANDS.some((b) => b.category === c.id))?.id === cat.id;
         return (
           <section key={cat.id} className="container-luxe pb-24">
             <Reveal>
@@ -85,11 +90,16 @@ export function BrandsIndex() {
                     to={href(`/brands/${b.slug}`)}
                     className="group relative block bg-ink-900 aspect-[4/5] overflow-hidden"
                   >
+                    {/* Decorative: this sits at 40% opacity behind the tile's own
+                        text, inside a link whose visible label is already the
+                        brand name — captioning it would only repeat that name to
+                        a screen reader. */}
                     <ResponsiveImage
                       src={b.heroImage}
-                      alt={b.name}
+                      alt=""
                       sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                       className="absolute inset-0 h-full w-full object-cover opacity-40 group-hover:opacity-60 group-hover:scale-105 transition-all duration-1000 ease-out-luxe"
+                      priority={isLcpGroup && i === 0}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/40 to-transparent" />
                     <div className="relative h-full p-8 flex flex-col justify-end">

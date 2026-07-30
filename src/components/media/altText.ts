@@ -1,18 +1,46 @@
 /**
- * Honest, verified alt text for content imagery, replacing the blanket
- * `alt=""` that used to ship on every product render and gallery photo
- * (MAJOR-2, Phase 3 remediation). Two disciplines apply everywhere in this
- * file:
+ * One image file, one alt string.
  *
- * 1. Product renders (`.png`/`.webp` cutouts, and Blustream's white-background
- *    `-tile.jpg` renders) are captioned `<Brand> <Model>` — that is honest
- *    because the render literally is that product.
- * 2. Sourced lifestyle photography is captioned with the caption drafted in
- *    `docs/12-PROVENANCE/image-url-map.md` from the manufacturer's own
- *    published context, copied verbatim — never re-described here. A frame we
- *    have not individually verified gets brand+model only, never an invented
- *    room/scene detail.
+ * Every template that renders a content image resolves its alt through
+ * `altFor(src)`, so the same file can never carry two different — and therefore
+ * at least one false — descriptions on two different pages. That was the defect
+ * this file previously created: `inUseAlt()` appended "in use." to whichever
+ * product page happened to be rendering, so a single shared cinema photograph
+ * shipped five mutually exclusive series claims.
+ *
+ * The governing rule is `docs/12-PROVENANCE/image-url-map.md:86` and `:375-378`:
+ * **an image must not carry alt text implying a product is shown unless we have
+ * verified that it is.** Resolution order, most specific first:
+ *
+ *  1. `DRAFTED_ALT` — the 14 photographs someone individually opened and
+ *     captioned in `image-url-map.md`. Verified by inspection, so it always
+ *     wins, and it describes the frame rather than the page it sits on.
+ *  2. `DECORATIVE_ONLY` — inspected, no product identifiable in frame → `''`.
+ *  3. **Shared assets** — any file referenced by more than one product record in
+ *     `src/data/products.ts`. The sharing set is computed from the data at
+ *     module init (`SHARED`, below), never hand-listed, so it cannot drift when
+ *     a product gains or loses a gallery image. A shared file gets `''`: we
+ *     cannot name a product without asserting it is in a frame we have not
+ *     checked, and we will not invent a room, material or location we cannot
+ *     see. `image-url-map.md:86-88` already prescribes exactly this for
+ *     `cinema-theatre.jpg`, `fibonacci-scene.jpg` and `deseo-sfeer.jpg`.
+ *  4. **Single-owner product imagery** — a render (`.png`/`.webp` cutout, or a
+ *     Blustream `-tile.jpg`), or the one product's own hero/finish photograph.
+ *     Naming here is verified by construction: the asset *is* that product, shot
+ *     for it. Caption = brand + model (+ finish) + what the thing is, the last
+ *     taken from the product's verified `collection` field.
+ *  5. `CURATED` — brand-hub photography that no product record owns, each
+ *     personally viewed and captioned to what is in frame.
+ *  6. Anything else — including a single-owner lifestyle photograph we have not
+ *     individually viewed — gets `''`. Generic and true beats specific and
+ *     unverifiable; an empty alt makes no claim at all.
+ *
+ * Consequence worth knowing: a "See it in use" gallery can legitimately render
+ * images with `alt=""`. That is the honest outcome for a photograph we have not
+ * verified, not an oversight.
  */
+import { PRODUCTS, type Product } from '@/data/products';
+import { BRAND_BY_SLUG } from '@/data/brands';
 
 /** Verbatim from docs/12-PROVENANCE/image-url-map.md ("Drafted alt text" column/rows). */
 const DRAFTED_ALT: Record<string, string> = {
@@ -53,36 +81,99 @@ const DRAFTED_ALT: Record<string, string> = {
  */
 const DECORATIVE_ONLY = new Set<string>(['/products/basalte/auro-sfeer.jpg']);
 
-/** Brand-hub hero images — the 4 drafted-alt lifestyle shots plus the other 5,
- * each personally viewed and captioned to what is actually in frame (no
- * invented specifics beyond what is visible). */
-export const BRAND_HERO_ALT: Record<string, string> = {
-  ...DRAFTED_ALT,
-  '/products/blustream/dante-matrix.png': 'Blustream Dante audio matrix, product render.',
-  '/products/black-nova/alba-on.png': 'Black Nova Alba keypad, illuminated.',
-  '/products/jvc/dla-nz900.png': 'JVC DLA-NZ900 D-ILA projector, product render.',
+/**
+ * Brand-hub photography owned by no product record — each personally viewed and
+ * captioned to what is actually in frame (no invented specifics beyond what is
+ * visible). Brand heroes that *are* a product asset (Blustream Dante, Black Nova
+ * ALBA, JVC DLA-NZ900) are deliberately absent: they resolve through the
+ * product-derived caption in step 4, so the brand hub and the product page
+ * describe the same file identically.
+ */
+const CURATED: Record<string, string> = {
   '/brands/marantz.jpg': 'Marantz stereo amplifier on a wooden sideboard in a warmly lit living room.',
   '/brands/denon.jpg': 'Stacked black Denon components beside a turntable and floor-standing speakers on a wooden cabinet.',
   '/brands/uandksound-hero.jpg': 'Private home cinema with tiered seating, a starlit ceiling and a large screen.',
   '/brands/polk-audio-hero.jpg': 'Polk Audio speaker and turntable on a wooden cabinet in a bright living room.',
 };
 
+/** A cutout render or white-background tile — the asset literally is the product. */
 const isRenderPath = (src: string) => /\.(png|webp)$/i.test(src) || /-tile\.jpg$/i.test(src);
 
-/** Alt for a product hero/finish shot — always a render of the named product. */
-export function productAlt(brandName: string, productName: string, finishName?: string): string {
-  return finishName ? `${brandName} ${productName} in ${finishName}` : `${brandName} ${productName}`;
+type Owner = { product: Product; brandName: string };
+
+/**
+ * `src` → the product records that reference it (hero, finish images, gallery).
+ * Built once from the catalog so "is this image shared?" is answered by the data
+ * itself rather than by a list someone has to remember to update.
+ */
+const OWNERS: Map<string, Owner[]> = (() => {
+  const map = new Map<string, Owner[]>();
+  const add = (src: string, product: Product, brandName: string) => {
+    const existing = map.get(src);
+    if (existing) {
+      if (!existing.some((o) => o.product.slug === product.slug)) existing.push({ product, brandName });
+      return;
+    }
+    map.set(src, [{ product, brandName }]);
+  };
+  for (const product of PRODUCTS) {
+    // The catalog stores a brand *slug*; the brand's display name comes from the
+    // one place that owns it, so an alt can never disagree with a page heading.
+    const brandName = BRAND_BY_SLUG[product.brandSlug]?.name ?? product.brandSlug;
+    add(product.hero, product, brandName);
+    for (const finish of product.finishes) add(finish.productImage, product, brandName);
+    for (const src of product.inUse) add(src, product, brandName);
+  }
+  return map;
+})();
+
+/** True when more than one product record uses this file — nobody may be named. */
+function isShared(src: string): boolean {
+  return (OWNERS.get(src)?.length ?? 0) > 1;
 }
 
 /**
- * Alt for a gallery/"in use" image: the manufacturer's own drafted caption
- * where we have individually verified one, `""` for confirmed-decorative
- * assets, otherwise brand+model — a render, or a lifestyle photo whose exact
- * scene we have not individually captioned, so we assert only what we know.
+ * "What the thing is", taken from the product's verified `collection` field
+ * (e.g. `4-Series™ Rack-Mount Control System`). The mid-dot separator the
+ * catalog uses for display reads badly in speech, so it becomes a comma.
  */
-export function inUseAlt(src: string, brandName: string, productName: string): string {
+function kindOf(product: Product): string {
+  return product.collection.replace(/\s*·\s*/g, ', ').trim();
+}
+
+/** Brand + model + finish + what it is — used only where naming is verified. */
+function describe(owner: Owner, finishName?: string): string {
+  const { brandName, product } = owner;
+  const subject = finishName ? `${brandName} ${product.name} in ${finishName}` : `${brandName} ${product.name}`;
+  const kind = kindOf(product);
+  return kind ? `${subject}, ${kind}` : subject;
+}
+
+/**
+ * The canonical alt for an image file. Resolution order is documented at the top
+ * of this file. Callers pass nothing but the `src`, which is what guarantees the
+ * one-file-one-alt invariant.
+ */
+export function altFor(src: string): string {
+  const drafted = DRAFTED_ALT[src];
+  if (drafted) return drafted;
   if (DECORATIVE_ONLY.has(src)) return '';
-  if (DRAFTED_ALT[src]) return DRAFTED_ALT[src];
-  if (isRenderPath(src)) return `${brandName} ${productName}`;
-  return `${brandName} ${productName} in use.`;
+  if (isShared(src)) return '';
+
+  const owner = OWNERS.get(src)?.[0];
+  if (owner) {
+    const { product } = owner;
+    // A finish image names its finish; two finishes sharing one image would make
+    // that ambiguous, so it is only named when exactly one finish claims the file.
+    const finishes = product.finishes.filter((f) => f.productImage === src);
+    const finishName = finishes.length === 1 ? finishes[0].name : undefined;
+    if (isRenderPath(src) || src === product.hero || finishes.length > 0) {
+      return describe(owner, finishName);
+    }
+    // Single-owner lifestyle photograph we have not individually viewed: it may
+    // or may not contain the product, so it asserts nothing.
+    return '';
+  }
+
+  return CURATED[src] ?? '';
 }

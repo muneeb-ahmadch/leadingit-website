@@ -40,13 +40,13 @@ export type ProductCategory = { slug: string; label: string; blurb: string };
  */
 export const CATEGORIES_BY_BRAND: Record<string, ProductCategory[]> = {
   crestron: [
-    { slug: 'keypads', label: 'Keypads & Interfaces', blurb: 'Horizon® and Cameo® keypads and faceplates — where the home meets the hand.' },
+    { slug: 'keypads', label: 'Keypads & Interfaces', blurb: 'Horizon and Cameo keypads and faceplates — where the home meets the hand.' },
     { slug: 'touchscreens', label: 'Touch Screens & Scheduling', blurb: 'From five-inch wall screens to room-scheduling panels, finished edge to edge in glass.' },
     { slug: 'sensors', label: 'Sensors & Climate', blurb: 'Occupancy, daylight and thermostat control that lets the building respond on its own.' },
-    { slug: 'control', label: 'Control Processors', blurb: 'The 4-Series™ engine at the core of every system — rack-mount, DIN-rail and Crestron Home® OS.' },
-    { slug: 'audio', label: 'Audio Processing', blurb: 'Crestron Avia™ digital signal processors for whole-home and commercial sound.' },
+    { slug: 'control', label: 'Control Processors', blurb: 'The 4-Series engine at the core of every system — rack-mount, DIN-rail and Crestron Home OS.' },
+    { slug: 'audio', label: 'Audio Processing', blurb: 'Crestron Avia digital signal processors for whole-home and commercial sound.' },
     { slug: 'lighting', label: 'Lighting & Load Control', blurb: 'DIN-rail dimming, switching, motor and DALI / KNX modules that command architectural lighting.' },
-    { slug: 'network', label: 'Network & Power', blurb: 'Cresnet® distribution, PoE bridges and DIN-rail power for a resilient control backbone.' },
+    { slug: 'network', label: 'Network & Power', blurb: 'Cresnet distribution, PoE bridges and DIN-rail power for a resilient control backbone.' },
   ],
 };
 
@@ -171,7 +171,7 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'crestron',
     name: 'CP4',
     collection: '4-Series™ Rack-Mount Control System',
-    tagline: 'A powerful 4-Series™ control engine for the connected home.',
+    tagline: 'A powerful 4-Series control engine for the connected home.',
     description:
       'The CP4 is the rack-mount processor a Crestron installation is built around. One unit runs as many as ten programs at the same time, and the onboard ports let it drive audio, video, lighting, shades and climate without extra gateways. Leading IT specifies, programs and supports it for villas, offices and government fit-outs in Dubai and across Pakistan.',
     category: 'control',
@@ -196,7 +196,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crRack,
     metaDescription:
-      'Crestron CP4 4-Series™ rack-mount control processor. Distributed, programmed and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron CP4 4-Series rack-mount control processor. Distributed, programmed and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron CP4', 'CP4 control processor', '4-Series control system', 'Crestron CP4 UAE', 'Crestron CP4 Pakistan'],
   },
   {
@@ -204,7 +204,7 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'crestron',
     name: 'CP4-R',
     collection: '4-Series™ Processor for Crestron Home®',
-    tagline: 'The rack-mount core of a Crestron Home® system.',
+    tagline: 'The rack-mount core of a Crestron Home system.',
     description:
       'The CP4-R ships with the Crestron Home operating system already on board, so it is the core of a Crestron Home installation rather than a blank processor to be programmed from scratch. Its multicore 4-Series CPU is sized for the larger jobs — whole-villa automation, a dedicated cinema, multiroom video, and apartment blocks. Onboard ports reach audio, video, lighting, motorised shades, thermostats, door locks and sensors directly.',
     category: 'control',
@@ -229,7 +229,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crRack,
     metaDescription:
-      'Crestron CP4-R rack-mount 4-Series™ processor with embedded Crestron Home® OS. Supplied and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron CP4-R rack-mount 4-Series processor with embedded Crestron Home OS. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron CP4-R', 'Crestron Home processor', 'CP4-R UAE', 'CP4-R Pakistan', 'Crestron Home OS'],
   },
   {
@@ -237,7 +237,7 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'crestron',
     name: 'DIN-AP4',
     collection: '4-Series™ DIN Rail Control System',
-    tagline: 'The 4-Series™ engine, sized for the DIN rail.',
+    tagline: 'The 4-Series engine, sized for the DIN rail.',
     description:
       'The DIN-AP4 puts a full 4-Series control engine on the DIN rail, so the processor sits in the distribution board next to the breakers instead of in a rack. It anchors an all-DIN automation system alongside Crestron dimming, switching and motor modules. Apple HomeKit and XiO Cloud provisioning are supported, and BACnet for a building management system with a BACnet and IP license.',
     category: 'control',
@@ -262,7 +262,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crRack,
     metaDescription:
-      'Crestron DIN-AP4 4-Series™ DIN-rail control system. Distributed, programmed and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron DIN-AP4 4-Series DIN-rail control system. Distributed, programmed and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron DIN-AP4', 'DIN rail control system', '4-Series DIN', 'DIN-AP4 UAE', 'DIN-AP4 Pakistan'],
   },
   {
@@ -270,7 +270,7 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'crestron',
     name: 'DIN-AP4-R',
     collection: 'DIN Rail System for Crestron Home®',
-    tagline: 'A Crestron Home® core that lives on the DIN rail.',
+    tagline: 'A Crestron Home core that lives on the DIN rail.',
     description:
       'The DIN-AP4-R is the Crestron Home core for jobs that have no rack. It mounts on the DIN rail in the electrical enclosure and runs small to medium homes, cinema rooms, multiroom video and apartment units. Onboard ports reach lighting, shades, climate, locks and sensors directly.',
     category: 'control',
@@ -295,7 +295,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crRack,
     metaDescription:
-      'Crestron DIN-AP4-R DIN-rail 4-Series™ system with Crestron Home® OS. Supplied and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron DIN-AP4-R DIN-rail 4-Series system with Crestron Home OS. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron DIN-AP4-R', 'Crestron Home DIN rail', 'DIN-AP4-R UAE', 'DIN-AP4-R Pakistan'],
   },
 
@@ -437,7 +437,7 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'crestron',
     name: 'DIN-DLI',
     collection: 'DALI® Interface · DIN Rail',
-    tagline: 'A DALI-2™ certified bridge to a full DALI loop.',
+    tagline: 'A DALI-2 certified bridge to a full DALI loop.',
     description:
       'The DIN-DLI is how a Crestron system talks to a DALI lighting loop — one loop, up to 64 addressable fittings, with DALI-2 certification behind it. It occupies 3 modules of DIN rail and connects back over Cresnet or Ethernet with PoE. Commissioning is done in a browser rather than with a separate tool.',
     category: 'lighting',
@@ -462,7 +462,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crInterior,
     metaDescription:
-      'Crestron DIN-DLI DALI-2™ certified DIN-rail DALI interface. Distributed and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron DIN-DLI DALI-2 certified DIN-rail DALI interface. Distributed and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron DIN-DLI', 'DALI interface', 'DALI-2 gateway', 'DIN-DLI UAE', 'DIN-DLI Pakistan'],
   },
   {
@@ -470,7 +470,7 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'crestron',
     name: 'DIN-KXI',
     collection: 'KNX Secure IP Gateway · DIN Rail',
-    tagline: 'The 4-Series™ system, fluent in KNX.',
+    tagline: 'The 4-Series system, fluent in KNX.',
     description:
       'Plenty of Gulf and Pakistani projects are already wired in KNX. The DIN-KXI lets a 4-Series Crestron system address up to 1,000 KNX datapoints over IP, so that existing bus becomes part of the same user interface instead of a second system. It draws its power from the KNX bus, supports AES-128 KNX Security, and doubles as the programming interface for KNX devices in ETS5 or ETS6.',
     category: 'lighting',
@@ -495,7 +495,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crInterior,
     metaDescription:
-      'Crestron DIN-KXI KNX Secure IP gateway for 4-Series™ systems, DIN-rail mount. Supplied and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron DIN-KXI KNX Secure IP gateway for 4-Series systems, DIN-rail mount. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron DIN-KXI', 'KNX IP gateway', 'KNX Secure', 'DIN-KXI UAE', 'DIN-KXI Pakistan'],
   },
 
@@ -505,7 +505,7 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'crestron',
     name: 'DIN-CENCN-2-POE',
     collection: 'Ethernet-to-Cresnet® Bridge with PoE',
-    tagline: 'Cresnet® reliability, carried over high-speed Ethernet.',
+    tagline: 'Cresnet reliability, carried over high-speed Ethernet.',
     description:
       'Long Cresnet runs and crowded buses are where control systems get flaky. This module carries Cresnet data over Ethernet instead and splits the load into two isolated subnets, each with its own address space and up to 20 client devices. Six Cresnet connectors make terminating multiple lines straightforward. A front-panel test button and a browser diagnostics page report wiring faults and power shortfalls, and the unit can be powered by PoE, PoE+ or 24 V DC.',
     category: 'network',
@@ -530,7 +530,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crRack,
     metaDescription:
-      'Crestron DIN-CENCN-2-POE Ethernet-to-Cresnet® bridge with PoE and dual subnets. Distributed and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron DIN-CENCN-2-POE Ethernet-to-Cresnet bridge with PoE and dual subnets. Distributed and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron DIN-CENCN-2-POE', 'Cresnet bridge', 'Ethernet Cresnet', 'DIN-CENCN UAE', 'DIN-CENCN Pakistan'],
   },
   {
@@ -538,7 +538,7 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'crestron',
     name: 'DIN-HUB',
     collection: 'Cresnet® Distribution Hub · DIN Rail',
-    tagline: 'The backbone of a large Cresnet® network.',
+    tagline: 'The backbone of a large Cresnet network.',
     description:
       'A Cresnet bus runs about 20 devices before it needs help. The DIN-HUB adds three more segments and lets each one take power either from the host supply or from its own, which keeps a large villa or a hotel floor on one control network. It clips onto the DIN rail beside Crestron lighting modules and third-party DIN devices.',
     category: 'network',
@@ -562,7 +562,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crRack,
     metaDescription:
-      'Crestron DIN-HUB DIN-rail Cresnet® distribution hub for large networks. Supplied and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron DIN-HUB DIN-rail Cresnet distribution hub for large networks. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron DIN-HUB', 'Cresnet hub', 'Cresnet distribution', 'DIN-HUB UAE', 'DIN-HUB Pakistan'],
   },
   {
@@ -570,7 +570,7 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'crestron',
     name: 'DIN-PWS60',
     collection: '60 W Cresnet® Power Supply · DIN Rail',
-    tagline: 'Clean, front-wired power for the Cresnet® bus.',
+    tagline: 'Clean, front-wired power for the Cresnet bus.',
     description:
       'Sixty watts of Cresnet power in a DIN-rail module, for feeding processors, keypads and sensors on the bus. Six Cresnet ports fan the supply out, and Cresnet data passes through the unit unaffected. Every terminal is a screw terminal reachable from the front of the board, so an electrician can wire and service it without pulling the module.',
     category: 'network',
@@ -595,7 +595,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crRack,
     metaDescription:
-      'Crestron DIN-PWS60 60 W DIN-rail Cresnet® power supply. Distributed and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron DIN-PWS60 60 W DIN-rail Cresnet power supply. Distributed and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron DIN-PWS60', 'Cresnet power supply', 'DIN rail power', 'DIN-PWS60 UAE', 'DIN-PWS60 Pakistan'],
   },
 
@@ -630,7 +630,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crRack,
     metaDescription:
-      'Crestron Avia™ DSP-1280 12×8 digital signal processor. Distributed, configured and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron Avia DSP-1280 12×8 digital signal processor. Distributed, configured and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron DSP-1280', 'Crestron Avia DSP', 'digital signal processor', 'DSP-1280 UAE', 'DSP-1280 Pakistan'],
   },
   {
@@ -638,7 +638,7 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'crestron',
     name: 'DSP-1281',
     collection: 'Crestron Avia™ 12×8 DSP with Dante®',
-    tagline: 'Avia™ processing, networked over Dante®.',
+    tagline: 'Avia processing, networked over Dante.',
     description:
       'The DSP-1281 is the DSP-1280 with Dante on board: the same twelve mic/line inputs and eight balanced outputs, plus 32 channels in and 32 out over the audio network at up to 24-bit 48 kHz. That is how you add inputs without adding a second rack — link units over Dante and the channel count grows. AES67 is supported for interoperating with non-Dante equipment.',
     category: 'audio',
@@ -663,7 +663,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crRack,
     metaDescription:
-      'Crestron Avia™ DSP-1281 12×8 DSP with 32×32 Dante® networking. Supplied and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron Avia DSP-1281 12×8 DSP with 32×32 Dante networking. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron DSP-1281', 'Avia DSP Dante', 'Dante audio processor', 'DSP-1281 UAE', 'DSP-1281 Pakistan'],
   },
   {
@@ -696,7 +696,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crRack,
     metaDescription:
-      'Crestron Avia™ DSP-860 8×6 digital signal processor. Distributed, configured and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron Avia DSP-860 8×6 digital signal processor. Distributed, configured and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron DSP-860', 'Avia 8x6 DSP', 'digital signal processor', 'DSP-860 UAE', 'DSP-860 Pakistan'],
   },
 
@@ -731,7 +731,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crInterior,
     metaDescription:
-      'Crestron GLS-OIRLCL-C-CN ceiling occupancy & daylight sensor on Cresnet®. Distributed and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron GLS-OIRLCL-C-CN ceiling occupancy & daylight sensor on Cresnet. Distributed and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron GLS-OIRLCL-C-CN', 'occupancy sensor', 'daylight sensor', 'GLS-OIRLCL UAE', 'GLS-OIRLCL Pakistan'],
   },
   {
@@ -768,7 +768,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crInterior,
     metaDescription:
-      'Crestron HZ-THSTAT Horizon® wireless thermostat with humidistat and 3.5" touch screen. Supplied and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron HZ-THSTAT Horizon wireless thermostat with humidistat and 3.5" touch screen. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron HZ-THSTAT', 'Horizon thermostat', 'Crestron thermostat', 'HZ-THSTAT UAE', 'HZ-THSTAT Pakistan'],
   },
 
@@ -813,7 +813,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crInterior,
     metaDescription:
-      'Crestron HZ2-KPCN Horizon® 2 keypad on Cresnet®, in textured, glass and metal finishes. Distributed and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron HZ2-KPCN Horizon 2 keypad on Cresnet, in textured, glass and metal finishes. Distributed and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron HZ2-KPCN', 'Horizon 2 keypad', 'Crestron keypad', 'HZ2-KPCN UAE', 'HZ2-KPCN Pakistan', 'luxury keypad Dubai'],
   },
   {
@@ -821,7 +821,7 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'crestron',
     name: 'HZ2-FP-G1',
     collection: 'Horizon® 2 Faceplate · 1-Gang',
-    tagline: 'The finishing frame for every Horizon® device.',
+    tagline: 'The finishing frame for every Horizon device.',
     description:
       'The faceplate is not an accessory here — a Horizon 2 keypad, dimmer or switch is not finished until one is fitted. This is the single-gang version, and the trim matches the plate rather than contrasting with it. Choose textured white, black or almond; glass in white or black; or metal in brushed black, brushed brass, dark bronze or dark nickel.',
     category: 'keypads',
@@ -856,7 +856,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crInterior,
     metaDescription:
-      'Crestron HZ2-FP-G1 Horizon® 2 1-gang faceplate in glass and metal finishes. Supplied and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron HZ2-FP-G1 Horizon 2 1-gang faceplate in glass and metal finishes. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron HZ2-FP-G1', 'Horizon 2 faceplate', 'Crestron faceplate', 'HZ2-FP UAE', 'HZ2-FP Pakistan'],
   },
   {
@@ -889,7 +889,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crInterior,
     metaDescription:
-      'Crestron C2NI-CB Cameo® international keypad for EU/UK boxes, textured finishes. Distributed and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron C2NI-CB Cameo international keypad for EU/UK boxes, textured finishes. Distributed and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron C2NI-CB', 'Cameo keypad', 'Crestron international keypad', 'C2NI-CB UAE', 'C2NI-CB Pakistan'],
   },
 
@@ -927,7 +927,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crInterior,
     metaDescription:
-      'Crestron TSW-1080 10.1" wall mount touch screen with PoE+, Wi-Fi 6 (802.11ax) and Rava® SIP. Distributed and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron TSW-1080 10.1" wall mount touch screen with PoE+, Wi-Fi 6 (802.11ax) and Rava SIP. Distributed and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron TSW-1080', '10 inch touch screen', 'Crestron touch panel', 'TSW-1080 UAE', 'TSW-1080 Pakistan'],
   },
   {
@@ -963,7 +963,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crInterior,
     metaDescription:
-      'Crestron TSW-880 8.1" wall mount touch screen with PoE+, Wi-Fi 6 (802.11ax) and Rava® SIP. Supplied and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron TSW-880 8.1" wall mount touch screen with PoE+, Wi-Fi 6 (802.11ax) and Rava SIP. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron TSW-880', '8 inch touch screen', 'Crestron touch panel', 'TSW-880 UAE', 'TSW-880 Pakistan'],
   },
   {
@@ -999,7 +999,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crInterior,
     metaDescription:
-      'Crestron TSW-770 7" wall mount touch screen with Smart Graphics®, Rava® SIP and PoE+. Distributed and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron TSW-770 7" wall mount touch screen with Smart Graphics, Rava SIP and PoE+. Distributed and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron TSW-770', '7 inch touch screen', 'Crestron touch panel', 'TSW-770 UAE', 'TSW-770 Pakistan'],
   },
   {
@@ -1035,7 +1035,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crInterior,
     metaDescription:
-      'Crestron TSW-570 5" wall mount touch screen with Smart Graphics® and PoE. Supplied and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron TSW-570 5" wall mount touch screen with Smart Graphics and PoE. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron TSW-570', '5 inch touch screen', 'Crestron touch panel', 'TSW-570 UAE', 'TSW-570 Pakistan'],
   },
   {
@@ -1426,7 +1426,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Audio-over-IP · Dante®',
     tagline: 'Studio-grade audio, distributed over the network.',
     description:
-      'Blustream’s Dante® range brings Audinate’s Dante audio networking to residential and commercial installations. Encoders, decoders, matrix processors and networked power amplifiers move multi-channel audio over standard 1Gb network infrastructure — from a single wall plate to a fully switched building.',
+      'Blustream’s Dante range brings Audinate’s Dante audio networking to residential and commercial installations. Encoders, decoders, matrix processors and networked power amplifiers move multi-channel audio over standard 1Gb network infrastructure — from a single wall plate to a fully switched building.',
     metaDescription:
       'Blustream Dante audio-over-IP range — encoders, decoders, the DA1414 matrix and NPA networked amplifiers over standard networks. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['Blustream Dante', 'Dante audio over IP', 'Blustream Dante UAE', 'Blustream Dante Pakistan', 'networked audio distribution'],
@@ -3525,76 +3525,11 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: [uk('cinema-inwall.jpg'), uk('amt-tweeter.jpg'), uk('cinema-installation.jpg')],
   },
-  {
-    slug: 's-series',
-    brandSlug: 'uandksound',
-    name: 'S Series',
-    collection: 'Cinema Series · S',
-    // "Ribbon" appeared in four fields here and on no S Series page. The published
-    // treble spec is a 1" driver with a "Directional polymer compressed treble"
-    // panel (uandksound.com/product/s6ii/, verified 2026-07-30). Every S Series
-    // model also carries a "MODEL TEMPORARILY DISCONTINUED" banner — see OQ #21,
-    // which is a page-level decision for Muneeb, not a copy fix.
-    tagline: 'Compact wall-mount, directional treble panel.',
-    description:
-      'The S Series are compact full-range wall-mount loudspeakers, each pairing 6.5" drivers with a 1" directional polymer compressed treble panel. The MDF enclosure and mounting-lock system take horizontal or vertical orientation, so the same model serves a front or a surround position. Standard finish is matte black.',
-    metaDescription:
-      'UandKSound S Series compact wall-mount cinema speakers — S6 I, S6 II and the S1200 I subwoofer. Supplied in the UAE and Pakistan by Leading IT.',
-    keywords: ['UandKSound S Series', 'S6 I', 'S6 II', 'S1200 I subwoofer', 'compact wall-mount cinema speaker', 'UandKSound UAE Pakistan'],
-    hero: uk('s-s6ii.png'),
-    finishes: [ukBlack(uk('s-s6ii.png'), 'Matte Black')],
-    specs: [
-      // Re-derived per model on 2026-07-30 from each model's own
-      // "Información adicional" table: uandksound.com/product/{s6i, s6ii,
-      // s1200i}/. Transcriptions in
-      // docs/12-PROVENANCE/copy-reuse-audit-cinema.md § "Phase 3 spec remediation".
-      // Two corrections worth naming. (1) The "SPL nn dB ±1.5 dB" rows were
-      // wrong twice over: the figure is a *sensitivity* (published as
-      // "SENSITIVITY 89dB/2.83V/1.0M"), and no uandksound page publishes a
-      // ±1.5 dB tolerance at all (QA MINOR/OQ #34). (2) "ribbon tweeter" is not
-      // published on any S Series page — the tables say TWEETER SIZE 1" x1 with
-      // TREBLE PANEL "Directional polymer compressed treble". The word survives
-      // in this record's description/tagline/keywords, which are outside this
-      // pass's remit; flagged to the orchestrator.
-      // All three models carry "MODEL TEMPORARILY DISCONTINUED" on their PDP
-      // (OQ #16) — a page-level decision, so no status row is asserted here.
-      { label: 'S6 I', rows: [
-        { name: 'Impedance', value: '4 Ω' },
-        { name: 'Frequency', value: '55 Hz – 22 kHz (±3 dB)' },
-        { name: 'Power (AES)', value: '80 W' },
-        { name: 'Power (RMS)', value: '100 W' },
-        { name: 'Power (peak)', value: '160 W' },
-        { name: 'Drivers', value: '2× 6.5" composite pulp, 1" tweeter' },
-        { name: 'Treble panel', value: 'Directional polymer compressed treble' },
-        { name: 'Sensitivity', value: '89 dB (2.83 V/1 m)' },
-      ] },
-      { label: 'S6 II', rows: [
-        { name: 'Impedance', value: '4 Ω' },
-        { name: 'Frequency', value: '45 Hz – 22 kHz (±3 dB)' },
-        { name: 'Power (AES)', value: '120 W' },
-        { name: 'Power (RMS)', value: '160 W' },
-        { name: 'Power (peak)', value: '320 W' },
-        { name: 'Drivers', value: '4× 6.5" composite pulp, 1" tweeter' },
-        { name: 'Treble panel', value: 'Directional polymer compressed treble' },
-        { name: 'Sensitivity', value: '91 dB (2.83 V/1 m)' },
-      ] },
-      { label: 'S1200 I · Subwoofer', rows: [
-        { name: 'Frequency', value: '25 Hz – 300 Hz (±3 dB)' },
-        { name: 'Driver', value: '1× 12" composite pulp' },
-        // The old single row, "1200 W Class AB", fused the Peak rating to the
-        // amplifier class and hid the 800 W RMS figure a specifier needs.
-        { name: 'Power (AES)', value: '200 W' },
-        { name: 'Power (RMS)', value: '800 W' },
-        { name: 'Power (peak)', value: '1200 W' },
-        { name: 'Amplifier', value: 'Class AB' },
-        { name: 'Sensitivity', value: '90 dB (2.83 V/1 m)' },
-        { name: 'Enclosure', value: 'Bass reflex / MDF' },
-        { name: 'Input voltage', value: '120/230 V' },
-        { name: 'Weight', value: '46.5 kg' },
-      ] },
-    ],
-    inUse: [uk('cinema-inwall.jpg'), uk('cinema-theatre.jpg'), uk('cinema-installation.jpg')],
-  },
+  // The S Series record was removed on 2026-07-31 (OQ #21). All three models —
+  // S6 I, S6 II and the S1200 I subwoofer — are discontinued at source and the
+  // series is gone from the manufacturer's live collections tree. The route is
+  // retired and 301s to the brand page; see src/seo/ranges.ts. Do not re-add
+  // without a live model at source.
   {
     slug: 'e-series',
     brandSlug: 'uandksound',
@@ -3685,16 +3620,17 @@ export const PRODUCTS: Product[] = [
     collection: 'M Series · Amplification',
     tagline: 'Multichannel muscle for the reference cinema.',
     description:
-      'The M Series is UandKSound\'s amplification platform — fully balanced Class A/AB stages (M2300, M7300) alongside high-current Class D designs (M4500D, M7300D). Ultra-low noise, per-channel transformers and an exceptional signal-to-noise ratio deliver noiseless, effortless power at every level. A 12 V trigger daisy-chains multiple stages for the most complex installations, making them the natural partner for the Reference Series.',
+      'The M4500D is the one M Series amplifier still in production: four bridgeable Class D channels, 750 W each into 4 Ω, in a single chassis. Published distortion is under 0.001% from 20 Hz to 20 kHz, with signal-to-noise above 110 dB. A 12 V DC trigger brings the amplifier up with the processor, so a rack in a Dubai villa cinema wakes in the right order instead of thumping through the room. UandKSound has discontinued the rest of the M Series — the M2300, M7300 and M7300D — so the M4500D is the amplifier Leading IT specifies in the UAE and supplies into Pakistan.',
     metaDescription:
-      'UandKSound M Series multichannel power amplifiers — Class A/AB M2300 and M7300, Class D M4500D (750W) and M7300D. Supplied in the UAE and Pakistan by Leading IT.',
-    keywords: ['UandKSound M Series amplifier', 'M4500D', 'M7300D', 'M7300', 'multichannel cinema amplifier', 'UandKSound UAE Pakistan'],
+      'UandKSound M Series: M4500D is the current model — four Class D channels, 750 W each into 4 Ω, bridgeable. Supplied in the UAE and Pakistan by Leading IT.',
+    keywords: ['UandKSound M Series amplifier', 'M4500D', 'multichannel cinema amplifier', 'UandKSound UAE Pakistan'],
     hero: uk('m-m4500d.png'),
     finishes: [ukBlack(uk('m-m4500d.png'), 'Black')],
-    // All four THD values were an order of magnitude high (audit D-16): the
-    // manufacturer publishes 0.001% for M4500D/M7300D and 0.002% for
-    // M7300/M2300. Its pages misprint "＞" where "<" is clearly meant, so the
-    // comparator below stays "<" and only the digits were corrected.
+    // Only the M4500D survives. The M2300, M7300 and M7300D spec groups were
+    // removed on 2026-07-31 (OQ #21) — all three are discontinued at source.
+    // The M4500D THD value was corrected in the 2026-07-30 spec pass (audit
+    // D-16): the manufacturer publishes 0.001%, and its pages misprint "＞"
+    // where "<" is clearly meant, so the comparator stays "<".
     specs: [
       { label: 'M4500D · Class D', rows: [
         { name: 'Power', value: '750 W / 4 Ω × 4 ch' },
@@ -3702,27 +3638,6 @@ export const PRODUCTS: Product[] = [
         { name: 'THD', value: '< 0.001% (20 Hz – 20 kHz)' },
         { name: 'SNR', value: '> 110 dB' },
         { name: 'Trigger', value: '12 V DC' },
-      ] },
-      { label: 'M7300D · Class D', rows: [
-        { name: 'Power', value: '300 W / 8 Ω × 7 ch' },
-        { name: 'THD', value: '< 0.001% (20 Hz – 20 kHz)' },
-        { name: 'SNR', value: '> 110 dB' },
-        { name: 'Trigger', value: '12 V DC' },
-        { name: 'Weight', value: '24 kg' },
-      ] },
-      { label: 'M7300 · Class A/AB', rows: [
-        { name: 'Power', value: '300 W / 4 Ω × 7 ch' },
-        { name: 'SNR', value: '> 115 dB, A-weighted' },
-        { name: 'THD', value: '< 0.002% (20 Hz – 20 kHz)' },
-        { name: 'Inputs', value: '7× XLR / RCA' },
-        { name: 'Weight', value: '57 kg' },
-      ] },
-      { label: 'M2300 · Class A/AB', rows: [
-        { name: 'Power', value: '300 W / 4 Ω × 2 ch' },
-        { name: 'SNR', value: '> 115 dB, A-weighted' },
-        { name: 'THD', value: '< 0.002% (20 Hz – 20 kHz)' },
-        { name: 'Inputs', value: '2× XLR / RCA' },
-        { name: 'Weight', value: '22 kg' },
       ] },
     ],
     inUse: [uk('cinema-rack.jpg'), uk('cinema-wall.jpg'), uk('cinema-theatre.jpg')],

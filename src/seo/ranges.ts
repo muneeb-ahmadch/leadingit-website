@@ -7,9 +7,11 @@
  * receive `Product` JSON-LD. It gets `CollectionPage` + `ItemList` instead (see
  * `.claude/skills/schema-jsonld/SKILL.md`). Emitting `Product` on a range is a
  * structured-data violation the Rich Results Test flags, and it is exactly the
- * kind of thing that silently regresses when a new range is added, so the nine
+ * kind of thing that silently regresses when a new range is added, so the range
  * routes are enumerated here once and both the metadata layer and the schema
- * layer read the same list.
+ * layer read the same list. Deliberately no count is stated in this comment —
+ * the list grows and shrinks (see the S Series retirement below) and a stated
+ * count goes stale silently; `RANGE_ROUTE_KEYS.length` is the only truth.
  *
  * It lives in its own data-free module (no `@/data/*` import) so that a page
  * component, the metadata builders and the route manifest can all ask the
@@ -19,6 +21,10 @@
  * key is checkable against `docs/05-URL-TAXONOMY.md` by eye.
  *
  * To add a range: add its `<brandSlug>/<productSlug>` key here. Nothing else.
+ * To retire one: the product record in `src/data/products.ts` and the key here
+ * must go in the same change — `assertManifest()` in `./routes.ts` fails the
+ * build on a key that names no product route, and (in the other direction) on a
+ * family-labelled product that is not registered here.
  */
 export const RANGE_ROUTE_KEYS: readonly string[] = [
   // Basalte's Aalto is a speaker *collection*, not a model: its own spec table
@@ -57,10 +63,22 @@ export const RANGE_ROUTE_KEYS: readonly string[] = [
   'basalte/plano',
   // Every uandksound entry is a loudspeaker series; individual models within a
   // series are not catalogued as separate routes.
+  //
+  // `uandksound/s-series` was removed on 2026-07-31: all three models (S6 I,
+  // S6 II, S1200 I) are listed under Discontinued Products on the manufacturer's
+  // own site and the series is absent from its live collections tree, so the
+  // route was retired (Muneeb, OQ #21) and 301s to /brands/uandksound/ in
+  // public/.htaccess. Do not re-add without a live model at source.
+  //
+  // `uandksound/m-series` STAYS. It was reviewed in the same pass and is
+  // deliberately retained: M4500D is still current, so the page presents one
+  // current model while remaining a series-level range route. A range with a
+  // single surviving member is still a range — it must not be "tidied" into a
+  // Product node, because the series is the thing being sold and the record has
+  // no single MPN or offer.
   'uandksound/reference-series',
   'uandksound/m8-series',
   'uandksound/m6-series',
-  'uandksound/s-series',
   'uandksound/e-series',
   'uandksound/m-series',
 ];

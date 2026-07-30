@@ -10,7 +10,7 @@ import { ButtonLink } from '@/components/primitives/Button';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { InternalLinks, type InternalLink } from '@/components/InternalLinks';
 import { ResponsiveImage } from '@/components/media/ResponsiveImage';
-import { productAlt, inUseAlt } from '@/components/media/altText';
+import { altFor } from '@/components/media/altText';
 import { useHydrated } from '@/lib/hydration';
 import { Seo } from '@/seo/Seo';
 import { KEYPAD_DESIGNER_PATH, href } from '@/seo/paths';
@@ -147,7 +147,7 @@ export function ProductPage() {
                       exactly one fetchpriority="high" image per page. */}
                   <ResponsiveImage
                     src={activeFinish.productImage}
-                    alt={productAlt(brand.name, product.name, activeFinish.name)}
+                    alt={altFor(activeFinish.productImage)}
                     sizes="(min-width: 1024px) 50vw, 100vw"
                     className="h-full w-full object-contain p-10 md:p-16"
                     priority
@@ -229,7 +229,7 @@ export function ProductPage() {
                       claims this page's one fetchpriority="high". */}
                   <ResponsiveImage
                     src={activeFinish.productImage}
-                    alt={productAlt(brand.name, product.name, activeFinish.name)}
+                    alt={altFor(activeFinish.productImage)}
                     sizes="(min-width: 768px) 66vw, 100vw"
                     className="h-full w-full object-contain p-10 md:p-16"
                   />
@@ -281,7 +281,7 @@ export function ProductPage() {
                     {isRender && <div className="absolute inset-0 bg-warm-radial opacity-70" />}
                     <ResponsiveImage
                       src={src}
-                      alt={inUseAlt(src, brand.name, product.name)}
+                      alt={altFor(src)}
                       sizes="(min-width: 768px) 33vw, 100vw"
                       className={`relative h-full w-full ${isRender ? 'object-contain p-8' : 'object-cover'}`}
                     />
