@@ -1,6 +1,7 @@
 {
   "nav": {
     "brands": "Brands",
+    "solutions": "Solutions",
     "litHome": "LIT Home",
     "about": "About",
     "contact": "Contact",
@@ -30,7 +31,6 @@
     "litTeaserTitle": "Bespoke control.",
     "litTeaserBody": "A harmonious integration of hardware and software, creating intuitive, seamless, human centric experiences. It removes unnecessary complexity, leaving control that is powerful and entirely your own.",
     "litTeaserCta": "Open the demo",
-    "featuredEyebrow": "Currently featured",
     "lifestyleQuote": "Luxury is not what you add. It is what you remove until only intention remains.",
     "lifestyleAttribution": "— from the Leading IT design brief"
   },
@@ -43,6 +43,25 @@
     "explore": "Explore",
     "viewProducts": "View product range",
     "inquireBrand": "Inquire about {{brand}}"
+  },
+  "solutions": {
+    "indexEyebrow": "Design and installation",
+    "pageEyebrow": "Solutions",
+    "publishedTitle": "Category pages published so far",
+    "faqTitle": "Common questions",
+    "componentsTitle": "What the system is made of",
+    "relatedBrands": "Brands used in this system",
+    "relatedProducts": "Equipment from the catalogue",
+    "crossAxisTitle": "Where to go next",
+    "backToIndex": "Every category Leading IT designs and installs",
+    "backToIndexHint": "The solutions index",
+    "ctaEyebrow": "Begin a project",
+    "ctaWhatsApp": "Message Leading IT on WhatsApp",
+    "ctaEnquiry": "Send an enquiry",
+    "ctaEmailPrefix": "Or write to",
+    "indexCtaTitle": "Describe the project, and Leading IT will point you at the right starting place.",
+    "pageCtaTitle": "Describe the room and the programme, and the reply can be specific.",
+    "faqCtaTitle": "Still deciding? Send the drawings or the room dimensions for a specific answer."
   },
   "product": {
     "navOverview": "Overview",
@@ -185,12 +204,6 @@
     "eyebrow": "About",
     "title": "Engineers, not a sales team.",
     "lead": "If you are looking for a sales team, we will likely disappoint you. We are a team of engineers who genuinely know our solutions. We have one unifying purpose: to help our clients select, procure and integrate quality solutions that exceed their clients' expectations. We are not just moving boxes; we provide value through the entire system life cycle.",
-    "stat1Value": "01",
-    "stat1Label": "Dubai showroom",
-    "stat2Value": "09",
-    "stat2Label": "Premium brands represented",
-    "stat3Value": "02",
-    "stat3Label": "Regions served: Gulf and Pakistan",
     "teamEyebrow": "You may already know our team",
     "teamTitle": "The people behind Leading IT.",
     "roleManagingDirector": "Managing Director",

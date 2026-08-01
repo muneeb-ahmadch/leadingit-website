@@ -105,18 +105,34 @@ export function LitHomePage() {
         </div>
       </section>
 
-      {/* features */}
+      {/*
+       * features — CARD GRID REMOVED 2026-08-01 (Phase 4).
+       *
+       * `docs/02-DESIGN-SOURCE-OF-TRUTH.md` obliges removing "the three-card
+       * cliché grids on Home / About / LIT Home". Recorded honestly: what was
+       * here was a **four**-card grid (`md:grid-cols-2`, four FEATURES), not a
+       * three-card one. The doc's count did not match the code. The ban is on
+       * the numbered-card marketing cliché — `0{i+1}` + heading + paragraph in
+       * a bordered tile — not on the number three, so this was in scope and the
+       * discrepancy is noted rather than quietly reinterpreted.
+       *
+       * The copy is unchanged and stays: it describes our own product, is
+       * defensible, and was never the problem. Only the presentation changed,
+       * and it is assembled from existing system pieces (`Eyebrow`, serif
+       * heading, `rule-gold`, body text) — no new visual decisions, per
+       * CLAUDE.md rule 5.
+       */}
       <section className="container-luxe py-32">
         <Reveal>
           <Eyebrow>{t('litHome.featuresTitle')}</Eyebrow>
         </Reveal>
-        <div className="mt-12 grid md:grid-cols-2 gap-px bg-white/5 border border-white/5">
+        <div className="mt-12 max-w-4xl">
           {FEATURES.map((f, i) => (
             <Reveal key={f.title} delay={i * 0.06}>
-              <div className="bg-ink-900 p-10 h-full">
-                <div className="font-mono text-xs text-gold">0{i + 1}</div>
-                <h3 className="mt-4 font-serif text-3xl">{f.title}</h3>
-                <p className="mt-4 text-bone-500 leading-relaxed">{f.body}</p>
+              <div className={i === 0 ? '' : 'mt-14'}>
+                <div className="rule-gold" />
+                <h3 className="mt-7 font-serif text-3xl">{f.title}</h3>
+                <p className="mt-4 text-bone-500 leading-relaxed max-w-2xl">{f.body}</p>
               </div>
             </Reveal>
           ))}

@@ -34,6 +34,7 @@
  */
 import type { Brand } from '@/data/brands';
 import type { Product } from '@/data/products';
+import type { Solution } from '@/data/solutions';
 import { SITE_NAME } from '@/lib/site';
 import { KEYPAD_DESIGNER_PATH } from './paths';
 import { isRangeProduct } from './ranges';
@@ -162,6 +163,60 @@ export function productMeta(product: Product, brand: Brand): PageMeta {
     description,
     path: `/brands/${product.brandSlug}/${product.slug}`,
     ogImage: ownImage(product.hero),
+    ogType: 'website',
+  };
+}
+
+/**
+ * Solution index. The plural is the whole point of this page: `docs/04` §4 (C1)
+ * targets the list phrasings ("home automation companies dubai", "av integration
+ * companies dubai") that map badly onto any single service page, so no
+ * single-solution head phrasing ("home cinema installation dubai") appears in
+ * this title or description — that belongs to `/solutions/home-cinema/`.
+ */
+export function solutionsIndexMeta(): PageMeta {
+  return {
+    // 55 chars. Distinct from `brandsIndexMeta()`'s "Automation & Cinema Brands
+    // We Distribute" — the two pages carry the two different axes and must not
+    // collide on either the title or the description uniqueness assertion.
+    title: `Automation, Cinema & AV Solutions in Dubai | ${SITE_NAME}`,
+    // 146 chars. Names only the three capabilities `docs/00-CONTEXT.md` §1
+    // confirms — home, cinema and industrial automation. The brief's six-category
+    // sentence is flagged `UNCONFIRMED CAPABILITY` in
+    // `docs/10-CONTENT-BRIEFS/solutions.md` and does not ship until sign-off;
+    // this line and the matching record in `src/data/solutions.ts` are the two
+    // places it widens.
+    description: `${SITE_NAME} designs, supplies and installs home, cinema and industrial automation in Dubai, for residences, developments and hotels across the UAE.`,
+    path: '/solutions',
+    ogImage: DEFAULT_OG_IMAGE,
+    ogType: 'website',
+  };
+}
+
+/**
+ * Solution page.
+ *
+ * Title formula: `<name> Installation in Dubai | Leading IT` — 34 chars of
+ * fixture plus the solution's display name. "Home Cinema" is 11, so the only
+ * live route peaks at 45; the six locked slugs (`docs/05` §2) have display names
+ * no longer than "Industrial Automation" (21 chars), which lands at 55. **A name
+ * over 26 chars overflows the 60-char budget**, at which point `assertManifest()`
+ * breaks the build rather than let Google rewrite the title — change the formula
+ * or the name, never truncate.
+ *
+ * Description: the approved solution supply sentence (`_CONVENTIONS.md` §1)
+ * followed by one detail sentence from the record. Neutral wording only — no
+ * dealer or distributor authorisation phrasing, on any solution page, for any
+ * brand (`docs/OPEN-QUESTIONS.md` #3). Worst case over the record set today is
+ * 145 chars (`home-cinema`); the record's `metaDetail` is what a new solution has
+ * to keep inside the remaining budget.
+ */
+export function solutionMeta(solution: Solution): PageMeta {
+  return {
+    title: `${solution.name} Installation in Dubai | ${SITE_NAME}`,
+    description: `${SITE_NAME} designs, supplies and installs ${solution.supplySubject} in Dubai. ${solution.metaDetail}`,
+    path: `/solutions/${solution.slug}`,
+    ogImage: ownImage(solution.hero),
     ogType: 'website',
   };
 }

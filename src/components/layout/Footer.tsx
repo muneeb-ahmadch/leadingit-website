@@ -19,6 +19,12 @@ export function Footer() {
           <ul className="space-y-3 text-bone-300">
             <li><a href={href('/brands')} className="hover:text-gold transition-colors">Architectural Interfaces</a></li>
             <li><a href={href('/brands')} className="hover:text-gold transition-colors">Cinema &amp; AV</a></li>
+            {/*
+             * Descriptive anchor, never "Solutions" alone — _CONVENTIONS.md §8
+             * bans generic anchor text, and the footer is a sitewide link so its
+             * anchor is the one repeated most.
+             */}
+            <li><a href={href('/solutions')} className="hover:text-gold transition-colors">Automation Solutions</a></li>
             <li><a href={href('/lit-home')} className="hover:text-gold transition-colors">LIT Home</a></li>
           </ul>
         </div>

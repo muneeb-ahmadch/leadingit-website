@@ -1,7 +1,7 @@
 {
   "note": "Compact excerpt of https://schema.org — only the @types and properties this site's JSON-LD builders (src/seo/jsonld/*) actually emit, each one verified against the real schema.org rdfs:domainIncludes/rdfs:subClassOf graph. Regenerate with \"npm run gen:schema-vocab\" (needs network) after adding a new @type or property — scripts/validate-seo.mjs fails loudly, not silently, on anything emitted that is absent from this file.",
   "source": "https://schema.org/version/latest/schemaorg-current-https.jsonld",
-  "generatedAt": "2026-07-28T14:16:42.935Z",
+  "generatedAt": "2026-08-01T11:31:50.572Z",
   "types": {
     "AboutPage": {
       "ancestors": [
@@ -17,6 +17,17 @@
         "isPartOf",
         "name",
         "url"
+      ]
+    },
+    "Answer": {
+      "ancestors": [
+        "Answer",
+        "Comment",
+        "CreativeWork",
+        "Thing"
+      ],
+      "properties": [
+        "text"
       ]
     },
     "Brand": {
@@ -91,6 +102,17 @@
         "contactType",
         "email",
         "telephone"
+      ]
+    },
+    "FAQPage": {
+      "ancestors": [
+        "CreativeWork",
+        "FAQPage",
+        "Thing",
+        "WebPage"
+      ],
+      "properties": [
+        "mainEntity"
       ]
     },
     "ImageObject": {
@@ -170,6 +192,33 @@
       "properties": [
         "name",
         "value"
+      ]
+    },
+    "Question": {
+      "ancestors": [
+        "Comment",
+        "CreativeWork",
+        "Question",
+        "Thing"
+      ],
+      "properties": [
+        "acceptedAnswer",
+        "name"
+      ]
+    },
+    "Service": {
+      "ancestors": [
+        "Intangible",
+        "Service",
+        "Thing"
+      ],
+      "properties": [
+        "areaServed",
+        "description",
+        "name",
+        "provider",
+        "serviceType",
+        "url"
       ]
     },
     "WebApplication": {

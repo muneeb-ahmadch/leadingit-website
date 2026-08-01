@@ -27,6 +27,7 @@ export type Crumb = { name: string; path: string };
 
 const HOME: Crumb = { name: 'Home', path: '/' };
 const BRANDS: Crumb = { name: 'Brands', path: '/brands' };
+const SOLUTIONS: Crumb = { name: 'Solutions', path: '/solutions' };
 const BLACK_NOVA: Crumb = { name: 'Black Nova', path: '/brands/black-nova' };
 
 /** Home → Brands → {brand.name}. */
@@ -53,6 +54,15 @@ export function productCrumbs(
     { name: brandName, path: `/brands/${brandSlug}` },
     { name: productName, path: `/brands/${brandSlug}/${productSlug}` },
   ];
+}
+
+/**
+ * Home → Solutions → {solution.name}. The middle crumb is the real
+ * `/solutions/` index page, not a synthetic label — it returns 200 and carries
+ * the category-level intent (`docs/05-URL-TAXONOMY.md` §2a).
+ */
+export function solutionCrumbs(solutionName: string, solutionSlug: string): Crumb[] {
+  return [HOME, SOLUTIONS, { name: solutionName, path: `/solutions/${solutionSlug}` }];
 }
 
 /** Home → Brands → Black Nova → Keypad Designer. */

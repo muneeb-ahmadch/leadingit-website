@@ -6,7 +6,11 @@ import { Reveal } from '@/components/primitives/Reveal';
 import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { Parallax } from '@/components/primitives/Parallax';
 import { ResponsiveImage } from '@/components/media/ResponsiveImage';
-import { altFor } from '@/components/media/altText';
+// `altFor` is deliberately not imported: both images remaining on this page are
+// decorative full-bleed backgrounds that name no product and ship `alt=""`.
+// Re-import it the moment a content image is added — never hand-write an alt
+// string here, and never pass a brand or product into it (`altFor(src)` takes
+// only the src on purpose; see src/components/media/altText.ts).
 import { BRANDS } from '@/data/brands';
 import { DeviceFrame } from '@/features/litHome/DeviceFrame';
 import { LitHomeDemo } from '@/features/litHome/LitHomeDemo';
@@ -184,35 +188,22 @@ export function Home() {
         </div>
       </section>
 
-      {/* FEATURED PRODUCTS — minimal placeholder strip */}
-      <section className="container-luxe py-32">
-        <Reveal>
-          <Eyebrow>{t('home.featuredEyebrow')}</Eyebrow>
-        </Reveal>
-        <div className="mt-12 grid md:grid-cols-3 gap-8">
-          {BRANDS.slice(0, 3).map((b, i) => (
-            <Reveal key={b.slug} delay={i * 0.1}>
-              <a href={href(`/brands/${b.slug}`)} className="group block">
-                <div className="aspect-[4/5] bg-ink-800 overflow-hidden">
-                  <ResponsiveImage
-                    src={b.heroImage}
-                    alt={altFor(b.heroImage)}
-                    sizes="(min-width: 768px) 33vw, 100vw"
-                    className="h-full w-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000 ease-out-luxe"
-                  />
-                </div>
-                <div className="mt-5">
-                  <div className="eyebrow">{b.category === 'interfaces' ? 'Architectural' : 'Cinema'}</div>
-                  <div className="mt-2 font-serif text-2xl group-hover:text-gold transition-colors">
-                    {b.name}
-                  </div>
-                  <div className="mt-1 text-bone-500 text-sm">{b.tagline}</div>
-                </div>
-              </a>
-            </Reveal>
-          ))}
-        </div>
-      </section>
+      {/*
+       * REMOVED 2026-08-01 (Phase 4): the "FEATURED PRODUCTS" three-card grid.
+       *
+       * Two independent reasons, either sufficient:
+       *   1. Three-card cliché feature grids are banned sitewide
+       *      (docs/02-DESIGN-SOURCE-OF-TRUTH.md — recorded as due under Direction A
+       *      *and* Direction B, so the Direction B lock did not retire the task).
+       *   2. It was labelled a placeholder in its own comment and rendered
+       *      `BRANDS.slice(0, 3)` — an arbitrary first-three, not a curated
+       *      selection. It asserted editorial intent the data never carried.
+       *
+       * No link equity is lost: the BRAND WALL above links all nine brand hubs,
+       * so every destination this section reached is still one click from home.
+       * Do not reinstate it as a four-card or six-card grid — the ban is on the
+       * card-grid presentation, not on the number three.
+       */}
     </>
   );
 }

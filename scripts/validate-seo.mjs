@@ -935,19 +935,35 @@ function checkSitemapXml() {
 }
 
 /**
- * The About page's "09 Premium brands represented" stat (`src/locales/
- * en.json`'s `about.stat2Value`/`stat2Label`) is a hand-typed count with
- * nothing in the codebase tying it to `src/data/brands.ts`'s `BRANDS`
- * array — add or remove a brand and the page silently keeps asserting the
- * old count forever. This round owns `scripts/*` only, so the hardcoding
- * itself cannot be fixed here; this instead stops it from drifting
- * *silently* — it reads the same label text the page renders straight out
- * of `en.json` (never hand-retyped here, so a reworded label is still
- * found), locates the number rendered immediately before that label in the
- * actual built `/about/` page, and requires it to equal `BRANDS.length`.
- * Deliberately matched by *label content* ("mentions brand(s)"), not by the
- * `stat2` key name, so this survives the stat being reordered to a
- * different slot.
+ * Guards the About page against publishing a brand *total* that has drifted
+ * from `src/data/brands.ts`'s `BRANDS` array.
+ *
+ * History, because the shape of this check changed once and will read as
+ * over-engineered otherwise. It was written when `/about/` shipped a
+ * hand-typed "09 Premium brands represented" stat tile with nothing tying it
+ * to `BRANDS.length` — add or drop a brand and the page asserted the old
+ * count forever. The round that wrote this check owned `scripts/*` only, so
+ * it could not remove the hardcoding and settled for making the drift loud.
+ *
+ * **Phase 4 removed the stat itself** (2026-08-01, with the three-card grid it
+ * sat in — see `src/pages/About.tsx`). That deletes the drift risk at its
+ * source rather than monitoring it, so the check inverts: its job is now to
+ * stop an unguarded count from coming *back*.
+ *
+ * Two modes, and which one runs is decided by the data, not by a flag:
+ *   1. **A brand-count stat exists in `en.json`** — cross-check it against
+ *      `BRANDS.length`, exactly as before. Matched by *label content*
+ *      ("mentions brand(s)"), never by the `stat2` key name, so it survives
+ *      the stat being reworded or moved to another slot.
+ *   2. **No such stat exists** (today's state) — assert `/about/` renders no
+ *      bare "<number> … brands" claim at all. Without this the check would
+ *      simply go quiet, and the next person to type "we represent 9 premium
+ *      brands" into the page copy would reintroduce the original bug with the
+ *      guard sitting right there not looking at it.
+ *
+ * Deliberately scoped to `/about/`. A sitewide scan would fire on legitimate
+ * *subset* counts — a solution page saying "3 brands serve this" is true and
+ * has nothing to do with the catalogue total.
  */
 function checkBrandCountMatchesManifest() {
   let locale;
@@ -961,35 +977,51 @@ function checkBrandCountMatchesManifest() {
   const brandLabelKeys = Object.keys(about).filter(
     (k) => /^stat\dLabel$/.test(k) && typeof about[k] === 'string' && /\bbrands?\b/i.test(about[k]),
   );
-  if (brandLabelKeys.length !== 1) {
+  if (brandLabelKeys.length > 1) {
     error(
       'brand-count',
       'src/locales/en.json',
-      `expected exactly one about.statNLabel mentioning "brand" to cross-check against src/data/brands.ts's ` +
-        `BRANDS.length, found ${brandLabelKeys.length} ([${brandLabelKeys.join(', ')}]) — update this check if ` +
-        'the About page stat wording or shape changed.',
+      `found ${brandLabelKeys.length} about.statNLabel keys mentioning "brand" ([${brandLabelKeys.join(', ')}]) — ` +
+        'at most one may exist, so there is a single place a brand total can be stated and cross-checked.',
     );
     return;
   }
 
-  const label = about[brandLabelKeys[0]];
   const aboutPage = pages.find((page) => page.urlPath === '/about/');
   if (!aboutPage) return; // no About page in this build — nothing to cross-check.
+  const bodyText = visibleBodyText(aboutPage.html);
+  const expected = ref.BRANDS.length;
 
+  // Mode 2: the stat is gone (Phase 4). Assert no count sneaks back in.
+  if (brandLabelKeys.length === 0) {
+    const stray = /\b(\d+)\s+(?:[A-Za-z-]+\s+){0,2}brands?\b/i.exec(bodyText);
+    if (stray) {
+      error(
+        'brand-count',
+        relFileOf(aboutPage),
+        `/about/ renders the brand count "${stray[0].trim()}" but no about.statNLabel declares one, so nothing ` +
+          `cross-checks it against src/data/brands.ts (${expected} entries). A hand-typed total goes stale the ` +
+          'first time a brand is added or dropped. Either derive it from BRANDS.length, or take the number out.',
+      );
+    }
+    return;
+  }
+
+  // Mode 1: a stat exists — cross-check the rendered number against BRANDS.length.
+  const label = about[brandLabelKeys[0]];
   const escapedLabel = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const match = new RegExp(`(\\d+)\\s+${escapedLabel}`, 'i').exec(visibleBodyText(aboutPage.html));
+  const match = new RegExp(`(\\d+)\\s+${escapedLabel}`, 'i').exec(bodyText);
   if (!match) {
     error(
       'brand-count',
       relFileOf(aboutPage),
-      `could not find the rendered "<number> ${label}" stat on /about/ — src/pages/About.tsx may have changed ` +
-        'shape; update this check, or confirm the stat still renders.',
+      `src/locales/en.json declares the brand stat "${label}" but /about/ does not render "<number> ${label}" — ` +
+        'either the page stopped rendering the stat (remove the en.json key too) or its shape changed.',
     );
     return;
   }
 
   const rendered = Number.parseInt(match[1], 10);
-  const expected = ref.BRANDS.length;
   if (rendered !== expected) {
     error(
       'brand-count',

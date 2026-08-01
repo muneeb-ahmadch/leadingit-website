@@ -31,6 +31,10 @@ const productStaticPaths: StaticPaths = import.meta.env.SSR
   ? async () => (await import('@/seo/routes')).productPaths()
   : undefined;
 
+const solutionStaticPaths: StaticPaths = import.meta.env.SSR
+  ? async () => (await import('@/seo/routes')).solutionPaths()
+  : undefined;
+
 /**
  * Route records consumed by `ViteReactSSG`: the same tree drives the build-time
  * prerender and the browser router after hydration.
@@ -82,6 +86,15 @@ export const routes: RouteRecord[] = [
         path: '/brands/:slug/:productSlug',
         lazy: async () => ({ Component: (await import('@/pages/ProductPage')).ProductPage }),
         getStaticPaths: productStaticPaths,
+      },
+      {
+        path: '/solutions',
+        lazy: async () => ({ Component: (await import('@/pages/SolutionsIndex')).SolutionsIndex }),
+      },
+      {
+        path: '/solutions/:slug',
+        lazy: async () => ({ Component: (await import('@/pages/SolutionPage')).SolutionPage }),
+        getStaticPaths: solutionStaticPaths,
       },
       {
         path: '/lit-home',

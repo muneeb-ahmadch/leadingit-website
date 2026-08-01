@@ -29,13 +29,20 @@
  * ## Scope
  *
  * This manifest describes routes that emit HTML **today**. `docs/05-URL-TAXONOMY.md`
- * locks several paths that are not built yet (`/solutions/*`, `/locations/dubai/`,
- * `/trade/`, `/journal/*`, `/brands/<brand>/pakistan/`, and the disabled
- * `/projects/*`). They are deliberately absent: a sitemap entry for a URL that
- * 404s is worse than no entry. Adding them later is purely additive.
+ * locks several paths that are not built yet (`/locations/dubai/`, `/trade/`,
+ * `/journal/*`, `/brands/<brand>/pakistan/`, and the disabled `/projects/*`).
+ * They are deliberately absent: a sitemap entry for a URL that 404s is worse than
+ * no entry. Adding them later is purely additive.
+ *
+ * `/solutions/` and `/solutions/home-cinema/` joined in Phase 4. Five of the six
+ * locked solution slugs are still unwritten and stay out until their page exists;
+ * `shading` is not one of them — `/solutions/shading/` was retired 2026-07-31 and
+ * 301s to `/solutions/` from `public/.htaccess`, so it must never re-enter this
+ * manifest (`docs/05` §14).
  */
 import type { Brand } from '@/data/brands';
 import type { Product } from '@/data/products';
+import type { Solution } from '@/data/solutions';
 import {
   DESCRIPTION_MAX_LENGTH,
   DESCRIPTION_MIN_LENGTH,
@@ -49,6 +56,8 @@ import {
   litHomeMeta,
   notFoundMeta,
   productMeta,
+  solutionMeta,
+  solutionsIndexMeta,
   type PageMeta,
 } from './meta';
 import { KEYPAD_DESIGNER_PATH } from './paths';
@@ -66,6 +75,8 @@ export type RouteKind =
   | 'brand'
   | 'product'
   | 'range'
+  | 'solutions-index'
+  | 'solution'
   | 'tool'
   | 'lit-home'
   | 'about'
@@ -119,6 +130,7 @@ const PATH_PATTERN = /^\/[a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-9]+)*){
 export const STATIC_ROUTES: readonly RouteEntry[] = [
   { path: '/', kind: 'home', indexable: true, meta: homeMeta() },
   { path: '/brands', kind: 'brands-index', indexable: true, meta: brandsIndexMeta() },
+  { path: '/solutions', kind: 'solutions-index', indexable: true, meta: solutionsIndexMeta() },
   {
     path: KEYPAD_DESIGNER_PATH,
     kind: 'tool',
@@ -147,6 +159,22 @@ async function loadProducts(): Promise<Product[]> {
   return PRODUCTS;
 }
 
+async function loadSolutions(): Promise<Solution[]> {
+  const { SOLUTIONS } = await import('@/data/solutions');
+  return SOLUTIONS;
+}
+
+/**
+ * Retired route, permanently. `/solutions/shading/` was dropped on 2026-07-31
+ * (`docs/OPEN-QUESTIONS.md` #22) because no shading product exists in the
+ * catalogue, and `public/.htaccess` 301s it to `/solutions/`. Re-adding the
+ * record would publish a URL that Apache redirects away from — a self-inflicted
+ * redirect loop in the sitemap — so it fails the build here instead of being
+ * caught in review. The retirement is reversible; reversing it means removing
+ * this guard deliberately, with the redirect, in one change (`docs/05` §14).
+ */
+const RETIRED_SOLUTION_SLUGS: readonly string[] = ['shading'];
+
 /** One entry per brand hub. */
 export async function brandRoutes(): Promise<RouteEntry[]> {
   const brands = await loadBrands();
@@ -159,6 +187,32 @@ export async function brandRoutes(): Promise<RouteEntry[]> {
       brandSlug: brand.slug,
     }),
   );
+}
+
+/**
+ * One entry per solution page. Six slugs are locked in `docs/05-URL-TAXONOMY.md`
+ * §2; only the records actually authored in `src/data/solutions.ts` get a route,
+ * because a route in this manifest is a promise that the URL returns 200 and
+ * enters the sitemap.
+ */
+export async function solutionRoutes(): Promise<RouteEntry[]> {
+  const solutions = await loadSolutions();
+  return solutions.map((solution): RouteEntry => {
+    if (RETIRED_SOLUTION_SLUGS.includes(solution.slug)) {
+      throw manifestError(
+        `solution "${solution.slug}" is a retired route (docs/05-URL-TAXONOMY.md §14) — ` +
+          `public/.htaccess 301s /solutions/${solution.slug}/ to /solutions/, so publishing it ` +
+          `here would put a redirected URL in the sitemap. Remove the record from ` +
+          `src/data/solutions.ts, or reverse the retirement and the redirect together.`,
+      );
+    }
+    return {
+      path: `/solutions/${solution.slug}`,
+      kind: 'solution',
+      indexable: true,
+      meta: solutionMeta(solution),
+    };
+  });
 }
 
 /**
@@ -316,7 +370,12 @@ export function assertManifest(entries: readonly RouteEntry[]): void {
 let manifest: Promise<RouteEntry[]> | null = null;
 
 async function buildManifest(): Promise<RouteEntry[]> {
-  const entries = [...STATIC_ROUTES, ...(await brandRoutes()), ...(await productRoutes())];
+  const entries = [
+    ...STATIC_ROUTES,
+    ...(await brandRoutes()),
+    ...(await productRoutes()),
+    ...(await solutionRoutes()),
+  ];
   assertManifest(entries);
   return entries;
 }
@@ -333,6 +392,11 @@ export function allRoutes(): Promise<RouteEntry[]> {
 /** Everything that belongs in sitemap.xml: indexable routes only, so no `/404`. */
 export async function sitemapRoutes(): Promise<RouteEntry[]> {
   return (await allRoutes()).filter((route) => route.indexable);
+}
+
+/** Solution page paths for the router's `getStaticPaths`. */
+export async function solutionPaths(): Promise<string[]> {
+  return (await allRoutes()).filter((route) => route.kind === 'solution').map((route) => route.path);
 }
 
 /** Brand hub paths for the router's `getStaticPaths`. */
