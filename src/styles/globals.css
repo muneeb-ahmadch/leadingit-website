@@ -22,6 +22,54 @@
   html {
     scroll-behavior: smooth;
     background: #0a0a0a;
+    /* WCAG 2.2 SC 2.4.11 Focus Not Obscured (Minimum), AA. The header is
+       `position: fixed` (src/components/layout/Header.tsx), so an element
+       reached by keyboard or by in-page anchor can land underneath it and be
+       focused-but-invisible. Reserving the header's height means the browser
+       scrolls it clear instead. Matches the header's ~py-5 + content box. */
+    scroll-padding-top: 6rem;
+  }
+
+  /*
+   * Visible focus indicator — WCAG 2.2 SC 2.4.7 (AA), net-new in Phase 4.
+   * Before this the codebase had ZERO `:focus-visible` rules and exactly one
+   * focus style: `.input-luxe`'s `focus:outline-none`, which REMOVED the
+   * browser default and replaced it with a border-colour change only. A
+   * keyboard user had no reliable indicator anywhere on the site.
+   *
+   * `:focus-visible` rather than `:focus` so a mouse click on a button does not
+   * leave a ring behind — that is the behaviour that gets focus rings deleted.
+   *
+   * Why the offset is load-bearing: `.btn-gold` FILLS gold on hover, so a gold
+   * ring drawn on its edge would vanish exactly when a hovering keyboard user
+   * tabs to it. `outline-offset` pushes the ring onto the ink ground outside
+   * the button, where it always has contrast.
+   *
+   * Contrast: gold #C9A961 on ink-950 #0A0A0A is 8.8:1 — far above the 3:1 that
+   * SC 1.4.11 Non-text Contrast requires of a focus indicator.
+   */
+  :focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+    border-radius: 1px;
+  }
+
+  /*
+   * Motion guard — the Direction B lock retained Lenis smooth scroll and framer
+   * parallax, and `docs/02-DESIGN-SOURCE-OF-TRUTH.md` makes guarding them a
+   * Phase 4 obligation rather than a QA discovery.
+   *
+   * The JS layer already honours `useReducedMotion()` (Reveal, Parallax, the
+   * Home hero transforms). CSS smooth scrolling is the piece JS cannot switch
+   * off, and it is the one that causes motion sickness on long pages. Lenis
+   * sets `scroll-behavior: auto !important` while it runs, so this only has to
+   * cover the non-Lenis path — but it must, because that is the path a
+   * reduced-motion visitor is on.
+   */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
   }
 
   html.lenis,
@@ -83,9 +131,20 @@
   }
 
   .input-luxe {
+    /*
+     * `focus:outline-none` was removed here in Phase 4. It suppressed the only
+     * focus indicator on the site and replaced it with a border colour change
+     * from white/15 to gold — a change a keyboard user can easily miss on a
+     * hairline underline, and the reason this codebase failed SC 2.4.7.
+     *
+     * The gold border stays as a secondary affordance; the `:focus-visible`
+     * outline in @layer base now supplies the actual indicator. Do not
+     * reintroduce `outline-none` here without providing a replacement that
+     * meets 3:1 against BOTH the field and the page ground.
+     */
     @apply w-full bg-transparent border-b border-white/15 py-3 text-bone-100
       placeholder:text-bone-500/50 transition-colors duration-300
-      focus:outline-none focus:border-gold;
+      focus:border-gold;
   }
 }
 
