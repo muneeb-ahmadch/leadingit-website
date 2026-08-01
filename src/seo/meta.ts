@@ -180,13 +180,13 @@ export function solutionsIndexMeta(): PageMeta {
     // We Distribute" — the two pages carry the two different axes and must not
     // collide on either the title or the description uniqueness assertion.
     title: `Automation, Cinema & AV Solutions in Dubai | ${SITE_NAME}`,
-    // 146 chars. Names only the three capabilities `docs/00-CONTEXT.md` §1
-    // confirms — home, cinema and industrial automation. The brief's six-category
-    // sentence is flagged `UNCONFIRMED CAPABILITY` in
-    // `docs/10-CONTENT-BRIEFS/solutions.md` and does not ship until sign-off;
-    // this line and the matching record in `src/data/solutions.ts` are the two
-    // places it widens.
-    description: `${SITE_NAME} designs, supplies and installs home, cinema and industrial automation in Dubai, for residences, developments and hotels across the UAE.`,
+    // 150 chars. Names the five categories that have a page emitting HTML today.
+    // It widened from three on 2026-08-01 with `docs/00-CONTEXT.md` §4's Muneeb
+    // confirmations (`docs/OPEN-QUESTIONS.md` #25/#26/#27), not on style grounds.
+    // Industrial automation is confirmed scope (§1) but has no page and is not
+    // buildable on today's evidence (OQ #23), so it is not named in a snippet
+    // that would rank for a URL that does not exist.
+    description: `${SITE_NAME} designs, supplies and installs home cinema, whole-home control, lighting, multi-room audio and hospitality automation in Dubai and the UAE.`,
     path: '/solutions',
     ogImage: DEFAULT_OG_IMAGE,
     ogType: 'website',
@@ -196,20 +196,22 @@ export function solutionsIndexMeta(): PageMeta {
 /**
  * Solution page.
  *
- * Title formula: `<name> Installation in Dubai | Leading IT` — 34 chars of
- * fixture plus the solution's display name. "Home Cinema" is 11, so the only
- * live route peaks at 45; the six locked slugs (`docs/05` §2) have display names
- * no longer than "Industrial Automation" (21 chars), which lands at 55. **A name
- * over 26 chars overflows the 60-char budget**, at which point `assertManifest()`
- * breaks the build rather than let Google rewrite the title — change the formula
- * or the name, never truncate.
+ * Title formula: `<name> Installation in Dubai | Leading IT` — 35 chars of
+ * fixture plus the solution's display name. The five live routes run from "Home
+ * Cinema" (46 chars total) to "Hospitality Automation" (57). **A name over 25
+ * chars overflows the 60-char budget**, at which point `assertManifest()` breaks
+ * the build rather than let Google rewrite the title — change the formula or the
+ * name, never truncate. This is also why the hospitality record is named
+ * "Hospitality Automation" and not "Hospitality": the bare noun would title the
+ * page "Hospitality Installation in Dubai", which nobody types.
  *
  * Description: the approved solution supply sentence (`_CONVENTIONS.md` §1)
  * followed by one detail sentence from the record. Neutral wording only — no
  * dealer or distributor authorisation phrasing, on any solution page, for any
  * brand (`docs/OPEN-QUESTIONS.md` #3). Worst case over the record set today is
- * 145 chars (`home-cinema`); the record's `metaDetail` is what a new solution has
- * to keep inside the remaining budget.
+ * 150 chars (`lighting-control` and `whole-home-control`), against a 155 ceiling;
+ * the record's `metaDetail` is what a new solution has to keep inside the
+ * remaining budget, and each record comments how much that is.
  */
 export function solutionMeta(solution: Solution): PageMeta {
   return {

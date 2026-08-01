@@ -1,6 +1,7 @@
 import { Navigate, useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { BRANDS, BRAND_BY_SLUG } from '@/data/brands';
+import { SOLUTIONS } from '@/data/solutions';
 import { productsForBrand, CATEGORIES_BY_BRAND } from '@/data/products';
 import type { Product } from '@/data/products';
 import { Reveal } from '@/components/primitives/Reveal';
@@ -77,6 +78,23 @@ export function BrandPage() {
   // Same `@id` `buildBrandProductsItemList()` mints, derived once so the
   // `CollectionPage.mainEntity` reference cannot drift from the node it names.
   const productListId = `${pageUrl(meta.path)}#product-list`;
+
+  // Cross-axis, brand → solution (`_CONVENTIONS.md` §8 requires it in both
+  // directions; the solution → brand half lives in `SolutionPage.tsx`).
+  //
+  // **Derived from `SOLUTIONS`, never hand-maintained.** A second brand→solution
+  // map would drift the first time a solution's `relatedBrandSlugs` changed, and
+  // it would drift silently — the page would simply stop linking, which nothing
+  // in the build would notice. Reading the same array the other direction reads
+  // makes the two physically incapable of disagreeing, and a solution that has
+  // not shipped cannot appear here because it is not in the array.
+  const solutionLinks: InternalLink[] = SOLUTIONS.filter((solution) =>
+    solution.relatedBrandSlugs.includes(brand.slug),
+  ).map((solution) => ({
+    to: `/solutions/${solution.slug}`,
+    label: solution.name,
+    hint: solution.serviceType,
+  }));
 
   // Hub-and-spoke: this brand hub links sideways to its siblings and up to the
   // brands index. Anchor text is the brand's own name, which is what a visitor
@@ -247,6 +265,20 @@ export function BrandPage() {
               </div>
             </Reveal>
           </div>
+        </section>
+      )}
+
+      {/* cross-axis: the solutions this brand is specified into */}
+      {solutionLinks.length > 0 && (
+        <section className="container-luxe pb-24">
+          <Reveal>
+            <div className="border-t border-gold/20 pt-10">
+              <InternalLinks
+                title={t('internalLinks.solutionsUsingBrand', { brand: brand.name })}
+                links={solutionLinks}
+              />
+            </div>
+          </Reveal>
         </section>
       )}
 

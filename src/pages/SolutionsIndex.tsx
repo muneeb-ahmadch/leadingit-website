@@ -26,12 +26,14 @@ import { breadcrumbNodeId, pageUrl } from '@/seo/jsonld/ids';
  *
  * ## Two things about this page that look like omissions and are not
  *
- * 1. **It links one child, not six.** Five of the six locked slugs
- *    (`docs/05-URL-TAXONOMY.md` §2) have no page yet, and `_CONVENTIONS.md` §8
- *    forbids linking a route that does not return 200 — a live link to a 404 is
- *    worse than no link. The `ItemList` is built from the same `SOLUTIONS` array
- *    for the same reason, so the visible links and the structured data can never
- *    disagree about what exists.
+ * 1. **It links five children, not six.** The routing table and the `ItemList`
+ *    are both built from the same `SOLUTIONS` array as the visible link list, so
+ *    the three can never disagree about what exists. The sixth locked slug
+ *    (`docs/05-URL-TAXONOMY.md` §2), `/solutions/industrial-automation/`, has no
+ *    page and is not buildable on today's evidence (`docs/OPEN-QUESTIONS.md`
+ *    #23), and `_CONVENTIONS.md` §8 forbids linking a route that does not return
+ *    200 — a live link to a 404 is worse than no link. `/trade/`,
+ *    `/locations/dubai/` and `/journal/` are unlinked for the same reason.
  * 2. **There is no shading entry, anywhere.** `/solutions/shading/` was retired
  *    (`docs/OPEN-QUESTIONS.md` #22) and 301s *to this page*. Being a redirect
  *    target does not entitle this page to shading queries, so there is no tile,
@@ -114,9 +116,9 @@ export function SolutionsIndex() {
 
       <AnswerSections sections={SOLUTIONS_INDEX.sections} />
 
-      {/* The children that exist. TODO(phase4): this becomes the six-row routing
-          table from the brief once the remaining five routes return 200 and each
-          row's capability is signed off — never a seventh row for shading. */}
+      {/* The children that exist, as a list. The routing table above answers
+          "which of these is my project"; this answers "what is published", and
+          both read the one `SOLUTIONS` array. */}
       <section className="container-luxe py-16">
         <Reveal>
           <div className="border-t border-gold/20 pt-10">
