@@ -588,7 +588,7 @@ export const PRODUCTS: Product[] = [
     collection: '60 W Cresnet® Power Supply · DIN Rail',
     tagline: 'Clean, front-wired power for the Cresnet bus.',
     description:
-      'Sixty watts of Cresnet power in a DIN-rail module, for feeding processors, keypads and sensors on the bus. Six Cresnet ports fan the supply out, and Cresnet data passes through the unit unaffected. Every terminal is a screw terminal reachable from the front of the board, so an electrician can wire and service it without pulling the module.',
+      'Sixty watts of Cresnet power in a DIN-rail module, for feeding processors, keypads and sensors on the bus. Six Cresnet ports fan the supply out, and the unit feeds power onto the Cresnet run without sitting in the data path. Every terminal is a screw terminal reachable from the front of the board, so an electrician can wire and service it without pulling the module.',
     category: 'network',
     hero: cr('din-pws60.png'),
     finishes: [{ id: 'light-gray', name: 'Light Gray', swatch: crGray, productImage: cr('din-pws60.png') }],
@@ -724,14 +724,14 @@ export const PRODUCTS: Product[] = [
     collection: 'Occupancy & Daylight Sensor · Cresnet®',
     tagline: 'Presence and daylight, from one ceiling point.',
     description:
-      'One ceiling sensor doing two jobs: passive-infrared presence detection over an area up to 450 sq ft, and a closed-loop photocell reading how much daylight is already in the room. If daylight is above the threshold you set, the photocell overrides the occupancy signal and the lights stay off. It can also be set to vacancy-only, so lights switch off automatically but never on. It reports to the Crestron system over Cresnet and is set up in Crestron Toolbox or with the optional IR remote.',
+      'One ceiling sensor doing two jobs: passive-infrared presence detection over an area up to 450 sq ft, and a closed-loop photocell reading how much daylight is already in the room. Crestron publishes the behaviour as an outcome: lighting dims to a lower level when there is enough natural daylight from windows and skylights. It can also run in vacancy-only mode, where the lights switch off once the room empties and are switched on by hand — with a published 15-second grace period after they go off, during which movement in the room brings them straight back. It reports to the Crestron system over Cresnet and is set up in Crestron Toolbox or with the optional IR remote.',
     category: 'sensors',
     hero: cr('gls-oirlcl.png'),
     finishes: [{ id: 'white', name: 'White', swatch: crWhite, productImage: cr('gls-oirlcl.png') }],
     specs: [
       { label: 'Detection', rows: [
         { name: 'Technology', value: 'Passive infrared, 64 zones' },
-        { name: 'Coverage', value: '450 sq ft · 360° hemispherical' },
+        { name: 'Coverage', value: '450 sq ft · rectangular 18.57 × 24.34 ft' },
         { name: 'Ceiling height', value: 'Up to 16.4 ft' },
       ] },
       { label: 'Daylight', rows: [
@@ -757,7 +757,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Horizon® Wireless Thermostat',
     tagline: 'Climate control, finished to match the room.',
     description:
-      'A wall thermostat with a humidistat in the same housing, which is the combination that matters in Gulf humidity. It drives two-stage heating and cooling, two-stage heat pumps with two auxiliary heat stages, 2-pipe and 4-pipe fan-coil systems, floor warming and humidity control. The 3.5-inch LCD touch screen is used to commission it against the HVAC plant and then to read temperature and humidity. Proximity and ambient-light sensors adjust the display to the room, and it joins the Crestron system over Wi-Fi.',
+      'A wall thermostat with a humidistat in the same housing, which is temperature and humidity together. It drives two-stage heating and cooling, two-stage heat pumps with two auxiliary heat stages, 2-pipe and 4-pipe fan-coil systems, floor warming and humidity control. The 3.5-inch LCD touch screen is used to commission it against the HVAC plant and then to read temperature and humidity. Proximity and ambient-light sensors adjust the display to the room, and it joins the Crestron system over Wi-Fi.',
     category: 'sensors',
     hero: cr('hz-thstat.png'),
     finishes: [
