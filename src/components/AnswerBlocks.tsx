@@ -118,15 +118,34 @@ export function FaqBlock({ faq }: { faq: SolutionFaq[] }) {
       <Reveal>
         <h2 className="font-serif text-hero text-bone-100">{t('solutions.faqTitle')}</h2>
       </Reveal>
+      {/*
+       * `Reveal` takes the border/padding classes and IS the single wrapper.
+       * It must not contain a further `<div>`.
+       *
+       * HTML allows exactly ONE level of `<div>` between `<dl>` and its
+       * `<dt>`/`<dd>` children. This block previously rendered
+       * `<dl><div(Reveal)><div><dt>` — two levels — which axe reports as both
+       * `definition-list` and `dlitem` violations and which cost 8 points of
+       * Lighthouse Accessibility (92 instead of 100) on every page carrying an
+       * FAQ: all five solution pages, /trade/ and /locations/dubai/.
+       *
+       * Third instance of this exact nesting class found in Phase 4, so it is
+       * worth stating as a rule: **`Reveal` renders a `motion.div`.** Inside a
+       * container with restricted children (`<dl>`, `<ul>`, `<ol>`, `<table>`),
+       * either give `Reveal` the wrapper's classes so it becomes the one
+       * permitted element, or put it INSIDE the child. Never both.
+       */}
       <dl className="mt-12 max-w-3xl">
         {faq.map((item, i) => (
-          <Reveal key={item.question} delay={i * 0.05}>
-            <div className="border-t border-white/5 py-8">
-              <dt>
-                <h3 className="font-serif text-2xl text-bone-100">{item.question}</h3>
-              </dt>
-              <dd className="mt-4 text-lg leading-relaxed text-bone-300">{item.answer}</dd>
-            </div>
+          <Reveal
+            key={item.question}
+            delay={i * 0.05}
+            className="border-t border-white/5 py-8"
+          >
+            <dt>
+              <h3 className="font-serif text-2xl text-bone-100">{item.question}</h3>
+            </dt>
+            <dd className="mt-4 text-lg leading-relaxed text-bone-300">{item.answer}</dd>
           </Reveal>
         ))}
       </dl>
