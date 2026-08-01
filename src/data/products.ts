@@ -2321,7 +2321,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Flagship Wireless Speaker · HEOS Built-in',
     tagline: 'The flagship wireless speaker, sculpted as an object of desire.',
     description:
-      'Grand Horizon is Marantz’s flagship wireless speaker — a sculptural sphere wrapped in seamless Radiance fabric. An 8" Gravity woofer, four wideband and three high-frequency drivers are powered by 370 watts of Marantz Rise GaN amplification, streamed through HEOS.',
+      'Grand Horizon is Marantz’s flagship wireless speaker — a sculptural sphere wrapped in Radiance fabric with no visible seam. An 8" Gravity woofer, four wideband and three high-frequency drivers are powered by 370 watts of Marantz Rise GaN amplification, streamed through HEOS.',
     metaDescription:
       'Marantz Grand Horizon flagship wireless speaker with 370W GaN amplification, HEOS, AirPlay 2 and HDMI eARC. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz Grand Horizon', 'Grand Horizon wireless speaker', 'Marantz Grand Horizon UAE', 'Marantz Grand Horizon Pakistan', 'luxury wireless speaker'],
@@ -3107,7 +3107,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Reserve Series · Center Channel',
     tagline: 'Compact center, uncompromised voice.',
     description:
-      'Reserve R300 delivers clear, natural dialogue from a compact chassis — a 1" Pinnacle ring radiator tweeter flanked by dual 5.25" Turbine Cone woofers, voiced to blend seamlessly with any Reserve loudspeaker pair.',
+      'Reserve R300 delivers clear, natural dialogue from a compact chassis — a 1" Pinnacle ring radiator tweeter flanked by dual 5.25" Turbine Cone woofers, voiced to blend with any Reserve loudspeaker pair.',
     metaDescription:
       'Polk Audio Reserve R300 center channel speaker — 1" Pinnacle tweeter, dual 5.25" Turbine Cone woofers. Supplied across the UAE and Pakistan by Leading IT.',
     keywords: ['Polk Reserve R300', 'Reserve R300 center speaker', 'Polk R300 UAE', 'Polk R300 Pakistan', 'compact center channel'],
@@ -3234,7 +3234,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Signature Elite · Compact Tower',
     tagline: 'Slender towers with a surprising reach.',
     description:
-      'Signature Elite ES50 fits the Elite sound into a slender floor-standing profile — a 1" Terylene tweeter and dual 5.25" mid-woofers that elevate music, movies and gaming in medium rooms.',
+      'Signature Elite ES50 fits the Elite sound into a slender floor-standing profile — a 1" Terylene tweeter and dual 5.25" mid-woofers for music, movies and gaming in medium rooms.',
     metaDescription:
       'Polk Audio Signature Elite ES50 compact tower speaker — 1" tweeter, dual 5.25" drivers, Hi-Res certified. Supplied across the UAE and Pakistan by Leading IT.',
     keywords: ['Polk Signature Elite ES50', 'ES50 tower speaker', 'Polk ES50 UAE', 'Polk ES50 Pakistan', 'compact floor-standing speaker'],
