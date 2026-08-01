@@ -1638,6 +1638,14 @@ export const PRODUCTS: Product[] = [
         { name: 'Protocols', value: 'KNX, BN RS-485 or Cresnet' },
         { name: 'Socket frames', value: 'Legrand Arteor & Mosaic compatible' },
         { name: 'Modules', value: '1, 2 and 3-module frame versions' },
+        // SPARK is a keypad *panel version* of ARIA/ALBA/AXES — not a separate model, and not
+        // documented for BLACK JACK or ANY (their Crestron manual names BLACK JACK in its title
+        // when it is in scope; the SPARK manual's title omits it). Sole Control4/Lutron source in
+        // the entire evidence base: BN-ARIA-ALBA-AXES-Keypads-SPARK-Manual-V2.0.pdf, printed p21 —
+        // "can be installed together with a Nova Hub Gateway in a Control4, Lutron environment".
+        // Permissive wording, so "alongside", never "requires"; never "certified", "native" or
+        // "drivers available" — none is published. Full analysis: docs/12-PROVENANCE/black-nova-spark.md
+        { name: 'SPARK version', value: 'Documented by Black Nova for installation alongside a Nova Hub Gateway in a Control4 or Lutron environment' },
       ] },
     ],
     inUse: [bn('alba-design.png'), bn('alba-base.png'), bn('alba-on.png')],
@@ -1678,6 +1686,10 @@ export const PRODUCTS: Product[] = [
         { name: 'Protocols', value: 'KNX, BN RS-485 or Cresnet' },
         { name: 'Socket frames', value: 'Legrand Arteor & Mosaic compatible' },
         { name: 'Privacy', value: 'Advanced design for security and user privacy' },
+        // See the ALBA record for the full sourcing note. SPARK is a keypad *panel version* of
+        // ARIA/ALBA/AXES only. Sole Control4/Lutron source: SPARK Manual V2.0, printed p21.
+        // "alongside", never "requires"; never "certified"/"native"/"drivers available".
+        { name: 'SPARK version', value: 'Documented by Black Nova for installation alongside a Nova Hub Gateway in a Control4 or Lutron environment' },
       ] },
     ],
     inUse: [bn('aria-off.png'), bn('aria-on.png'), bn('aria-slider.png')],
@@ -1762,6 +1774,10 @@ export const PRODUCTS: Product[] = [
       { label: 'Integration', rows: [
         { name: 'Protocols', value: 'KNX, BN RS-485 or Cresnet' },
         { name: 'Security', value: 'Product design for a high level of security and guest privacy' },
+        // See the ALBA record for the full sourcing note. SPARK is a keypad *panel version* of
+        // ARIA/ALBA/AXES only. Sole Control4/Lutron source: SPARK Manual V2.0, printed p21.
+        // "alongside", never "requires"; never "certified"/"native"/"drivers available".
+        { name: 'SPARK version', value: 'Documented by Black Nova for installation alongside a Nova Hub Gateway in a Control4 or Lutron environment' },
       ] },
     ],
     inUse: [bn('axes-tt.png'), bn('axes-on.png'), bn('axes-base.png')],
