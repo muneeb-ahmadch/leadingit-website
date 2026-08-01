@@ -656,7 +656,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Crestron Avia™ 12×8 DSP with Dante®',
     tagline: 'Avia processing, networked over Dante.',
     description:
-      'The DSP-1281 is the DSP-1280 with Dante on board: the same twelve mic/line inputs and eight balanced outputs, plus 32 channels in and 32 out over the audio network at up to 24-bit 48 kHz. That is how you add inputs without adding a second rack — link units over Dante and the channel count grows. AES67 is supported for interoperating with non-Dante equipment.',
+      'The DSP-1281 is the DSP-1280 with Dante on board: the same twelve mic/line inputs and eight balanced outputs, plus 32 channels in and 32 out over the audio network at up to 24-bit 48 kHz. That is how you add inputs without adding a second rack — link units over Dante and the channel count grows. An AES67 compatibility mode covers interoperating with non-Dante equipment; Crestron notes it may need a Dante firmware upgrade.',
     category: 'audio',
     hero: cr('dsp-1281.png'),
     finishes: [{ id: 'black', name: 'Black', swatch: crBlack, productImage: cr('dsp-1281.png') }],
@@ -839,7 +839,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Horizon® 2 Faceplate · 1-Gang',
     tagline: 'The finishing frame for every Horizon device.',
     description:
-      'The faceplate is not an accessory here — a Horizon 2 keypad, dimmer or switch is not finished until one is fitted. This is the single-gang version, and the trim matches the plate rather than contrasting with it. Choose textured white, black or almond; glass in white or black; or metal in brushed black, brushed brass, dark bronze or dark nickel.',
+      'The faceplate is not an accessory here — a Horizon 2 keypad, dimmer or switch is not finished until one is fitted. This is the single-gang version. On glass plates the trim matches the glass; on metal plates the trim is white or black, so it is specified separately. Choose textured white, black or almond; glass in white or black; or metal in brushed black, brushed brass, dark bronze or dark nickel.',
     category: 'keypads',
     hero: cr('hz2-fp-glass-black.png'),
     finishes: [
@@ -857,7 +857,7 @@ export const PRODUCTS: Product[] = [
       { label: 'Design', rows: [
         { name: 'Gang', value: '1-gang' },
         { name: 'Materials', value: 'Textured, glass & metal' },
-        { name: 'Trim', value: 'Faceplate trim matches finish' },
+        { name: 'Trim', value: 'Glass: matches plate. Metal: white or black' },
       ] },
       { label: 'Fit', rows: [
         { name: 'Compatibility', value: 'All Horizon® 2 devices' },
@@ -882,7 +882,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Cameo® Keypad · International',
     tagline: 'A customisable keypad for the European wall box.',
     description:
-      'The Cameo international keypad fits a single-gang European or UK box, which is what is actually in the wall on most UAE and Pakistan projects. Buttons are configurable in several sizes with optional backlit engraving, and auto-brightness keeps the legends readable from daylight through to night. White LEDs report real system state, not just the last button pressed. It connects over wired Cresnet to a Crestron control system or Crestron Home, and two rear sensing inputs take contact-closure devices such as door switches and motion detectors.',
+      'The Cameo international keypad fits a single-gang European or UK box. Buttons are configurable in several sizes with optional backlit engraving, and auto-brightness keeps the legends readable from daylight through to night. White LEDs report real system state, not just the last button pressed. It connects over wired Cresnet to a Crestron control system or Crestron Home, and two rear sensing inputs take contact-closure devices such as door switches and motion detectors.',
     category: 'keypads',
     hero: cr('c2ni-cb-black.png'),
     finishes: [{ id: 'black', name: 'Textured Black', swatch: crBlack, productImage: cr('c2ni-cb-black.png') }],
