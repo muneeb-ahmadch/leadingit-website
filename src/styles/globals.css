@@ -142,8 +142,21 @@
      * reintroduce `outline-none` here without providing a replacement that
      * meets 3:1 against BOTH the field and the page ground.
      */
+    /*
+     * `placeholder:text-bone-500`, NOT `/50` — WCAG 2.2 SC 1.4.3 (AA).
+     *
+     * The /50 variant composites to roughly #5a5852 and measures **2.62:1**,
+     * against a 4.5:1 requirement. Placeholder text is real text inside an
+     * ACTIVE control, so the SC 1.4.3 exemption for inactive user-interface
+     * components does not reach it — that exemption covers the disabled locale
+     * buttons in LocaleSwitcher, not this.
+     *
+     * Bare bone.500 is 7.08:1 on ink-900 and still reads as clearly secondary,
+     * because the typed value is bone.100 (16.75:1) — the hierarchy survives
+     * the fix. Same token, full opacity; the locked palette is untouched.
+     */
     @apply w-full bg-transparent border-b border-white/15 py-3 text-bone-100
-      placeholder:text-bone-500/50 transition-colors duration-300
+      placeholder:text-bone-500 transition-colors duration-300
       focus:border-gold;
   }
 }

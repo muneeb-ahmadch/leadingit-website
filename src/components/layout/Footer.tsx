@@ -61,7 +61,24 @@ export function Footer() {
       </div>
 
       <div className="border-t border-white/5">
-        <div className="container-luxe py-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs text-bone-500/70 tracking-wider2 uppercase">
+        {/*
+         * `text-bone-500`, NOT `text-bone-500/70` — WCAG 2.2 SC 1.4.3 (AA).
+         *
+         * The /70 variant composites to #77746d on ink-900 and measures
+         * **4.04:1** against a 4.5:1 requirement. `text-xs` is far below the
+         * 18pt / 14pt-bold "large text" threshold, so 3:1 does not apply. This
+         * line is in the footer of all 122 pages, which made it the single
+         * highest-reach contrast failure on the site.
+         *
+         * Fixed by dropping the alpha rather than touching a token: bare
+         * bone.500 is **7.08:1** on ink-900 and is already the sitewide default
+         * for muted text. The Direction B palette is LOCKED and is unchanged by
+         * this — same token, full opacity.
+         *
+         * Do not reintroduce an opacity modifier on this element. Every
+         * bone.500/NN variant below /90 fails 4.5:1 on all three ink grounds.
+         */}
+        <div className="container-luxe py-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs text-bone-500 tracking-wider2 uppercase">
           <span>{t('footer.rights', { year: new Date().getFullYear() })}</span>
           <span>UAE · Pakistan</span>
         </div>

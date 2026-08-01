@@ -169,6 +169,8 @@
     "roomBalcony": "Balcony",
     "tileQuickActions": "Quick Actions",
     "tileLights": "Lights",
+    "lightsOn": "Lights on",
+    "lightsOff": "Lights off",
     "tileClimate": "Climate",
     "tileCurtains": "Curtains",
     "tileAudio": "Audio",

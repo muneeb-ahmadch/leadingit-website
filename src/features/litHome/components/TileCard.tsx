@@ -30,31 +30,50 @@ export function TileCard({
   className = '',
   static: isStatic = false,
 }: Props) {
-  const Wrapper = onOpen && !isStatic ? motion.button : motion.div;
+  const clickable = Boolean(onOpen) && !isStatic;
+  const header = (
+    <div className="flex items-start justify-between px-4 pt-3.5 pb-2.5 gap-3">
+      <div className="flex items-center gap-2 min-w-0">
+        {Icon && <Icon size={14} aria-hidden="true" className="text-gold shrink-0" strokeWidth={1.5} />}
+        <span className="text-[13px] font-medium text-bone-100 truncate">{title}</span>
+      </div>
+      {rightSlot && <div className="shrink-0 text-end">{rightSlot}</div>}
+    </div>
+  );
+
   return (
-    <Wrapper
-      {...(onOpen && !isStatic
-        ? {
-            onClick: onOpen,
-            whileTap: { scale: 0.985 },
-            whileHover: { y: -1 },
-          }
-        : {})}
+    <motion.div
       transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
       className={`group relative w-full text-start rounded-lg bg-ink-800/80 border border-white/[0.06]
         hover:border-gold/30 transition-colors overflow-hidden ${className}`}
     >
-      <div className="flex items-start justify-between px-4 pt-3.5 pb-2.5 gap-3">
-        <div className="flex items-center gap-2 min-w-0">
-          {Icon && <Icon size={14} className="text-gold shrink-0" strokeWidth={1.5} />}
-          <span className="text-[13px] font-medium text-bone-100 truncate">{title}</span>
-        </div>
-        {rightSlot && <div className="shrink-0 text-end">{rightSlot}</div>}
-      </div>
+      {/*
+       * The header is the only clickable region when a tile opens a detail —
+       * it does NOT wrap `children`. Several tiles (Lights, Climate, Audio,
+       * Cinema, Video) pass both `onOpen` *and* footer pill/stepper buttons as
+       * `children`; making the whole card a <button> would nest interactive
+       * controls inside a <button>; that is invalid HTML and browsers/AT
+       * disagree on how to parse it, so it is a real defect and not merely a
+       * style choice. Scoping the button to the header keeps every control
+       * a real, singly-nested, keyboard-operable element.
+       */}
+      {clickable ? (
+        <motion.button
+          type="button"
+          onClick={onOpen}
+          whileTap={{ scale: 0.985 }}
+          whileHover={{ y: -1 }}
+          className="w-full text-start"
+        >
+          {header}
+        </motion.button>
+      ) : (
+        header
+      )}
       {children && (
         <div className={`border-t border-white/[0.04] ${bodyClass}`}>{children}</div>
       )}
-    </Wrapper>
+    </motion.div>
   );
 }
 
@@ -76,6 +95,11 @@ export function TilePill({
         e.stopPropagation();
         onClick?.(e);
       }}
+      // `active` is exclusively used by scene/preset/mode pill groups where exactly
+      // one pill is "on" — exposing it as aria-pressed fixes the SC 1.4.1 gap where
+      // selection was gold-vs-bone colour only. Pills with no selection concept
+      // (e.g. "+ New Event") never pass `active`, so they get no aria-pressed.
+      aria-pressed={active}
       className={`flex-1 py-2.5 text-[10px] tracking-luxe uppercase font-medium transition-colors
         ${active ? 'bg-gold/15 text-gold' : 'text-bone-500 hover:text-gold hover:bg-white/[0.03]'}
         ${className}`}

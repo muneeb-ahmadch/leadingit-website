@@ -25,12 +25,18 @@ export function BottomNav({ view, dispatch, compact }: Props) {
               if (id === 'more') return;
               dispatch({ type: 'set_view', view: id as View });
             }}
+            // The visible <span> label only renders for the active item (by
+            // design), which left the other two buttons icon-only with NO
+            // accessible name at all — a hard SC 4.1.2 failure, not a colour
+            // one. `aria-label` carries the name unconditionally.
+            aria-label={label}
+            aria-current={active ? 'page' : undefined}
             className={`group flex items-center gap-2 px-4 py-1.5 transition-colors
               ${active ? 'text-gold' : 'text-bone-500 hover:text-bone-100'}`}
           >
-            <Icon size={compact ? 16 : 18} strokeWidth={1.5} />
+            <Icon size={compact ? 16 : 18} strokeWidth={1.5} aria-hidden="true" />
             {active && (
-              <span className="text-[10px] uppercase tracking-luxe">{label}</span>
+              <span aria-hidden="true" className="text-[10px] uppercase tracking-luxe">{label}</span>
             )}
           </button>
         );

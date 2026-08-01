@@ -31,6 +31,7 @@ export function ShowRoomView({ global, dispatch, compact }: Props) {
           <motion.button
             key={i}
             onClick={() => dispatch({ type: 'global_qa', index: i })}
+            aria-pressed={global.quickActions === i}
             whileTap={{ scale: 0.97 }}
             animate={{
               borderColor: global.quickActions === i ? 'rgba(201,169,97,0.55)' : 'rgba(255,255,255,0.06)',
@@ -38,7 +39,7 @@ export function ShowRoomView({ global, dispatch, compact }: Props) {
             transition={{ duration: 0.25 }}
             className="rounded-lg bg-ink-800/80 border py-5 px-4 flex items-center gap-2.5 text-bone-100 hover:bg-ink-700/60 transition-colors"
           >
-            <Rocket size={14} className="text-gold" strokeWidth={1.5} />
+            <Rocket size={14} aria-hidden="true" className="text-gold" strokeWidth={1.5} />
             <span className="text-[13px]">{t('litHome.globalQuickAction')}</span>
           </motion.button>
         ))}
@@ -80,7 +81,7 @@ export function ShowRoomView({ global, dispatch, compact }: Props) {
             onClick={(e) => e.stopPropagation()}
             className="w-full py-2.5 text-[10px] tracking-luxe uppercase text-gold hover:bg-gold/10 transition-colors flex items-center justify-center gap-1.5"
           >
-            <Plus size={12} strokeWidth={2} />
+            <Plus size={12} strokeWidth={2} aria-hidden="true" />
             {t('litHome.newEvent')}
           </button>
         </TileCard>
@@ -102,9 +103,10 @@ export function ShowRoomView({ global, dispatch, compact }: Props) {
                 e.stopPropagation();
                 dispatch({ type: 'global_climate_step', delta: -1 });
               }}
+              aria-label="Decrease temperature"
               className="py-2.5 text-bone-500 hover:text-gold transition-colors flex items-center justify-center border-e border-white/[0.04]"
             >
-              <Minus size={14} strokeWidth={1.75} />
+              <Minus size={14} strokeWidth={1.75} aria-hidden="true" />
             </button>
             <div className="text-center leading-tight">
               <div className="font-mono text-[13px] text-bone-100">{global.globalClimate.target}°</div>
@@ -115,9 +117,10 @@ export function ShowRoomView({ global, dispatch, compact }: Props) {
                 e.stopPropagation();
                 dispatch({ type: 'global_climate_step', delta: 1 });
               }}
+              aria-label="Increase temperature"
               className="py-2.5 text-bone-500 hover:text-gold transition-colors flex items-center justify-center border-s border-white/[0.04]"
             >
-              <Plus size={14} strokeWidth={1.75} />
+              <Plus size={14} strokeWidth={1.75} aria-hidden="true" />
             </button>
           </div>
         </TileCard>

@@ -34,12 +34,14 @@ export function SuiteView({ state, dispatch, compact }: Props) {
             <button
               key={r.id}
               onClick={() => dispatch({ type: 'select_room', room: r.id as RoomId })}
+              aria-current={active ? 'page' : undefined}
               className={`relative pb-2.5 transition-colors
                 ${active ? 'text-bone-100' : 'text-bone-500 hover:text-bone-300'}`}
             >
               {t(r.i18nKey)}
               {active && (
                 <motion.span
+                  aria-hidden="true"
                   layoutId="suite-room-dot"
                   className="absolute left-1/2 -translate-x-1/2 -bottom-0.5 w-1.5 h-1.5 rounded-full bg-gold"
                 />

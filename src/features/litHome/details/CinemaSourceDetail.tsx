@@ -34,10 +34,10 @@ export function CinemaSourceDetail({ room, roomName, kind, dispatch, onClose }: 
       onClose={onClose}
       topRight={
         <div className="flex items-center gap-4 text-bone-500">
-          <IconButton aria-label="Projector"><Projector size={14} strokeWidth={1.5} /></IconButton>
-          <IconButton aria-label="Settings"><Settings size={14} strokeWidth={1.5} /></IconButton>
-          <IconButton aria-label="Remote"><RadioReceiver size={14} strokeWidth={1.5} /></IconButton>
-          <IconButton aria-label="Power"><Power size={14} strokeWidth={1.5} /></IconButton>
+          <IconButton aria-label="Projector"><Projector size={14} strokeWidth={1.5} aria-hidden="true" /></IconButton>
+          <IconButton aria-label="Settings"><Settings size={14} strokeWidth={1.5} aria-hidden="true" /></IconButton>
+          <IconButton aria-label="Remote"><RadioReceiver size={14} strokeWidth={1.5} aria-hidden="true" /></IconButton>
+          <IconButton aria-label="Power"><Power size={14} strokeWidth={1.5} aria-hidden="true" /></IconButton>
         </div>
       }
     >
@@ -50,6 +50,7 @@ export function CinemaSourceDetail({ room, roomName, kind, dispatch, onClose }: 
                 key={s.id}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => dispatch(pickAction(s.name))}
+                aria-pressed={active}
                 className={`aspect-square rounded-md border bg-ink-800/60 flex items-center justify-center transition-colors overflow-hidden p-5
                   ${active ? 'border-gold/55 bg-gold/5' : 'border-white/[0.06] hover:border-gold/30'}`}
               >
@@ -69,10 +70,10 @@ export function CinemaSourceDetail({ room, roomName, kind, dispatch, onClose }: 
             className="text-bone-500 hover:text-gold transition-colors"
             aria-label="Mute"
           >
-            <VolumeX size={16} strokeWidth={1.5} />
+            <VolumeX size={16} strokeWidth={1.5} aria-hidden="true" />
           </button>
-          <button onClick={() => dispatch(volStepAction(-1))} className="text-bone-500 hover:text-gold transition-colors">
-            <Minus size={16} strokeWidth={1.75} />
+          <button onClick={() => dispatch(volStepAction(-1))} aria-label="Decrease volume" className="text-bone-500 hover:text-gold transition-colors">
+            <Minus size={16} strokeWidth={1.75} aria-hidden="true" />
           </button>
           <input
             type="range"
@@ -83,8 +84,8 @@ export function CinemaSourceDetail({ room, roomName, kind, dispatch, onClose }: 
             className="lit-slider flex-1"
             aria-label="Volume"
           />
-          <button onClick={() => dispatch(volStepAction(1))} className="text-bone-500 hover:text-gold transition-colors">
-            <Plus size={16} strokeWidth={1.75} />
+          <button onClick={() => dispatch(volStepAction(1))} aria-label="Increase volume" className="text-bone-500 hover:text-gold transition-colors">
+            <Plus size={16} strokeWidth={1.75} aria-hidden="true" />
           </button>
         </div>
       </div>
