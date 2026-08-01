@@ -41,7 +41,7 @@ export type ProductCategory = { slug: string; label: string; blurb: string };
 export const CATEGORIES_BY_BRAND: Record<string, ProductCategory[]> = {
   crestron: [
     { slug: 'keypads', label: 'Keypads & Interfaces', blurb: 'Horizon and Cameo keypads and faceplates — where the home meets the hand.' },
-    { slug: 'touchscreens', label: 'Touch Screens & Scheduling', blurb: 'From five-inch wall screens to room-scheduling panels, finished edge to edge in glass.' },
+    { slug: 'touchscreens', label: 'Touch Screens & Scheduling', blurb: 'From five-inch wall screens to room-scheduling panels.' },
     { slug: 'sensors', label: 'Sensors & Climate', blurb: 'Occupancy, daylight and thermostat control that lets the building respond on its own.' },
     { slug: 'control', label: 'Control Processors', blurb: 'The 4-Series engine at the core of every system — rack-mount, DIN-rail and Crestron Home OS.' },
     { slug: 'audio', label: 'Audio Processing', blurb: 'Crestron Avia digital signal processors for whole-home and commercial sound.' },
@@ -937,13 +937,13 @@ export const PRODUCTS: Product[] = [
       ] },
       { label: 'Network & Power', rows: [
         { name: 'Ethernet', value: 'Gigabit with PoE+' },
-        { name: 'Wi-Fi', value: '802.11ax (Wi-Fi 6), 2.4 / 5 GHz' },
+        { name: 'Wi-Fi', value: 'Wi-Fi 6E (802.11ax), 2.4 / 5 / 6 GHz' },
         { name: 'Memory', value: '8 GB RAM · 40 GB storage' },
       ] },
     ],
     inUse: crInterior,
     metaDescription:
-      'Crestron TSW-1080 10.1" wall mount touch screen with PoE+, Wi-Fi 6 (802.11ax) and Rava SIP. Distributed and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron TSW-1080 10.1" wall mount touch screen with PoE+, Wi-Fi 6E (802.11ax) and Rava SIP. Distributed and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron TSW-1080', '10 inch touch screen', 'Crestron touch panel', 'TSW-1080 UAE', 'TSW-1080 Pakistan'],
   },
   {
@@ -951,7 +951,7 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'crestron',
     name: 'TSW-880',
     collection: '8.1" Wall Mount Touch Screen',
-    tagline: 'Eight inches of glass, edge to edge.',
+    tagline: 'Eight inches of glass in a die-cast housing.',
     description:
       'The 8.1-inch panel in the same family — 204 mm of capacitive display, custom-programmable control buttons, and support for an HTML5 interface built specifically for the project. PoE or Wi-Fi for the connection, and the same accessory range for new walls and retrofits. Sized for a bedroom wall or a meeting room where a ten-inch panel would dominate.',
     category: 'touchscreens',
@@ -973,13 +973,13 @@ export const PRODUCTS: Product[] = [
       ] },
       { label: 'Network & Power', rows: [
         { name: 'Ethernet', value: 'Gigabit with PoE+' },
-        { name: 'Wi-Fi', value: '802.11ax (Wi-Fi 6), 2.4 / 5 GHz' },
+        { name: 'Wi-Fi', value: 'Wi-Fi 6E (802.11ax), 2.4 / 5 / 6 GHz' },
         { name: 'Memory', value: '8 GB RAM · 40 GB storage' },
       ] },
     ],
     inUse: crInterior,
     metaDescription:
-      'Crestron TSW-880 8.1" wall mount touch screen with PoE+, Wi-Fi 6 (802.11ax) and Rava SIP. Supplied and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron TSW-880 8.1" wall mount touch screen with PoE+, Wi-Fi 6E (802.11ax) and Rava SIP. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron TSW-880', '8 inch touch screen', 'Crestron touch panel', 'TSW-880 UAE', 'TSW-880 Pakistan'],
   },
   {
@@ -987,7 +987,7 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'crestron',
     name: 'TSW-770',
     collection: '7" Wall Mount Touch Screen',
-    tagline: 'Seven inches, set into the wall rather than onto it.',
+    tagline: 'Seven inches of edge-to-edge glass.',
     description:
       'Seven inches at 1280 × 800 on a 16:10 active-matrix LCD, which is the size most villa corridors and bedrooms end up wanting. It handles a Crestron HTML5 or Smart Graphics interface, web pages, H.265 and H.264 streams from a door camera, and Rava SIP intercom calls. Wi-Fi or PoE for connectivity. Crestron positions it as the alternative to fixing a consumer tablet to the wall, and the mounting range is the reason: it is designed to be part of the wall, not stuck on it.',
     category: 'touchscreens',
@@ -1072,7 +1072,7 @@ export const PRODUCTS: Product[] = [
       { label: 'Display', rows: [
         { name: 'Size', value: '8.1" diagonal' },
         { name: 'Resolution', value: '1280 × 800 WXGA' },
-        { name: 'Light bar', value: 'Integrated room-status LEDs' },
+        { name: 'Light bar', value: 'Integrated light bars, both sides' },
       ] },
       { label: 'Scheduling', rows: [
         { name: 'Services', value: 'Exchange, Google, 25Live, Ad Astra' },
