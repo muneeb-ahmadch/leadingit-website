@@ -310,7 +310,14 @@ export const PRODUCTS: Product[] = [
       'Four dimming channels off a single supply feed, in a module that clips onto the DIN rail. One part number covers both 120 V and 220–277 V installations. Each channel carries up to 5 A, 10 A across the module, across electronic and magnetic low-voltage, incandescent, neon and cold-cathode, two-wire dimmable fluorescent and non-dimmable loads.',
     category: 'lighting',
     hero: cr('din-1dim4.png'),
-    finishes: [{ id: 'light-gray', name: 'Light Gray', swatch: crGray, productImage: cr('din-1dim4.png') }],
+    // CORRECTED 2026-08-01 (rule 1). Shipped `name: 'Light Gray'`, which Crestron
+    // does NOT publish for this product: `[P-DIN-1DIM4] › Enclosure` reads
+    // "Aluminum with polycarbonate label overlay", and "light gray" appears zero
+    // times on the page. The four other DIN modules DO publish "Light gray
+    // polycarbonate", which is where the value was copied from — the same
+    // copy-a-sibling's-fact failure that produced the Black Nova finish and the
+    // Savant claim. `swatch` is a design token and carries no manufacturer claim.
+    finishes: [{ id: 'aluminum', name: 'Aluminum', swatch: crGray, productImage: cr('din-1dim4.png') }],
     specs: [
       { label: 'Dimming', rows: [
         { name: 'Channels', value: '4 · 1 feed' },
@@ -343,7 +350,10 @@ export const PRODUCTS: Product[] = [
       'The DIN-1DIMU4 handles forward-phase and reverse-phase loads on the same four-channel module, so a mixed retrofit does not need two different dimmer types. Each channel detects the load type connected to it and picks its own operating mode. Ratings are 5 A per channel and 10 A total, at either 120 V or 220–240 V.',
     category: 'lighting',
     hero: cr('din-1dimu4.png'),
-    finishes: [{ id: 'light-gray', name: 'Light Gray', swatch: crGray, productImage: cr('din-1dimu4.png') }],
+    // CORRECTED 2026-08-01 (rule 1) — same defect and same evidence as din-1dim4
+    // above: `[P-DIN-1DIMU4] › Enclosure` reads "Aluminum with polycarbonate
+    // label overlay", zero occurrences of "light gray" on the page.
+    finishes: [{ id: 'aluminum', name: 'Aluminum', swatch: crGray, productImage: cr('din-1dimu4.png') }],
     specs: [
       { label: 'Dimming', rows: [
         { name: 'Channels', value: '4 universal · 1 feed' },
@@ -472,7 +482,13 @@ export const PRODUCTS: Product[] = [
     collection: 'KNX Secure IP Gateway · DIN Rail',
     tagline: 'The 4-Series system, fluent in KNX.',
     description:
-      'Plenty of Gulf and Pakistani projects are already wired in KNX. The DIN-KXI lets a 4-Series Crestron system address up to 1,000 KNX datapoints over IP, so that existing bus becomes part of the same user interface instead of a second system. It draws its power from the KNX bus, supports AES-128 KNX Security, and doubles as the programming interface for KNX devices in ETS5 or ETS6.',
+      // Opening sentence removed 2026-08-01: it read "Plenty of Gulf and Pakistani
+      // projects are already wired in KNX." That is a two-region market-penetration
+      // claim with no source of any kind, sitting inside a product description
+      // where it reads as established fact. Rule 2 — unverified figures do not
+      // ship, and "plenty" is a figure wearing a hedge. Everything below is
+      // sourced to `[P-DIN-KXI]`.
+      'The DIN-KXI lets a 4-Series Crestron system address up to 1,000 KNX datapoints over IP, so an existing KNX bus becomes part of the same user interface instead of a second system. It draws its power from the KNX bus, supports AES-128 KNX Security, and doubles as the programming interface for KNX devices in ETS5 or ETS6.',
     category: 'lighting',
     hero: cr('din-kxi.png'),
     finishes: [{ id: 'light-gray', name: 'Light Gray', swatch: crGray, productImage: cr('din-kxi.png') }],
