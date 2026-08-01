@@ -75,6 +75,19 @@
     "brandHubLink": "Trade supply and part-number enquiries",
     "brandHubTitle": "Buying {{brand}} for a trade project"
   },
+  "pakistan": {
+    "eyebrow": "Supply coverage · Pakistan",
+    "crumb": "Pakistan",
+    "brandHubTitle": "Buying {{brand}} for a project in Pakistan",
+    "brandHubLink": "{{brand}} supplied to Pakistan from Dubai",
+    "parentHubLink": "The full {{brand}} range",
+    "siblingsTitle": "The rest of the portfolio shipped from Dubai",
+    "serviceName": "{{brand}} supply and support for projects in Pakistan",
+    "serviceType": "Cross-border equipment supply, commissioning and warranty handling",
+    "heroCtaTitle": "Send the {{brand}} models and the project, and the reply covers supply into Pakistan.",
+    "warrantyCtaTitle": "Ask about warranty handling before you order, not after.",
+    "faqCtaTitle": "Still deciding? Describe the project and the reply can be specific."
+  },
   "locations": {
     "eyebrow": "Dubai, United Arab Emirates",
     "dubaiCrumb": "Dubai",

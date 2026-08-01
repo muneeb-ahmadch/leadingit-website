@@ -65,6 +65,27 @@ export function solutionCrumbs(solutionName: string, solutionSlug: string): Crum
   return [HOME, SOLUTIONS, { name: solutionName, path: `/solutions/${solutionSlug}` }];
 }
 
+/**
+ * Home → Brands → {brand.name} → Pakistan, for `/brands/<brand>/pakistan/`.
+ *
+ * The last crumb is the **country**, never a city — `docs/05-URL-TAXONOMY.md`
+ * §5a/§6 and gate 4 of the §6 content test. The name is passed in by the caller
+ * from `en.json`, and there is no parameter here a city could be threaded
+ * through: the trail is brand + one fixed label.
+ */
+export function brandPakistanCrumbs(
+  brandName: string,
+  brandSlug: string,
+  countryLabel: string,
+): Crumb[] {
+  return [
+    HOME,
+    BRANDS,
+    { name: brandName, path: `/brands/${brandSlug}` },
+    { name: countryLabel, path: `/brands/${brandSlug}/pakistan` },
+  ];
+}
+
 /** Home → Brands → Black Nova → Keypad Designer. */
 export function keypadDesignerCrumbs(): Crumb[] {
   return [HOME, BRANDS, BLACK_NOVA, { name: 'Keypad Designer', path: KEYPAD_DESIGNER_PATH }];

@@ -1,6 +1,7 @@
 import { Navigate, useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { BRANDS, BRAND_BY_SLUG } from '@/data/brands';
+import { BRAND_PAKISTAN_BY_SLUG } from '@/data/brandPakistan';
 import { SOLUTIONS } from '@/data/solutions';
 import { productsForBrand, CATEGORIES_BY_BRAND } from '@/data/products';
 import type { Product } from '@/data/products';
@@ -108,6 +109,24 @@ export function BrandPage() {
       hint: t('trade.eyebrow'),
     },
   ];
+
+  // `/brands/<brand>/pakistan/` is linked from **its parent hub only** — never
+  // from global navigation (`_CONVENTIONS.md` §8, `docs/05-URL-TAXONOMY.md`
+  // §12). Two brands have such a page today and seven do not, so this is
+  // derived from the record set rather than hand-listed: a hub with no PK page
+  // renders nothing here, and it is impossible to link a route that does not
+  // emit HTML. Rendered next to the trade block because both are supply
+  // questions, and the audience overlaps.
+  const pakistanPage = BRAND_PAKISTAN_BY_SLUG[brand.slug];
+  const pakistanLinks: InternalLink[] = pakistanPage
+    ? [
+        {
+          to: `/brands/${pakistanPage.brandSlug}/pakistan`,
+          label: t('pakistan.brandHubLink', { brand: brand.name }),
+          hint: t('pakistan.eyebrow'),
+        },
+      ]
+    : [];
 
   // Hub-and-spoke: this brand hub links sideways to its siblings and up to the
   // brands index. Anchor text is the brand's own name, which is what a visitor
@@ -306,6 +325,20 @@ export function BrandPage() {
           </div>
         </Reveal>
       </section>
+
+      {/* the Pakistan supply page, on the two hubs that have one */}
+      {pakistanLinks.length > 0 && (
+        <section className="container-luxe pb-24">
+          <Reveal>
+            <div className="border-t border-gold/20 pt-10">
+              <InternalLinks
+                title={t('pakistan.brandHubTitle', { brand: brand.name })}
+                links={pakistanLinks}
+              />
+            </div>
+          </Reveal>
+        </section>
+      )}
 
       {/* cross-links to the rest of the portfolio */}
       <section className="container-luxe pb-24">

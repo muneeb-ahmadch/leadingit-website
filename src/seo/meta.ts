@@ -33,6 +33,7 @@
  * time and fails the build loudly if a formula or a data change breaks it.
  */
 import type { Brand } from '@/data/brands';
+import type { BrandPakistanPage } from '@/data/brandPakistan';
 import type { Product } from '@/data/products';
 import type { Solution } from '@/data/solutions';
 import { SITE_NAME } from '@/lib/site';
@@ -219,6 +220,53 @@ export function solutionMeta(solution: Solution): PageMeta {
     description: `${SITE_NAME} designs, supplies and installs ${solution.supplySubject} in Dubai. ${solution.metaDetail}`,
     path: `/solutions/${solution.slug}`,
     ogImage: ownImage(solution.hero),
+    ogType: 'website',
+  };
+}
+
+/**
+ * The approved Pakistan-page supply sentence (`_CONVENTIONS.md` §1), minus the
+ * brand name. 65 characters of fixture; the two live brand names are "Crestron"
+ * (8) and "Marantz" (7), so the sentence itself runs 72–73 characters.
+ *
+ * Neutral wording only, exactly as approved. Never "authorized dealer",
+ * "official distributor" or any equivalent (`docs/OPEN-QUESTIONS.md` #3), and
+ * never a city — this snippet is the one piece of copy that gets quoted without
+ * its page around it, so a city here would be a local claim in a SERP.
+ */
+function pakistanSupplySentence(brandName: string): string {
+  return `${SITE_NAME} supplies ${brandName} to projects in Pakistan from its Dubai base.`;
+}
+
+/**
+ * `/brands/<brand>/pakistan/` — the non-local distribution-coverage page
+ * (`docs/05-URL-TAXONOMY.md` §6).
+ *
+ * **Title formula:** `<brand> in Pakistan — Supplied from Dubai | Leading IT`.
+ * 47 characters of fixture plus the brand name, so the budget allows a 13-char
+ * brand name before the 60-char cap bites. Today: Crestron 55, Marantz 54.
+ * Gate 4 of §6 is satisfied structurally — the **country** is in the title and
+ * the H1, and no city can enter either, because neither string interpolates
+ * anything but a brand name.
+ *
+ * **Description:** the approved supply sentence (`_CONVENTIONS.md` §1) plus one
+ * detail sentence from the record. Today: 146 chars (Crestron) and 147
+ * (Marantz), against the 155 ceiling — so a record's `metaDetail` has 81
+ * characters to work with next to an 8-character brand name, and each record
+ * comments its own count. That is tight; re-count on any edit.
+ *
+ * **No duration in either string, ever** (`docs/OPEN-QUESTIONS.md` #24). Both
+ * descriptions say lead time is quoted per order and stop there.
+ */
+export function brandPakistanMeta(page: BrandPakistanPage): PageMeta {
+  return {
+    title: `${page.brandName} in Pakistan — Supplied from Dubai | ${SITE_NAME}`,
+    description: `${pakistanSupplySentence(page.brandName)} ${page.metaDetail}`,
+    path: `/brands/${page.brandSlug}/pakistan`,
+    // Deliberately the sitewide default rather than the brand's hero: an OG
+    // card for this page must not imply a room, a showroom or a place in
+    // Pakistan, and no first-party image depicts cross-border supply.
+    ogImage: DEFAULT_OG_IMAGE,
     ogType: 'website',
   };
 }

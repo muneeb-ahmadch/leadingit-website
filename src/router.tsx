@@ -35,6 +35,10 @@ const solutionStaticPaths: StaticPaths = import.meta.env.SSR
   ? async () => (await import('@/seo/routes')).solutionPaths()
   : undefined;
 
+const brandPakistanStaticPaths: StaticPaths = import.meta.env.SSR
+  ? async () => (await import('@/seo/routes')).brandPakistanPaths()
+  : undefined;
+
 /**
  * Route records consumed by `ViteReactSSG`: the same tree drives the build-time
  * prerender and the browser router after hydration.
@@ -81,6 +85,17 @@ export const routes: RouteRecord[] = [
         lazy: async () => ({
           Component: (await import('@/pages/KeypadDesignerPage')).KeypadDesignerPage,
         }),
+      },
+      // Static last segment, so React Router ranks it above
+      // `/brands/:slug/:productSlug` — the same mechanism that keeps the keypad
+      // designer out of the product template. `'pakistan'` is additionally in
+      // `RESERVED_BRAND_CHILD_SLUGS`, so no product can ever claim the path.
+      // Only the brands with a record in `src/data/brandPakistan.ts` are
+      // prerendered; the launch set is capped at two (`docs/05` §6).
+      {
+        path: '/brands/:slug/pakistan',
+        lazy: async () => ({ Component: (await import('@/pages/BrandPakistan')).BrandPakistan }),
+        getStaticPaths: brandPakistanStaticPaths,
       },
       {
         path: '/brands/:slug/:productSlug',

@@ -29,10 +29,16 @@
  * ## Scope
  *
  * This manifest describes routes that emit HTML **today**. `docs/05-URL-TAXONOMY.md`
- * locks several paths that are not built yet (`/locations/dubai/`, `/trade/`,
- * `/journal/*`, `/brands/<brand>/pakistan/`, and the disabled `/projects/*`).
- * They are deliberately absent: a sitemap entry for a URL that 404s is worse than
- * no entry. Adding them later is purely additive.
+ * locks several paths that are not built yet (`/journal/*`, the sixth solution
+ * slug `industrial-automation`, and the disabled `/projects/*`). They are
+ * deliberately absent: a sitemap entry for a URL that 404s is worse than no
+ * entry. Adding them later is purely additive.
+ *
+ * `/brands/crestron/pakistan/` and `/brands/marantz/pakistan/` joined in Phase 4
+ * once `docs/OPEN-QUESTIONS.md` #24 supplied the operational facts §6's content
+ * gate requires. **Those two are the whole launch set** — see the cap comment on
+ * `BRAND_PAKISTAN_PAGES` in `src/data/brandPakistan.ts`; adding the other seven
+ * from the same template is the doorway pattern §6 exists to refuse.
  *
  * `/solutions/` and `/solutions/home-cinema/` joined in Phase 4. Five of the six
  * locked solution slugs are still unwritten and stay out until their page exists;
@@ -41,6 +47,7 @@
  * manifest (`docs/05` §14).
  */
 import type { Brand } from '@/data/brands';
+import type { BrandPakistanPage } from '@/data/brandPakistan';
 import type { Product } from '@/data/products';
 import type { Solution } from '@/data/solutions';
 import {
@@ -49,6 +56,7 @@ import {
   TITLE_MAX_LENGTH,
   aboutMeta,
   brandMeta,
+  brandPakistanMeta,
   brandsIndexMeta,
   contactMeta,
   homeMeta,
@@ -75,6 +83,7 @@ export type RouteKind =
   | 'home'
   | 'brands-index'
   | 'brand'
+  | 'brand-pakistan'
   | 'product'
   | 'range'
   | 'solutions-index'
@@ -177,6 +186,11 @@ async function loadSolutions(): Promise<Solution[]> {
   return SOLUTIONS;
 }
 
+async function loadBrandPakistanPages(): Promise<BrandPakistanPage[]> {
+  const { BRAND_PAKISTAN_PAGES } = await import('@/data/brandPakistan');
+  return BRAND_PAKISTAN_PAGES;
+}
+
 /**
  * Retired route, permanently. `/solutions/shading/` was dropped on 2026-07-31
  * (`docs/OPEN-QUESTIONS.md` #22) because no shading product exists in the
@@ -200,6 +214,42 @@ export async function brandRoutes(): Promise<RouteEntry[]> {
       brandSlug: brand.slug,
     }),
   );
+}
+
+/**
+ * One entry per `/brands/<brand>/pakistan/` page — the non-local
+ * distribution-coverage template (`docs/05-URL-TAXONOMY.md` §6).
+ *
+ * Two records today, and §6 caps the launch set there. The parent brand must
+ * exist, because the page's breadcrumb, its title and its whole cross-link
+ * block are built from the brand hub: a PK page for a brand with no hub would
+ * be an orphan whose breadcrumb points at a 404.
+ *
+ * `'pakistan'` is in `RESERVED_BRAND_CHILD_SLUGS` above, so `productRoutes()`
+ * already refuses to author a product at any of these paths — the two route
+ * families can never write the same file.
+ */
+export async function brandPakistanRoutes(): Promise<RouteEntry[]> {
+  const [brands, pages] = await Promise.all([loadBrands(), loadBrandPakistanPages()]);
+  const brandSlugs = new Set(brands.map((brand) => brand.slug));
+
+  return pages.map((page): RouteEntry => {
+    if (!brandSlugs.has(page.brandSlug)) {
+      throw manifestError(
+        `brand-pakistan page references unknown brand "${page.brandSlug}" — every ` +
+          `/brands/<brand>/pakistan/ page needs a parent hub that returns 200, because its ` +
+          `breadcrumb and cross-links are built from it. Fix the brandSlug in ` +
+          `src/data/brandPakistan.ts, or add the brand to src/data/brands.ts.`,
+      );
+    }
+    return {
+      path: `/brands/${page.brandSlug}/pakistan`,
+      kind: 'brand-pakistan',
+      indexable: true,
+      meta: brandPakistanMeta(page),
+      brandSlug: page.brandSlug,
+    };
+  });
 }
 
 /**
@@ -387,6 +437,7 @@ async function buildManifest(): Promise<RouteEntry[]> {
     ...STATIC_ROUTES,
     ...(await brandRoutes()),
     ...(await productRoutes()),
+    ...(await brandPakistanRoutes()),
     ...(await solutionRoutes()),
   ];
   assertManifest(entries);
@@ -415,6 +466,20 @@ export async function solutionPaths(): Promise<string[]> {
 /** Brand hub paths for the router's `getStaticPaths`. */
 export async function brandPaths(): Promise<string[]> {
   return (await allRoutes()).filter((route) => route.kind === 'brand').map((route) => route.path);
+}
+
+/**
+ * `/brands/<brand>/pakistan/` paths for the router's `getStaticPaths`.
+ *
+ * Its route pattern (`/brands/:slug/pakistan`) has a static last segment, which
+ * React Router ranks above `/brands/:slug/:productSlug`, so the two never
+ * compete for the same file — the same mechanism that keeps the keypad designer
+ * out of the product template.
+ */
+export async function brandPakistanPaths(): Promise<string[]> {
+  return (await allRoutes())
+    .filter((route) => route.kind === 'brand-pakistan')
+    .map((route) => route.path);
 }
 
 /**
