@@ -86,6 +86,24 @@ RewriteRule ^brands/uandksound/s-series/?$ https://leadingit.me/brands/uandksoun
 RewriteRule ^solutions/shading/?$ https://leadingit.me/solutions/ [R=301,L,QSA]
 
 # ─────────────────────────────────────────────────────────────
+# Parent paths that are not pages → 301
+# ─────────────────────────────────────────────────────────────
+# Not a retirement — /locations/ never existed and never will. docs/05-URL-TAXONOMY.md §2a is
+# explicit: "No index page while there is one location. 301 → /locations/dubai/ so a truncated
+# URL never 404s." Someone hand-editing a URL, or a crawler walking up the path, must land on
+# the one location page rather than on ErrorDocument 404.
+#
+# Same placement reasoning as the retired routes above: below the scheme/host block so the URL
+# canonicalises first, and above DirectorySlash — /locations/ is not a directory in dist/
+# (only /locations/dubai/ is), so mod_dir cannot help and the `/?$` here handles both forms.
+#
+# This rule is what makes it safe for /locations/dubai/ to carry a two-crumb breadcrumb
+# (Home → Dubai): there is no /locations/ page for a middle crumb to point at, by design.
+# NEVER add a second /locations/<city>/ route — docs/05 §5a: a city-swap location page for a
+# city with no premises is a doorway page, and that includes every Pakistani city, permanently.
+RewriteRule ^locations/?$ https://leadingit.me/locations/dubai/ [R=301,L,QSA]
+
+# ─────────────────────────────────────────────────────────────
 # Trailing slash / directory index
 # ─────────────────────────────────────────────────────────────
 # Canonical URLs always carry a trailing slash (docs/05-URL-TAXONOMY.md). dirStyle "nested"

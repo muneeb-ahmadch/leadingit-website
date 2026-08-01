@@ -64,6 +64,25 @@
     "pageCtaTitle": "Describe the room and the programme, and the reply can be specific.",
     "faqCtaTitle": "Still deciding? Send the drawings or the room dimensions for a specific answer."
   },
+  "trade": {
+    "eyebrow": "Trade and integrator supply",
+    "crumb": "Trade",
+    "footerLink": "Trade supply for integrators",
+    "brandsTitle": "Every brand Leading IT supplies to the trade",
+    "partNumberCtaTitle": "Send the part numbers and quantities, and the reply comes back with a quotation.",
+    "sendListCtaTitle": "Paste the whole schedule in one message — part numbers, quantities, delivery emirate.",
+    "accountCtaTitle": "Opening a trade account starts with the company name and a first part-number list.",
+    "brandHubLink": "Trade supply and part-number enquiries",
+    "brandHubTitle": "Buying {{brand}} for a trade project"
+  },
+  "locations": {
+    "eyebrow": "Dubai, United Arab Emirates",
+    "dubaiCrumb": "Dubai",
+    "footerLink": "Dubai showroom and enquiries",
+    "visitCtaTitle": "Ask about a showroom visit, and the reply comes with the address and directions.",
+    "projectCtaTitle": "Describe the residence and the area, and the reply can be specific.",
+    "faqCtaTitle": "Still unsure whether to visit? Send the floor plan and start the conversation there."
+  },
   "product": {
     "navOverview": "Overview",
     "navDesign": "Design",
@@ -234,6 +253,7 @@
   "footer": {
     "tagline": "Leading IT — premium distribution of harmonious solutions in space automation, audio visual and cinema across the Gulf and Pakistan.",
     "rights": "© {{year}} Leading IT. All rights reserved.",
+    "companyLabel": "Leading IT",
     "languageLabel": "Language",
     "comingSoon": "coming soon"
   },

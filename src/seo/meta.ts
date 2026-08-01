@@ -223,6 +223,55 @@ export function solutionMeta(solution: Solution): PageMeta {
   };
 }
 
+/**
+ * `/locations/dubai/` — the only location page that will ever exist
+ * (`docs/05-URL-TAXONOMY.md` §5).
+ *
+ * Both strings are fixed text, so the worst case *is* the only case: title 50
+ * chars, description 154 chars, against 60 / 155. Nothing here is derived from a
+ * record, so no data change can push either over the cap — but the description
+ * has only one character of headroom, so any edit to it must be re-counted.
+ *
+ * **No address fragment in either string.** The tower-and-shop line
+ * (`docs/00-CONTEXT.md` §4) appears once, in body copy, and nowhere else; a
+ * partial address in a SERP snippet is the fastest way to seed a wrong citation
+ * while `docs/OPEN-QUESTIONS.md` #1 is open. **No opening hours** (#8) and no
+ * "near you" phrasing either. `LocalBusiness` stays gated in
+ * `./jsonld/localBusiness.ts` — see that file's header.
+ */
+export function locationDubaiMeta(): PageMeta {
+  return {
+    title: `${SITE_NAME} Dubai — Automation Showroom & Enquiries`,
+    description: `${SITE_NAME} runs one showroom, in Dubai. Home cinema, whole-home control, lighting, audio and hospitality automation, supplied across the UAE and Pakistan.`,
+    path: '/locations/dubai',
+    ogImage: DEFAULT_OG_IMAGE,
+    ogType: 'website',
+  };
+}
+
+/**
+ * `/trade/` — three keyword clusters (trade accounts, part-number availability,
+ * commissioning support) on one page (`docs/04-KEYWORD-MAP.md` §5).
+ *
+ * Fixed text again, so the worst case is the only case: title 51 chars,
+ * description 151 chars, against 60 / 155.
+ *
+ * **The description states a process, never a position.** "Availability and lead
+ * time confirmed per part number" is the honest T2 floor; no stock claim, no
+ * turnaround figure and no pricing may enter this snippet while
+ * `docs/OPEN-QUESTIONS.md` #3/T2 is open — a snippet is the one piece of copy
+ * that gets quoted without its page around it.
+ */
+export function tradeMeta(): PageMeta {
+  return {
+    title: `Trade Supply for AV Integrators, Dubai | ${SITE_NAME}`,
+    description: `${SITE_NAME} supplies AV and automation trade accounts across the UAE, and integrators in Pakistan. Availability and lead time confirmed per part number.`,
+    path: '/trade',
+    ogImage: DEFAULT_OG_IMAGE,
+    ogType: 'website',
+  };
+}
+
 export function keypadDesignerMeta(): PageMeta {
   return {
     // 53 chars. "configurator" and "designer" are both in the query set

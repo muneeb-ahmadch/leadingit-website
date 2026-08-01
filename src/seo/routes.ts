@@ -54,10 +54,12 @@ import {
   homeMeta,
   keypadDesignerMeta,
   litHomeMeta,
+  locationDubaiMeta,
   notFoundMeta,
   productMeta,
   solutionMeta,
   solutionsIndexMeta,
+  tradeMeta,
   type PageMeta,
 } from './meta';
 import { KEYPAD_DESIGNER_PATH } from './paths';
@@ -77,6 +79,8 @@ export type RouteKind =
   | 'range'
   | 'solutions-index'
   | 'solution'
+  | 'location'
+  | 'trade'
   | 'tool'
   | 'lit-home'
   | 'about'
@@ -138,6 +142,15 @@ export const STATIC_ROUTES: readonly RouteEntry[] = [
     meta: keypadDesignerMeta(),
     brandSlug: 'black-nova',
   },
+  // The one location page (`docs/05-URL-TAXONOMY.md` §5). `/locations/` itself
+  // is not a route: there is no index while there is one premises, and
+  // `public/.htaccess` 301s it here so a truncated URL never 404s. No other
+  // `/locations/<city>/` may ever be added — see §5a.
+  { path: '/locations/dubai', kind: 'location', indexable: true, meta: locationDubaiMeta() },
+  // One page for T1, T2 and T3 (`docs/04-KEYWORD-MAP.md` §5). It is also the
+  // single target of nine brand-hub links (`docs/05-URL-TAXONOMY.md` §12), which
+  // is a structural reason not to split it into three thin pages later.
+  { path: '/trade', kind: 'trade', indexable: true, meta: tradeMeta() },
   { path: '/lit-home', kind: 'lit-home', indexable: true, meta: litHomeMeta() },
   { path: '/about', kind: 'about', indexable: true, meta: aboutMeta() },
   { path: '/contact', kind: 'contact', indexable: true, meta: contactMeta() },

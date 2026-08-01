@@ -96,6 +96,19 @@ export function BrandPage() {
     hint: solution.serviceType,
   }));
 
+  // `_CONVENTIONS.md` §8 / `docs/05-URL-TAXONOMY.md` §12: **every** brand hub
+  // links `/trade/` with descriptive anchor text. Nine hubs, one target — which
+  // is also why `/trade/` is one page rather than three cluster pages. The
+  // anchor names the destination and the brand, so it reads correctly out of
+  // context for both a crawler and a screen-reader user.
+  const tradeLinks: InternalLink[] = [
+    {
+      to: '/trade',
+      label: t('trade.brandHubLink'),
+      hint: t('trade.eyebrow'),
+    },
+  ];
+
   // Hub-and-spoke: this brand hub links sideways to its siblings and up to the
   // brands index. Anchor text is the brand's own name, which is what a visitor
   // and a crawler both need to predict the destination.
@@ -281,6 +294,18 @@ export function BrandPage() {
           </Reveal>
         </section>
       )}
+
+      {/* the trade path — on every hub, never conditional */}
+      <section className="container-luxe pb-24">
+        <Reveal>
+          <div className="border-t border-gold/20 pt-10">
+            <InternalLinks
+              title={t('trade.brandHubTitle', { brand: brand.name })}
+              links={tradeLinks}
+            />
+          </div>
+        </Reveal>
+      </section>
 
       {/* cross-links to the rest of the portfolio */}
       <section className="container-luxe pb-24">

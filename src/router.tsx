@@ -96,6 +96,21 @@ export const routes: RouteRecord[] = [
         lazy: async () => ({ Component: (await import('@/pages/SolutionPage')).SolutionPage }),
         getStaticPaths: solutionStaticPaths,
       },
+      // Static segment, no `getStaticPaths`: `/locations/dubai` is a single
+      // route, not a city template, and it must never become one
+      // (`docs/05-URL-TAXONOMY.md` §5a — a city-swap location page is a doorway
+      // page). There is deliberately no `/locations` route: `public/.htaccess`
+      // 301s that URL here.
+      {
+        path: '/locations/dubai',
+        lazy: async () => ({
+          Component: (await import('@/pages/LocationDubai')).LocationDubai,
+        }),
+      },
+      {
+        path: '/trade',
+        lazy: async () => ({ Component: (await import('@/pages/Trade')).Trade }),
+      },
       {
         path: '/lit-home',
         lazy: async () => ({ Component: (await import('@/pages/LitHome')).LitHomePage }),
