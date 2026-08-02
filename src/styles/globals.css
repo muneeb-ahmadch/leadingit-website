@@ -1,10 +1,8 @@
-@import '@fontsource/cormorant-garamond/400.css';
-@import '@fontsource/cormorant-garamond/500.css';
-@import '@fontsource/cormorant-garamond/600.css';
-@import '@fontsource/inter/400.css';
-@import '@fontsource/inter/500.css';
-@import '@fontsource/inter/600.css';
-@import '@fontsource/jetbrains-mono/400.css';
+/* Custom-subset Latin faces (Cormorant Garamond, Inter, JetBrains Mono) —
+   replaces the seven `@fontsource/*` imports this line used to be. See
+   ./fonts-latin.css's header for what changed and scripts/subset-fonts.mjs
+   for how the subset files it points at are generated. */
+@import './fonts-latin.css';
 /* Arabic + Urdu display faces live in ./fonts-rtl.css, loaded conditionally
    from main.tsx based on ENABLED_LOCALES (src/i18n.ts) — see that file. */
 
