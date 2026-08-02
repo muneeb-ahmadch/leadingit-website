@@ -68,7 +68,8 @@
     "ctaEmailPrefix": "Or write to",
     "indexCtaTitle": "Describe the project, and Leading IT will point you at the right starting place.",
     "pageCtaTitle": "Describe the room and the programme, and the reply can be specific.",
-    "faqCtaTitle": "Still deciding? Send the drawings or the room dimensions for a specific answer."
+    "faqCtaTitle": "Still deciding? Send the drawings or the room dimensions for a specific answer.",
+    "ctaEmailSubject": "Website enquiry"
   },
   "trade": {
     "eyebrow": "Trade and integrator supply",
@@ -274,7 +275,8 @@
     "formSuccessTitle": "One more step.",
     "formSuccessBody": "Your enquiry has opened as a draft in your mail app — press send and it will reach our engineers. If no draft opened, write to us at services@leadingit.me or message us on WhatsApp.",
     "formSentTitle": "Thank you.",
-    "formSentBody": "Your enquiry has reached our engineers and we have emailed you a copy. Someone will reply to you directly.",
+    "formSentBody": "Your enquiry has reached our engineers. Someone will reply to you directly.",
+    "noScriptBody": "This form needs JavaScript to guard against spam. With it switched off, email or WhatsApp reach the same team just as quickly:",
     "formSentReference": "Reference {{reference}}",
     "formErrorTitle": "That did not send.",
     "formErrorBody": "Something went wrong at our end and your enquiry did not reach us. Please email services@leadingit.me or message us on WhatsApp — both reach the same team.",

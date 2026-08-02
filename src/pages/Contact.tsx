@@ -52,12 +52,27 @@ export function Contact() {
 
   // Time-trap: captured once on mount and submitted unchanged, so the server can
   // reject a submission that arrives faster than a human could type one
-  // (public/api/lib/Spam.php owns the bounds). Rendered as a hidden input rather
-  // than held in state so a no-JS render still emits the field.
-  const mountedAt = useRef<number>(0);
+  // (public/api/lib/Spam.php owns the bounds).
+  //
+  // Held in state AND rendered as a hidden input below. The state drives the
+  // JSON payload; the input exists so the field is really in the form rather
+  // than only in a comment claiming it is. It is necessarily empty in the
+  // prerendered HTML — `Date.now()` has no meaning at build time — which the
+  // server handles: a missing `form_ts` returns 400 `invalid`, not a silent pass.
+  const [formTs, setFormTs] = useState('');
   useEffect(() => {
-    mountedAt.current = Date.now();
+    setFormTs(String(Date.now()));
   }, []);
+
+  // Submitting unmounts the form, including the button that had focus, which
+  // would drop focus to <body> and leave a keyboard or screen-reader user with
+  // no position on the page. Focus moves to the result panel instead. The
+  // aria-live region announces the outcome either way; this is about where the
+  // user *is* afterwards, which live regions do not fix.
+  const resultRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (status === 'sent' || status === 'mailto') resultRef.current?.focus();
+  }, [status]);
 
   const liveEndpoint = isTurnstileConfigured();
 
@@ -111,7 +126,7 @@ export function Contact() {
       company: String(data.get('company') ?? ''),
       message: String(data.get('message') ?? ''),
       hp_note: String(data.get('hp_note') ?? ''),
-      form_ts: mountedAt.current,
+      form_ts: Number(formTs),
       'cf-turnstile-response': String(data.get('cf-turnstile-response') ?? ''),
     };
 
@@ -248,6 +263,8 @@ export function Contact() {
           <div className="relative min-h-[420px]">
             {status === 'sent' || status === 'mailto' ? (
               <motion.div
+                ref={resultRef}
+                tabIndex={-1}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
@@ -268,7 +285,22 @@ export function Contact() {
             ) : null}
 
             {showForm && (
-              <form onSubmit={handleSubmit} className="grid gap-10">
+              // `action`/`method` are never used by the JS path (handleSubmit
+              // calls preventDefault). They exist so that a native submit —
+              // JS disabled, or a hydration failure — POSTs to the real endpoint
+              // instead of doing a default GET back to /contact/, which on a
+              // static host returned the same page with the fields cleared and
+              // nothing sent: an enquiry lost silently, with no error shown.
+              <form
+                onSubmit={handleSubmit}
+                action="/api/contact.php"
+                method="post"
+                className="grid gap-10"
+              >
+                {/* Really in the form, not just described in a comment. Empty in
+                    the prerendered HTML by necessity; the server treats a missing
+                    value as a 400, never as a pass. */}
+                <input type="hidden" name="form_ts" value={formTs} readOnly />
                 <div className="grid sm:grid-cols-2 gap-10">
                   <div>
                     <label htmlFor="name" className="field-label">{t('contact.formName')}</label>
@@ -309,6 +341,34 @@ export function Contact() {
                 {liveEndpoint && (
                   <div className="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY} data-theme="dark" />
                 )}
+
+                {/* Every other route on this site works fully with JavaScript
+                    disabled — that is the hard gate. This form cannot: the
+                    endpoint requires a Turnstile token, which requires script.
+                    Rather than let it fail confusingly, say so and give the two
+                    channels that do work without script. Both are plain anchors
+                    in the prerendered HTML. */}
+                <noscript>
+                  <div className="border-s-2 border-gold/60 ps-5">
+                    <p className="text-bone-300 leading-relaxed max-w-md">
+                      {t('contact.noScriptBody')}
+                    </p>
+                    <p className="mt-3">
+                      <a href={`mailto:${email}`} className="text-gold hover:underline">
+                        {email}
+                      </a>
+                      {' · '}
+                      <a
+                        href={whatsappHref(SITE_PREFILLS.contact)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-gold hover:underline"
+                      >
+                        {t('contact.whatsappCta')}
+                      </a>
+                    </p>
+                  </div>
+                </noscript>
 
                 {status === 'error' && (
                   <div className="border-s-2 border-gold/60 ps-5">

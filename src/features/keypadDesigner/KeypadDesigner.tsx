@@ -17,7 +17,7 @@ import {
 import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { Button } from '@/components/primitives/Button';
 import { useHydrated } from '@/lib/hydration';
-import { WHATSAPP_NUMBER } from '@/lib/site';
+import { whatsappHref } from '@/lib/site';
 import { href } from '@/seo/paths';
 import {
   COLLECTIONS, COLLECTION_BY_ID, BACKLIGHTS, ICONS, ICON_BY_ID,
@@ -411,7 +411,12 @@ function SummaryStep({ config }: { config: DesignConfig }) {
   ].join('\n');
 
   const contactHref = href(`/contact?message=${encodeURIComponent(spec)}`);
-  const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(spec)}`;
+  // Was rebuilding the deep link inline from WHATSAPP_NUMBER, which is exactly the
+  // second encoder `_CONVENTIONS.md` §7 forbids: two places that both know how to
+  // build a wa.me URL drift, and a hand-encoded prefill is how a literal %20 or a
+  // truncating & ends up in a message. `whatsappHref()` owns the number and the
+  // encoding; callers pass plain text only.
+  const designerWhatsappHref = whatsappHref(spec);
 
   const copyLink = async () => {
     try {
@@ -462,7 +467,7 @@ function SummaryStep({ config }: { config: DesignConfig }) {
           <Link to={contactHref} className="btn-gold group flex-1 justify-center">
             <span>{t('designer.requestDesign')}</span>
           </Link>
-          <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn-gold group flex-1 justify-center">
+          <a href={designerWhatsappHref} target="_blank" rel="noopener noreferrer" className="btn-gold group flex-1 justify-center">
             <MessageCircle size={16} aria-hidden="true" />
             <span>{t('designer.sendWhatsApp')}</span>
           </a>

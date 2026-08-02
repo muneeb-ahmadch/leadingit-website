@@ -139,6 +139,25 @@ $ip = contact_client_ip();
 $submittedAt = gmdate('c');
 $reference = strtoupper(bin2hex(random_bytes(4)));
 
+// Cleaned up-front, BEFORE any rejection path, so every log line can carry the
+// actual submission. This used to happen at validation (step 9), which meant the
+// honeypot and time-trap paths logged `{ref, at, ip, outcome}` and nothing else —
+// so a false positive on a real enquiry was destroyed, not merely rejected, while
+// the visitor was told it had been received. The comment on the honeypot branch
+// claimed the trip was "recoverable from the log"; it was not. It is now.
+$name = contact_clean($input['name'] ?? '', 120);
+$email = contact_clean($input['email'] ?? '', 254);
+$company = contact_clean($input['company'] ?? '', 160);
+$message = contact_clean($input['message'] ?? '', 5000);
+
+/** The submitted content, for logging on any path including a rejection. */
+$submittedFields = [
+    'name' => $name,
+    'email' => $email,
+    'company' => $company,
+    'message' => $message,
+];
+
 $storageDir = $config['storage_dir'];
 try {
     Storage::ensureDir($storageDir);
@@ -166,60 +185,60 @@ $logLine = static function (string $outcome, array $fields) use ($logFile, $ip, 
 
 // ------------------------------------------------------------- 5. honeypot
 if (Spam::honeypotTripped($input)) {
-    $logLine('spam_honeypot', []);
+    $logLine('spam_honeypot', $submittedFields);
     // Deliberately answers 200 with the ordinary success shape. Telling a bot
     // which control caught it is how the next version of that bot gets past it.
     //
     // The real-user risk is accepted and mitigated rather than ignored: the
     // field name (`hp_note`) matches no browser autofill heuristic, and every
-    // trip is logged with outcome `spam_honeypot`, so a false positive is
-    // visible and recoverable from the log rather than silently gone.
+    // trip is logged with outcome `spam_honeypot` **and the full submitted
+    // content**, so a false positive is recoverable from the log rather than
+    // silently destroyed. That last part is load-bearing and was missing in the
+    // first version of this file: without the fields, answering 200 to a real
+    // person meant telling them it had been received while discarding it. If
+    // you ever change `$submittedFields` back to `[]` here, this branch becomes
+    // indefensible and must return an error instead.
     contact_respond(200, 'success', 'Thank you — your enquiry has been received.');
 }
 
 // ------------------------------------------------------------ 6. time-trap
 $timeTrap = Spam::timeTrapResult($input, $config['time_trap_min_ms'], $config['time_trap_max_ms']);
 if ($timeTrap === 'missing') {
-    $logLine('invalid_timestamp', []);
+    $logLine('invalid_timestamp', $submittedFields);
     contact_respond(400, 'invalid', 'The form did not submit correctly. Please reload the page and try again.');
 }
 if ($timeTrap === 'too_fast') {
-    $logLine('spam_too_fast', []);
+    $logLine('spam_too_fast', $submittedFields);
     contact_respond(200, 'success', 'Thank you — your enquiry has been received.');
 }
 if ($timeTrap === 'too_stale') {
     // NOT treated as spam: the overwhelmingly likely cause is a real person who
     // left the tab open. Silently swallowing this would lose a genuine enquiry,
     // so it asks for a resubmit instead.
-    $logLine('stale_form', []);
+    $logLine('stale_form', $submittedFields);
     contact_respond(400, 'stale', 'This form has been open for a while. Please reload the page and send it again.');
 }
 
 // ----------------------------------------------------------- 7. rate limit
 $limiter = new RateLimiter($storageDir, $config['rate_limit_max'], $config['rate_limit_window_s']);
 if (!$limiter->allow($ip)) {
-    $logLine('rate_limited', []);
+    $logLine('rate_limited', $submittedFields);
     contact_respond(429, 'rate_limited', 'Too many enquiries from this connection. Please try again shortly, or message us on WhatsApp.');
 }
 
 // ------------------------------------------------------------ 8. Turnstile
 $token = contact_clean($input['turnstile_token'] ?? ($input['cf-turnstile-response'] ?? ''), 4096);
 if ($token === '') {
-    $logLine('turnstile_missing', []);
+    $logLine('turnstile_missing', $submittedFields);
     contact_respond(403, 'captcha', 'Please complete the verification and try again.');
 }
 $turnstile = new Turnstile($config['turnstile_verify_token']);
 if (!$turnstile->verify($token, $ip)) {
-    $logLine('turnstile_failed', []);
+    $logLine('turnstile_failed', $submittedFields);
     contact_respond(403, 'captcha', 'Verification failed. Please reload the page and try again.');
 }
 
 // ----------------------------------------------------------- 9. validation
-$name = contact_clean($input['name'] ?? '', 120);
-$email = contact_clean($input['email'] ?? '', 254);
-$company = contact_clean($input['company'] ?? '', 160);
-$message = contact_clean($input['message'] ?? '', 5000);
-
 $errors = [];
 if ($name === '') {
     $errors['name'] = 'Please tell us your name.';
@@ -248,12 +267,7 @@ $submission = [
 ];
 
 // --------------------------------------------------- 10. log before sending
-$logLine('received', [
-    'name' => $name,
-    'email' => $email,
-    'company' => $company,
-    'message' => $message,
-]);
+$logLine('received', $submittedFields);
 
 // ------------------------------------------------------------- 11. notify
 $mailer = new Mailer($config);

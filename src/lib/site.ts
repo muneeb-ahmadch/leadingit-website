@@ -17,6 +17,24 @@ export function whatsappHref(prefillText: string): string {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(prefillText)}`;
 }
 
+/**
+ * The mailto counterpart of `whatsappHref()`, and it exists for the same reason:
+ * one encoder, callers pass plain text.
+ *
+ * Phase 5 shipped WhatsApp with 128 page-specific prefills and email as a bare
+ * `mailto:services@leadingit.me` on all 124 pages — so the two channels
+ * "mirrored" each other structurally but not functionally, and a visitor who
+ * preferred email arrived at a blank message having to re-explain which page
+ * they came from. This closes that: the same plain-text prefill fills the body,
+ * so the reply can skip the same round-trip either way.
+ *
+ * `subject` is separate from `body` because mail clients show them differently
+ * and a first-person sentence makes a poor subject line.
+ */
+export function mailtoHref(email: string, subject: string, body: string): string {
+  return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
 /** Build an absolute URL from a site-relative path. */
 export function absoluteUrl(path: string): string {
   if (/^https?:\/\//i.test(path)) return path;

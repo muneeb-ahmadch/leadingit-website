@@ -94,7 +94,12 @@ writeFileSync(
 );
 
 const robots = [
-  ...AI_CRAWLERS.flatMap((ua) => [`User-agent: ${ua}`, 'Allow: /', '']),
+  // Each named group repeats `Disallow: /api/`. robots.txt groups are NOT
+  // inherited: a crawler that matches its own User-agent line obeys only that
+  // group and ignores `User-agent: *` entirely. So without this line every one
+  // of these eight crawlers was explicitly permitted to crawl the POST-only
+  // contact endpoint, which the wildcard group had disallowed since Phase 2.
+  ...AI_CRAWLERS.flatMap((ua) => [`User-agent: ${ua}`, 'Allow: /', 'Disallow: /api/', '']),
   'User-agent: *',
   'Allow: /',
   'Disallow: /api/',

@@ -44,7 +44,7 @@ use PHPMailer\PHPMailer\Exception as PHPMailerException;
 final class Mailer
 {
     /**
-     * @param array{smtp_host: string, smtp_port: int, smtp_user: string, smtp_auth_token: string, contact_to: string} $config
+     * @param array{smtp_host: string, smtp_port: int, smtp_user: string, smtp_auth_token: string, contact_to: string, whatsapp_url: string} $config
      */
     public function __construct(private readonly array $config)
     {
@@ -212,7 +212,7 @@ final class Mailer
             '',
             'If you need to add anything, just reply to this email.',
             '',
-            'You can also reach us on WhatsApp: https://wa.me/971585865222',
+            'You can also reach us on WhatsApp: ' . ($this->config['whatsapp_url'] ?? ''),
             '',
             '--',
             'Leading IT',

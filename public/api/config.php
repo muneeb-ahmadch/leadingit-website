@@ -159,6 +159,13 @@ function contact_config(): array
             ? (int) $vars['TIME_TRAP_MAX_MS'] : 7200000,
         'allowed_origin' => isset($vars['CONTACT_ALLOWED_ORIGIN']) && $vars['CONTACT_ALLOWED_ORIGIN'] !== ''
             ? $vars['CONTACT_ALLOWED_ORIGIN'] : 'https://leadingit.me',
+        // The ONE place the WhatsApp link is written on the PHP side. The site's
+        // single encoder is whatsappHref() in src/lib/site.ts, and PHP cannot
+        // import it — so this is an unavoidable second copy and it is confined to
+        // exactly one line rather than scattered through the mail templates.
+        // If the number ever changes, it changes in src/lib/site.ts AND here.
+        'whatsapp_url' => isset($vars['WHATSAPP_URL']) && $vars['WHATSAPP_URL'] !== ''
+            ? $vars['WHATSAPP_URL'] : 'https://wa.me/971585865222',
     ];
 
     return $config;

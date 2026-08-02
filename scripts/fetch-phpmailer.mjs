@@ -81,6 +81,33 @@ async function localFileMatches(target, expected) {
   return sha256(await readFile(target)) === expected;
 }
 
+/**
+ * Writes the `Require all denied` guard into the vendor directory.
+ *
+ * This has to happen here rather than being a committed file: the whole vendor
+ * tree is gitignored, so a `.htaccess` inside it would never reach a fresh
+ * clone — and QA caught exactly that, with `dist/api/vendor/phpmailer/LICENSE`
+ * otherwise served at `/api/vendor/phpmailer/LICENSE`. PHP is executed rather
+ * than served, so this is about the non-PHP files that travel with a library.
+ */
+async function writeVendorDeny() {
+  const denyBody = [
+    '# Third-party library code, never fetched over HTTP. Written by',
+    '# scripts/fetch-phpmailer.mjs, because this whole directory is gitignored',
+    '# and a committed .htaccess would never reach a fresh clone.',
+    'Require all denied',
+    '',
+    '<IfModule !mod_authz_core.c>',
+    '  Order allow,deny',
+    '  Deny from all',
+    '</IfModule>',
+    '',
+  ].join('\n');
+  const target = path.join(ROOT, 'public/api/vendor/.htaccess');
+  await mkdir(path.dirname(target), { recursive: true });
+  await writeFile(target, denyBody);
+}
+
 async function main() {
   // Idempotent: a build with every file already present and verified does no
   // network I/O at all, so an offline rebuild of an unchanged checkout works.
@@ -93,6 +120,9 @@ async function main() {
   }
 
   if (missing.length === 0) {
+    // Still rewritten on the no-op path: the guard must exist on every build,
+    // not only on the one build that happened to download something.
+    await writeVendorDeny();
     console.log(`fetch-phpmailer: PHPMailer ${VERSION} present and verified (${FILES.length} files).`);
     return;
   }
@@ -131,6 +161,7 @@ async function main() {
     return;
   }
 
+  await writeVendorDeny();
   console.log(`fetch-phpmailer: PHPMailer ${VERSION} verified.`);
 }
 

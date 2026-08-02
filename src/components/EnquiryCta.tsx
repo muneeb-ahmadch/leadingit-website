@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { MessageCircle } from 'lucide-react';
 import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { ButtonLink } from '@/components/primitives/Button';
-import { whatsappHref } from '@/lib/site';
+import { whatsappHref, mailtoHref } from '@/lib/site';
 import { trackWhatsAppClick, trackEmailClick, type Placement } from '@/lib/analytics';
 
 /**
@@ -78,7 +78,11 @@ export function EnquiryCta({
       <p className="mt-6 text-sm text-bone-500">
         {t('solutions.ctaEmailPrefix')}{' '}
         <a
-          href={`mailto:${email}`}
+          // Carries the same page-specific prefill as the WhatsApp path. Both
+          // channels now open with the subject already named, so choosing email
+          // over WhatsApp no longer costs the visitor a round-trip explaining
+          // which page they came from.
+          href={mailtoHref(email, t('solutions.ctaEmailSubject'), prefill)}
           className="text-bone-300 hover:text-gold transition-colors"
           onClick={() => trackEmailClick({ placement, destination: email })}
         >
