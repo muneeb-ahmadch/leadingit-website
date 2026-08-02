@@ -6,6 +6,7 @@ import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { ArrowRight } from 'lucide-react';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { ResponsiveImage } from '@/components/media/ResponsiveImage';
+import { buildLcpImagePreload } from '@/components/media/imageSrcSet';
 import { Seo } from '@/seo/Seo';
 import { href } from '@/seo/paths';
 import { brandsIndexMeta } from '@/seo/meta';
@@ -28,6 +29,14 @@ export function BrandsIndex() {
   // derived once here rather than retyped.
   const brandListId = `${pageUrl(meta.path)}#brand-list`;
 
+  // The first tile of the first non-empty category is this route's LCP
+  // candidate (see the comment inside the `CATEGORIES.map()` below, which
+  // reads this same derivation) — computed once here so the `<Seo lcpImage>`
+  // preload and the tile's own `priority` prop cannot name two different
+  // brands.
+  const lcpCategoryId = CATEGORIES.find((c) => BRANDS.some((b) => b.category === c.id))?.id;
+  const lcpBrand = lcpCategoryId ? BRANDS.find((b) => b.category === lcpCategoryId) : undefined;
+
   return (
     <>
       <Seo
@@ -45,6 +54,14 @@ export function BrandsIndex() {
           buildBrandsItemList(BRANDS),
           buildBreadcrumbList(crumbs, meta.path),
         ]}
+        lcpImage={
+          lcpBrand
+            ? buildLcpImagePreload(
+                lcpBrand.heroImage,
+                '(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw',
+              )
+            : undefined
+        }
       />
 
       {/* hero */}
@@ -66,9 +83,10 @@ export function BrandsIndex() {
         const items = BRANDS.filter((b) => b.category === cat.id);
         // The first tile of the first non-empty group is the only image above the
         // fold, so it is this route's LCP candidate — and the only one on the page
-        // allowed to be eager + fetchpriority="high". Derived, never hard-coded to
-        // a category, so reordering `CATEGORIES` cannot leave the page with two.
-        const isLcpGroup = CATEGORIES.find((c) => BRANDS.some((b) => b.category === c.id))?.id === cat.id;
+        // allowed to be eager + fetchpriority="high". Same derivation the
+        // `<Seo lcpImage>` preload above uses (`lcpCategoryId`), so the two can't
+        // name different brands.
+        const isLcpGroup = lcpCategoryId === cat.id;
         return (
           <section key={cat.id} className="container-luxe pb-24">
             <Reveal>

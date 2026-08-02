@@ -6,6 +6,7 @@ import { Reveal } from '@/components/primitives/Reveal';
 import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { Parallax } from '@/components/primitives/Parallax';
 import { ResponsiveImage } from '@/components/media/ResponsiveImage';
+import { buildLcpImagePreload } from '@/components/media/imageSrcSet';
 // `altFor` is deliberately not imported: both images remaining on this page are
 // decorative full-bleed backgrounds that name no product and ship `alt=""`.
 // Re-import it the moment a content image is added — never hand-write an alt
@@ -50,6 +51,8 @@ export function Home() {
         jsonLd={[
           buildWebPage({ path: meta.path, name: meta.title, description: meta.description }),
         ]}
+        // Matches the hero `ResponsiveImage priority` below (`src`, `sizes`).
+        lcpImage={buildLcpImagePreload(HERO_IMAGE, '100vw')}
       />
 
       {/* HERO */}

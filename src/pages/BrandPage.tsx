@@ -12,6 +12,7 @@ import { ArrowRight } from 'lucide-react';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { InternalLinks, type InternalLink } from '@/components/InternalLinks';
 import { ResponsiveImage } from '@/components/media/ResponsiveImage';
+import { buildLcpImagePreload } from '@/components/media/imageSrcSet';
 import { altFor } from '@/components/media/altText';
 import { Seo } from '@/seo/Seo';
 import { KEYPAD_DESIGNER_PATH, href } from '@/seo/paths';
@@ -168,6 +169,10 @@ export function BrandPage() {
           buildBrandProductsItemList(brand, products),
           buildBreadcrumbList(crumbs, meta.path),
         ]}
+        // Matches the hero `ResponsiveImage priority` below verbatim (`src`,
+        // `sizes`) — that pairing is what keeps the preload and the picture
+        // element requesting the same URL.
+        lcpImage={buildLcpImagePreload(brand.heroImage, '100vw')}
       />
 
       {/* hero — this brand hub's LCP candidate: exactly one fetchpriority="high" per page. */}

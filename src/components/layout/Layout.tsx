@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import Lenis from 'lenis';
+import type LenisType from 'lenis';
 import { Header } from './Header';
 import { Footer } from './Footer';
 
@@ -14,15 +14,30 @@ export function Layout() {
     // get instead, which is strictly better on both counts for them.
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    const lenis = new Lenis({ duration: 1.1, smoothWheel: true });
-    // Track the latest handle so cleanup cancels the live frame, not just the first one.
-    let id = requestAnimationFrame(function raf(time: number) {
-      lenis.raf(time);
-      id = requestAnimationFrame(raf);
+    // Dynamic import, not a top-level one: Lenis is ~19 KB of the entry chunk
+    // that a reduced-motion visitor never runs at all, and even a
+    // non-reduced-motion visitor doesn't need until after hydration —
+    // `Layout` is on every route, so a static import put the whole library on
+    // every page's critical path for a feature that only fires once scrolling
+    // starts. Splitting it into its own chunk, fetched only here, is what
+    // trimmed the ~44 KB of "unused JavaScript" Lighthouse reported against
+    // `app-*.js` (`docs/12-PROVENANCE/phase5-cwv-fixes.md`, "fix 2").
+    let lenis: LenisType | undefined;
+    let rafId: number | undefined;
+    let cancelled = false;
+    void import('lenis').then(({ default: Lenis }) => {
+      if (cancelled) return;
+      lenis = new Lenis({ duration: 1.1, smoothWheel: true });
+      // Track the latest handle so cleanup cancels the live frame, not just the first one.
+      rafId = requestAnimationFrame(function raf(time: number) {
+        lenis!.raf(time);
+        rafId = requestAnimationFrame(raf);
+      });
     });
     return () => {
-      cancelAnimationFrame(id);
-      lenis.destroy();
+      cancelled = true;
+      if (rafId !== undefined) cancelAnimationFrame(rafId);
+      lenis?.destroy();
     };
   }, []);
 

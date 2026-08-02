@@ -10,6 +10,7 @@ import { ButtonLink } from '@/components/primitives/Button';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { InternalLinks, type InternalLink } from '@/components/InternalLinks';
 import { ResponsiveImage } from '@/components/media/ResponsiveImage';
+import { buildLcpImagePreload } from '@/components/media/imageSrcSet';
 import { altFor } from '@/components/media/altText';
 import { useHydrated } from '@/lib/hydration';
 import { Seo } from '@/seo/Seo';
@@ -114,6 +115,10 @@ export function ProductPage() {
           isRange ? null : buildProduct(product, brand),
           buildBreadcrumbList(crumbs, meta.path),
         ]}
+        // `activeFinish` starts as `product.finishes[0]` (the `useState`
+        // initialiser above), which is exactly what the prerender and first
+        // paint both ship — matches the hero `ResponsiveImage priority` below.
+        lcpImage={buildLcpImagePreload(activeFinish.productImage, '(min-width: 1024px) 50vw, 100vw')}
       />
 
       {/* hero */}

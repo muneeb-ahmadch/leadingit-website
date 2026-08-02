@@ -32,11 +32,13 @@
 import { Head } from 'vite-react-ssg';
 import { ENABLED_LOCALES, type Locale } from '@/lib/locales';
 import { SITE_NAME, absoluteUrl } from '@/lib/site';
+import type { LcpImagePreload } from '@/components/media/imageSrcSet';
 import { DEFAULT_OG_IMAGE, type PageMeta } from './meta';
 import { buildGraph } from './jsonld/graph';
 import { buildOrganization } from './jsonld/organization';
 import { buildWebSite } from './jsonld/website';
 import { pageUrl } from './jsonld/ids';
+import { CRITICAL_FONT_PRELOADS } from './criticalFonts';
 import type { JsonLdNode } from './jsonld/types';
 
 /**
@@ -50,8 +52,61 @@ import type { JsonLdNode } from './jsonld/types';
  * Consequence to respect: helmet merges children over props per tag type, so a
  * `<link>` element added as a child of `<Head>` below would replace this whole
  * array. **All `<link>` tags for a page belong in `buildLinks()`.**
+ *
+ * The same verbatim-keys behaviour is why the preload descriptors below
+ * (`FontPreloadLink`, `ImagePreloadLink`) also go through this array rather
+ * than JSX children: `fetchpriority` is the real HTML attribute name (no
+ * internal capital), and a JSX prop would camelCase it (`fetchPriority`) and
+ * silently fail to preload anything.
  */
 type HeadLink = { rel: 'canonical' | 'alternate'; href: string; hreflang?: string };
+
+type FontPreloadLink = {
+  rel: 'preload';
+  as: 'font';
+  href: string;
+  type: 'font/woff2';
+  crossorigin: 'anonymous';
+};
+
+type ImagePreloadLink = {
+  rel: 'preload';
+  as: 'image';
+  href: string;
+  type: 'image/avif';
+  fetchpriority: 'high';
+};
+
+/** One `<link rel="preload" as="font">` per `CRITICAL_FONT_PRELOADS` entry, every page.
+ * Fonts are same-origin, but a `<link as="font">` preload is fetched in CORS mode
+ * regardless (the Fetch spec treats fonts as always-CORS) — omitting `crossorigin`
+ * makes the browser fetch the font *twice*: once for the preload, uncredentialled,
+ * and again for the real `@font-face` load, because the two requests don't share a
+ * cache entry without a matching mode. */
+function fontPreloadLinks(): FontPreloadLink[] {
+  return CRITICAL_FONT_PRELOADS.map((f) => ({
+    rel: 'preload',
+    as: 'font',
+    href: f.href,
+    type: f.type,
+    crossorigin: 'anonymous',
+  }));
+}
+
+/**
+ * Turns the already-computed `LcpImagePreload` (`src/components/media/
+ * imageSrcSet.ts`'s `buildLcpImagePreload()`) into the `<link>` descriptor.
+ * The computation itself lives in that module, called by the *page*, not
+ * here — `Seo.tsx` renders on every route, including the dozen-plus
+ * text-only ones with no `lcpImage` at all, and that module's manifest
+ * import is ~260 entries. Computing it here once measured as adding the
+ * whole manifest to this file's shared chunk, loaded on every navigation
+ * regardless of whether that page even has an `lcpImage`
+ * (`docs/12-PROVENANCE/phase5-cwv-fixes.md`, "fix 2").
+ */
+function imagePreloadLink(preload: LcpImagePreload): ImagePreloadLink {
+  return { rel: 'preload', as: 'image', href: preload.href, type: preload.type, fetchpriority: 'high' };
+}
 
 /**
  * The locale served at the unprefixed path, and the target of `x-default`.
@@ -113,9 +168,22 @@ export type SeoProps = {
   jsonLd?: Array<JsonLdNode | null | undefined | false>;
   /** `/404` only. Emits `noindex,follow` and suppresses the hreflang set. */
   noindex?: boolean;
+  /**
+   * Set only by the page that renders this route's single `<ResponsiveImage
+   * priority>` — i.e. the one with a real above-the-fold hero photograph, not
+   * every route (`/trade/`, `/about/`, `/lit-home/` and others are
+   * legitimately text-only heroes; `docs/12-PROVENANCE/phase5-cwv-fixes.md`
+   * "fix 3" is the audit of which routes that is). Build with
+   * `buildLcpImagePreload(src, sizes)` (`@/components/media/imageSrcSet`)
+   * called with the copy-identical `src`/`sizes` the page's own
+   * `ResponsiveImage priority` call uses — computed at the call site, not in
+   * here, so this file never has to import the image manifest (see
+   * `imagePreloadLink()` below for why that matters).
+   */
+  lcpImage?: LcpImagePreload;
 };
 
-export function Seo({ meta, jsonLd, noindex = false }: SeoProps) {
+export function Seo({ meta, jsonLd, noindex = false, lcpImage }: SeoProps) {
   const canonical = pageUrl(meta.path);
   const image = absoluteUrl(meta.ogImage ?? DEFAULT_OG_IMAGE);
 
@@ -123,9 +191,16 @@ export function Seo({ meta, jsonLd, noindex = false }: SeoProps) {
   // consolidates any stray inbound link), but advertises no hreflang alternates:
   // an alternate set is a claim about indexable equivalents, and this page is not
   // one.
-  const links: HeadLink[] = [
+  const links: Array<HeadLink | FontPreloadLink | ImagePreloadLink> = [
     { rel: 'canonical', href: canonical },
     ...(noindex ? [] : alternateLinks(meta.path)),
+    // Preloads first in document order matter less than that they exist ahead
+    // of the render-blocking stylesheet finishing — helmet emits `<head>`
+    // children in array order, and canonical/hreflang cost nothing to move
+    // ahead of. Fonts are sitewide; the image preload is per-page and absent
+    // on every text-only hero.
+    ...fontPreloadLinks(),
+    ...(lcpImage ? [imagePreloadLink(lcpImage)] : []),
   ];
 
   // Every page's graph opens with the sitewide identity nodes, so each page is

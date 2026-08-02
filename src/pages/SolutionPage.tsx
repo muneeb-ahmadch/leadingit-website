@@ -10,6 +10,7 @@ import { InternalLinks, type InternalLink } from '@/components/InternalLinks';
 import { AnswerSections, FaqBlock } from '@/components/AnswerBlocks';
 import { EnquiryCta } from '@/components/EnquiryCta';
 import { ResponsiveImage } from '@/components/media/ResponsiveImage';
+import { buildLcpImagePreload } from '@/components/media/imageSrcSet';
 import { altFor } from '@/components/media/altText';
 import { Seo } from '@/seo/Seo';
 import { href } from '@/seo/paths';
@@ -123,6 +124,8 @@ function SolutionTemplate({ solution }: { solution: Solution }) {
           buildBreadcrumbList(crumbs, meta.path),
           buildFaqPage(solution.faq, meta.path),
         ]}
+        // Matches the hero `ResponsiveImage priority` below (`src`, `sizes`).
+        lcpImage={buildLcpImagePreload(solution.hero, '100vw')}
       />
 
       {/* hero — this route's LCP candidate: exactly one fetchpriority="high". */}
