@@ -3,6 +3,7 @@ import { MessageCircle } from 'lucide-react';
 import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { ButtonLink } from '@/components/primitives/Button';
 import { whatsappHref } from '@/lib/site';
+import { trackWhatsAppClick, trackEmailClick, type Placement } from '@/lib/analytics';
 
 /**
  * The two-channel conversion block: WhatsApp with a page-specific prefill, and
@@ -22,12 +23,24 @@ export function EnquiryCta({
   title,
   prefill,
   className = '',
+  placement = 'inline-cta',
+  brand,
+  product,
 }: {
   /** The ask, in this page's own words. */
   title: string;
   /** Plain-text WhatsApp prefill — one first-person sentence naming the subject. */
   prefill: string;
   className?: string;
+  /**
+   * Analytics context only — never affects what renders. Where on the page this
+   * block sits, so `whatsapp_click` can distinguish a hero CTA from an FAQ one.
+   */
+  placement?: Placement;
+  /** Analytics context only: brand this block is about, if any. */
+  brand?: string;
+  /** Analytics context only: product this block is about, if any. */
+  product?: string;
 }) {
   const { t } = useTranslation();
   const email = t('contact.email');
@@ -47,6 +60,13 @@ export function EnquiryCta({
           target="_blank"
           rel="noopener noreferrer"
           className="btn-gold group"
+          // Fire-and-forget. No preventDefault, nothing awaited: the browser's
+          // own navigation proceeds on this same tick, so the link keeps working
+          // if analytics is absent, blocked, or never loaded — and it still
+          // works with JavaScript disabled entirely, which is the hard gate on
+          // every indexable route. Analytics must never become a precondition
+          // for the conversion path it measures.
+          onClick={() => trackWhatsAppClick({ placement, brand, product })}
         >
           <MessageCircle size={16} />
           <span>{t('solutions.ctaWhatsApp')}</span>
@@ -57,7 +77,11 @@ export function EnquiryCta({
       </div>
       <p className="mt-6 text-sm text-bone-500">
         {t('solutions.ctaEmailPrefix')}{' '}
-        <a href={`mailto:${email}`} className="text-bone-300 hover:text-gold transition-colors">
+        <a
+          href={`mailto:${email}`}
+          className="text-bone-300 hover:text-gold transition-colors"
+          onClick={() => trackEmailClick({ placement, destination: email })}
+        >
           {email}
         </a>
       </p>
