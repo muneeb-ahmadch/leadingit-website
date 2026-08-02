@@ -5,8 +5,10 @@ import { Reveal } from '@/components/primitives/Reveal';
 import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { ArrowRight } from 'lucide-react';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { EnquiryCta } from '@/components/EnquiryCta';
 import { ResponsiveImage } from '@/components/media/ResponsiveImage';
 import { buildLcpImagePreload } from '@/components/media/imageSrcSet';
+import { SITE_PREFILLS } from '@/lib/prefill';
 import { Seo } from '@/seo/Seo';
 import { href } from '@/seo/paths';
 import { brandsIndexMeta } from '@/seo/meta';
@@ -76,6 +78,14 @@ export function BrandsIndex() {
             {t('brands.indexSub')}
           </p>
         </Reveal>
+        {/* First-viewport conversion path (`_CONVENTIONS.md` §7). */}
+        <Reveal delay={0.3}>
+          <EnquiryCta
+            title={t('brands.indexCtaTitle')}
+            prefill={SITE_PREFILLS.brands}
+            className="mt-14 max-w-3xl"
+          />
+        </Reveal>
       </section>
 
       {/* category groups */}
@@ -138,6 +148,15 @@ export function BrandsIndex() {
           </section>
         );
       })}
+
+      {/* Second placement, below both category grids — the two brand walls are
+          the body of this page, so this is the "after the main body" position.
+          No FAQ block here, so two placements, not a padded third. */}
+      <section className="container-luxe pb-32">
+        <Reveal>
+          <EnquiryCta title={t('brands.indexFootCtaTitle')} prefill={SITE_PREFILLS.brands} />
+        </Reveal>
+      </section>
     </>
   );
 }

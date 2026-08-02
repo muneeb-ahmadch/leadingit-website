@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { Reveal } from '@/components/primitives/Reveal';
 import { Eyebrow } from '@/components/primitives/Eyebrow';
-import { ButtonLink } from '@/components/primitives/Button';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { EnquiryCta } from '@/components/EnquiryCta';
+import { SITE_PREFILLS } from '@/lib/prefill';
 import { Seo } from '@/seo/Seo';
 import { aboutMeta } from '@/seo/meta';
 import { simplePageCrumbs } from '@/seo/breadcrumbs';
@@ -48,6 +49,14 @@ export function About() {
           <p className="mt-10 text-lg leading-relaxed text-bone-300 max-w-3xl">
             {t('about.lead')}
           </p>
+        </Reveal>
+        {/* First-viewport conversion path (`_CONVENTIONS.md` §7). */}
+        <Reveal delay={0.3}>
+          <EnquiryCta
+            title={t('about.heroCtaTitle')}
+            prefill={SITE_PREFILLS.about}
+            className="mt-14 max-w-3xl"
+          />
         </Reveal>
       </section>
 
@@ -142,9 +151,16 @@ export function About() {
             <div className="relative max-w-2xl">
               <h2 className="font-serif text-hero">{t('about.ctaTitle')}</h2>
               <p className="mt-6 text-lg leading-relaxed text-bone-300">{t('about.ctaBody')}</p>
-              <div className="mt-10">
-                <ButtonLink to="/contact">{t('about.ctaButton')}</ButtonLink>
-              </div>
+              {/* Second placement (`_CONVENTIONS.md` §7), inside the panel this
+                  page already ends with. It replaces a lone `ButtonLink` to
+                  /contact — the form path only — with both paths. The panel's
+                  own h2 stays where it is; `EnquiryCta` adds no heading of its
+                  own, so the outline is unchanged. */}
+              <EnquiryCta
+                title={t('about.ctaAsk')}
+                prefill={SITE_PREFILLS.about}
+                className="mt-10"
+              />
             </div>
           </div>
         </Reveal>

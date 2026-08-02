@@ -5,6 +5,7 @@ import { ButtonLink } from '@/components/primitives/Button';
 import { Reveal } from '@/components/primitives/Reveal';
 import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { Parallax } from '@/components/primitives/Parallax';
+import { EnquiryCta } from '@/components/EnquiryCta';
 import { ResponsiveImage } from '@/components/media/ResponsiveImage';
 import { buildLcpImagePreload } from '@/components/media/imageSrcSet';
 // `altFor` is deliberately not imported: both images remaining on this page are
@@ -16,6 +17,7 @@ import { BRANDS } from '@/data/brands';
 import { DeviceFrame } from '@/features/litHome/DeviceFrame';
 import { LitHomeDemo } from '@/features/litHome/LitHomeDemo';
 import { useHydrated } from '@/lib/hydration';
+import { SITE_PREFILLS } from '@/lib/prefill';
 import { Seo } from '@/seo/Seo';
 import { href } from '@/seo/paths';
 import { homeMeta } from '@/seo/meta';
@@ -111,6 +113,18 @@ export function Home() {
 
       {/* BRAND WALL */}
       <section className="container-luxe py-32">
+        {/* The conversion path, as high on the page as it can honestly go: the
+            hero is a full 100svh band, so this is the first thing under it
+            (`_CONVENTIONS.md` §7). Deliberately above the section's own h2 —
+            `EnquiryCta` renders an `Eyebrow`, never a heading, so it cannot
+            skip a level or inject a non-question h2 into the outline. */}
+        <Reveal>
+          <EnquiryCta
+            title={t('home.ctaTitle')}
+            prefill={SITE_PREFILLS.home}
+            className="mb-24 max-w-3xl"
+          />
+        </Reveal>
         <div className="grid lg:grid-cols-[1fr_2fr] gap-12 mb-16">
           <Reveal>
             <Eyebrow>{t('home.brandWallEyebrow')}</Eyebrow>
@@ -189,6 +203,15 @@ export function Home() {
             </div>
           </Reveal>
         </div>
+      </section>
+
+      {/* Second placement, after the body (`_CONVENTIONS.md` §7). The home page
+          renders no FAQ block, so two placements, not a padded third — and the
+          lifestyle band above it means the two are never adjacent. */}
+      <section className="container-luxe py-28">
+        <Reveal>
+          <EnquiryCta title={t('home.footCtaTitle')} prefill={SITE_PREFILLS.home} />
+        </Reveal>
       </section>
 
       {/*

@@ -11,9 +11,12 @@ import { ButtonLink } from '@/components/primitives/Button';
 import { ArrowRight } from 'lucide-react';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { InternalLinks, type InternalLink } from '@/components/InternalLinks';
+import { EnquiryCta } from '@/components/EnquiryCta';
 import { ResponsiveImage } from '@/components/media/ResponsiveImage';
 import { buildLcpImagePreload } from '@/components/media/imageSrcSet';
 import { altFor } from '@/components/media/altText';
+import { brandPrefill } from '@/lib/prefill';
+import { useBrandEngagement } from '@/lib/useBrandEngagement';
 import { Seo } from '@/seo/Seo';
 import { KEYPAD_DESIGNER_PATH, href } from '@/seo/paths';
 import { brandMeta } from '@/seo/meta';
@@ -69,6 +72,9 @@ export function BrandPage() {
   const { t } = useTranslation();
   const brand = BRAND_BY_SLUG[slug];
 
+  // Above the guard below, because hooks cannot be called after an early return.
+  useBrandEngagement(brand?.name ?? '');
+
   if (!brand) return <Navigate to={href('/brands')} replace />;
 
   const products = productsForBrand(brand.slug);
@@ -77,6 +83,13 @@ export function BrandPage() {
 
   const meta = brandMeta(brand);
   const crumbs = brandHubCrumbs(brand.name, brand.slug);
+  /**
+   * One prefill for both conversion blocks on this hub. Hand-authored per brand
+   * in `src/lib/prefill.ts` and looked up by slug — a hub's traffic splits
+   * between trade and consumer, so it leads with the brand and the project
+   * rather than a part number (`_CONVENTIONS.md` §7).
+   */
+  const prefill = brandPrefill(brand);
   // Same `@id` `buildBrandProductsItemList()` mints, derived once so the
   // `CollectionPage.mainEntity` reference cannot drift from the node it names.
   const productListId = `${pageUrl(meta.path)}#product-list`;
@@ -201,14 +214,30 @@ export function BrandPage() {
       </section>
 
       {/* story */}
-      <section className="container-luxe py-28 grid lg:grid-cols-[1fr_2fr] gap-12">
-        <Reveal>
-          <Eyebrow>The brand</Eyebrow>
-        </Reveal>
-        <Reveal delay={0.15}>
-          <p className="font-serif text-3xl leading-snug max-w-3xl text-bone-100">
-            {brand.story}
-          </p>
+      <section className="container-luxe py-28">
+        <div className="grid lg:grid-cols-[1fr_2fr] gap-12">
+          <Reveal>
+            <Eyebrow>The brand</Eyebrow>
+          </Reveal>
+          <Reveal delay={0.15}>
+            <p className="font-serif text-3xl leading-snug max-w-3xl text-bone-100">
+              {brand.story}
+            </p>
+          </Reveal>
+        </div>
+        {/* First-viewport conversion path (`_CONVENTIONS.md` §7) — the same
+            position `SolutionPage` uses: immediately under the intro prose, in
+            the first section after a full-bleed hero. The grid moved onto an
+            inner `div` so this is a sibling of the whole two-column block
+            rather than a third cell of it; spacing above is unchanged. */}
+        <Reveal delay={0.3}>
+          <EnquiryCta
+            title={t('brands.hubCtaTitle', { brand: brand.name })}
+            prefill={prefill}
+            className="mt-16 max-w-3xl"
+            placement="brand-detail"
+            brand={brand.name}
+          />
         </Reveal>
       </section>
 
@@ -354,16 +383,18 @@ export function BrandPage() {
         </Reveal>
       </section>
 
-      {/* inquire */}
+      {/* Second placement, at the foot with the whole catalogue and the
+          cross-links between it and the first one. It replaces a single-channel
+          block whose only action was a `ButtonLink` back to /brands — the index
+          this page is already a child of — under a hardcoded English eyebrow. */}
       <section className="container-luxe pb-32 pt-4">
         <Reveal>
-          <div className="border-t border-gold/20 pt-10 flex flex-col md:flex-row gap-6 md:items-center justify-between">
-            <div>
-              <Eyebrow>Begin a project</Eyebrow>
-              <h3 className="mt-3 font-serif text-3xl">{t('brands.inquireBrand', { brand: brand.name })}</h3>
-            </div>
-            <ButtonLink to="/brands">{t('common.inquire')}</ButtonLink>
-          </div>
+          <EnquiryCta
+            title={t('brands.hubFootCtaTitle', { brand: brand.name })}
+            prefill={prefill}
+            placement="brand-detail"
+            brand={brand.name}
+          />
         </Reveal>
       </section>
     </>

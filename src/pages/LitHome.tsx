@@ -7,6 +7,8 @@ import { DeviceFrame } from '@/features/litHome/DeviceFrame';
 import { LitHomeDemo } from '@/features/litHome/LitHomeDemo';
 import { BRANDS } from '@/data/brands';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { EnquiryCta } from '@/components/EnquiryCta';
+import { SITE_PREFILLS } from '@/lib/prefill';
 import { Seo } from '@/seo/Seo';
 import { litHomeMeta } from '@/seo/meta';
 import { simplePageCrumbs } from '@/seo/breadcrumbs';
@@ -80,6 +82,14 @@ export function LitHomePage() {
           <p className="mt-8 max-w-2xl text-lg leading-relaxed text-bone-300">
             {t('litHome.subtitle')}
           </p>
+        </Reveal>
+        {/* First-viewport conversion path (`_CONVENTIONS.md` §7). */}
+        <Reveal delay={0.3}>
+          <EnquiryCta
+            title={t('litHome.ctaTitle')}
+            prefill={SITE_PREFILLS.litHome}
+            className="mt-14 max-w-3xl"
+          />
         </Reveal>
       </section>
 
@@ -167,6 +177,14 @@ export function LitHomePage() {
             </div>
           ))}
         </div>
+      </section>
+
+      {/* Second placement, after the body (`_CONVENTIONS.md` §7). No FAQ block
+          on this page, so two placements, not a padded third. */}
+      <section className="container-luxe pb-32">
+        <Reveal>
+          <EnquiryCta title={t('litHome.footCtaTitle')} prefill={SITE_PREFILLS.litHome} />
+        </Reveal>
       </section>
     </>
   );

@@ -24,7 +24,14 @@
  * That is deliberate: the handoff's standing rule is that the working mailto
  * path is never deleted without a working replacement in place.
  */
-export const TURNSTILE_SITE_KEY = '';
+// Annotated `: string` deliberately. Without it TypeScript narrows this to the
+// literal type `""`, and `isTurnstileConfigured()`'s comparison below becomes
+// error TS2367 ("no overlap") the moment a real key is pasted in — i.e. the
+// build would break for whoever configures it, long after anyone remembers why.
+// Verified by pasting a test key in and watching `npm run lint` fail.
+// The widened type costs nothing: Rollup still sees the literal value and
+// dead-code-eliminates the unreachable branch at build time.
+export const TURNSTILE_SITE_KEY: string = '';
 
 /**
  * Turnstile's own script, loaded only when a key exists. Implicit rendering:

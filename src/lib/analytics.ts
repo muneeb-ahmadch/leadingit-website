@@ -79,7 +79,12 @@
  * the existing `src/lib/site.ts` precedent (`WHATSAPP_NUMBER` is a plain constant for the
  * same reason).
  */
-export const GA4_MEASUREMENT_ID = '';
+// Annotated `: string` for the same reason as TURNSTILE_SITE_KEY: without it
+// TypeScript narrows this to the literal type `""`, which makes every guard
+// against it a type error the moment a real ID is pasted in — breaking the build
+// for whoever follows the setup guide. Rollup still sees the literal value and
+// tree-shakes this module out entirely while the ID is empty.
+export const GA4_MEASUREMENT_ID: string = '';
 
 /**
  * Consent Mode v2 default for `analytics_storage`. See "Consent posture" above. Not a
