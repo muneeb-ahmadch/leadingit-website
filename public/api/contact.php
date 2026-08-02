@@ -1,0 +1,284 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * POST /api/contact.php — the leadingit.me contact endpoint.
+ *
+ * Order of operations is deliberate and cheapest-first, so an obvious bot never
+ * costs a Cloudflare API round trip or a rate-limit slot:
+ *
+ *   method -> origin -> parse -> honeypot -> time-trap -> rate limit ->
+ *   Turnstile -> field validation -> LOG -> notify -> acknowledge -> respond
+ *
+ * The log write sits before both sends on purpose: an enquiry that is recorded
+ * but not emailed is recoverable, an enquiry that is emailed but not recorded
+ * is not, and one that is neither is a lost customer. See §"Failure posture".
+ *
+ * ## Failure posture
+ *
+ * This endpoint never reports success it cannot stand behind. If the
+ * notification mail fails, the visitor is told plainly that it failed and is
+ * given the direct email address and WhatsApp link, even though the submission
+ * IS safely on disk — because a log file nobody is watching is not a delivered
+ * enquiry, and `/contact/`'s pre-Phase-5 behaviour (an honest mailto draft,
+ * never a fake "message sent") set the standard this must not regress from.
+ * The acknowledgement is the one exception: it is best-effort, and its failure
+ * never turns a received enquiry into an error for the visitor.
+ *
+ * ## What is NOT here, and why
+ *
+ * No ticket creation. OPEN-QUESTIONS #5 is unresolved — nobody has confirmed
+ * whether services@leadingit.me is a Workspace mailbox, a Group, or
+ * Freshdesk-routed (the `services` subdomain CNAMEs to Freshdesk). Building
+ * ticket logic against an unconfirmed routing path would be assuming a business
+ * fact. The mail body is written to read correctly either way. What would
+ * change if it turns out to be Freshdesk is scoped in
+ * docs/12-PROVENANCE/phase5-endpoint.md.
+ */
+
+require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/lib/Storage.php';
+require_once __DIR__ . '/lib/Spam.php';
+require_once __DIR__ . '/lib/RateLimiter.php';
+require_once __DIR__ . '/lib/Turnstile.php';
+require_once __DIR__ . '/lib/Mailer.php';
+
+header('X-Robots-Tag: noindex, nofollow', true);
+header('Content-Type: application/json; charset=utf-8', true);
+header('Referrer-Policy: no-referrer', true);
+header('X-Content-Type-Options: nosniff', true);
+header('Cache-Control: no-store', true);
+
+/**
+ * Single exit point. `status` is the machine-readable key the front end
+ * switches its aria-live announcement on; `message` is human-readable fallback
+ * copy only — the front end owns the visitor-facing wording.
+ */
+function contact_respond(int $httpStatus, string $status, string $message, array $extra = []): never
+{
+    http_response_code($httpStatus);
+    echo json_encode(['status' => $status, 'message' => $message] + $extra, JSON_UNESCAPED_SLASHES);
+    exit;
+}
+
+/**
+ * Cloudflare sits in front of this origin, so REMOTE_ADDR is a Cloudflare edge
+ * IP and rate-limiting on it would bucket the entire internet together.
+ * CF-Connecting-IP is the real client.
+ *
+ * Documented limitation: this header is spoofable by anyone who can reach the
+ * origin directly, bypassing Cloudflare. That is accepted rather than hidden —
+ * the rate limit is a cheap secondary control layered UNDER Turnstile, which is
+ * the actual bot defence and cannot be bypassed this way. Locking it down
+ * properly means restricting origin access to Cloudflare's IP ranges at the
+ * host, which is a deploy-time concern (Phase 6), not an application one.
+ */
+function contact_client_ip(): string
+{
+    foreach (['HTTP_CF_CONNECTING_IP', 'REMOTE_ADDR'] as $key) {
+        $value = $_SERVER[$key] ?? '';
+        if (is_string($value) && $value !== '' && filter_var($value, FILTER_VALIDATE_IP)) {
+            return $value;
+        }
+    }
+    return 'unknown';
+}
+
+/** Collapses CR/LF and trims — used on every field before it reaches a header or a log line. */
+function contact_clean(mixed $value, int $maxLength): string
+{
+    if (!is_scalar($value)) {
+        return '';
+    }
+    $s = trim((string) $value);
+    $s = str_replace(["\r\n", "\r"], "\n", $s);
+    if (function_exists('mb_substr')) {
+        return mb_substr($s, 0, $maxLength);
+    }
+    return substr($s, 0, $maxLength);
+}
+
+// ---------------------------------------------------------------- 1. method
+if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+    header('Allow: POST', true);
+    contact_respond(405, 'method_not_allowed', 'This endpoint accepts POST only.');
+}
+
+// ---------------------------------------------------------------- 2. config
+try {
+    $config = contact_config();
+} catch (Throwable $e) {
+    // Misconfiguration must never leak the resolved path or any value to the
+    // client; it is a server fault and is reported as one.
+    error_log('contact.php config error: ' . $e->getMessage());
+    contact_respond(500, 'server_error', 'The contact endpoint is not configured correctly.');
+}
+
+// ---------------------------------------------------------------- 3. origin
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+if (is_string($origin) && $origin !== '' && rtrim($origin, '/') !== rtrim($config['allowed_origin'], '/')) {
+    contact_respond(403, 'forbidden', 'Cross-origin submissions are not accepted.');
+}
+
+// ---------------------------------------------------------------- 4. parse
+$raw = file_get_contents('php://input');
+$input = [];
+$contentType = strtolower((string) ($_SERVER['CONTENT_TYPE'] ?? ''));
+if (str_contains($contentType, 'application/json')) {
+    $decoded = json_decode((string) $raw, true);
+    $input = is_array($decoded) ? $decoded : [];
+} else {
+    $input = $_POST;
+}
+if ($input === []) {
+    contact_respond(400, 'invalid', 'No form data was received.');
+}
+
+$ip = contact_client_ip();
+$submittedAt = gmdate('c');
+$reference = strtoupper(bin2hex(random_bytes(4)));
+
+$storageDir = $config['storage_dir'];
+try {
+    Storage::ensureDir($storageDir);
+} catch (Throwable $e) {
+    error_log('contact.php storage error: ' . $e->getMessage());
+    contact_respond(500, 'server_error', 'The contact endpoint could not open its storage.');
+}
+$logFile = $storageDir . '/submissions.log';
+
+/** Appends one JSON line. Used for accepted AND rejected submissions. */
+$logLine = static function (string $outcome, array $fields) use ($logFile, $ip, $submittedAt, $reference): void {
+    $record = [
+            'ref' => $reference,
+            'at' => $submittedAt,
+            'ip' => $ip,
+            'outcome' => $outcome,
+        ] + $fields;
+    try {
+        Storage::appendLine($logFile, (string) json_encode($record, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+    } catch (Throwable $e) {
+        // Logging must never take down a live submission.
+        error_log('contact.php log write failed: ' . $e->getMessage());
+    }
+};
+
+// ------------------------------------------------------------- 5. honeypot
+if (Spam::honeypotTripped($input)) {
+    $logLine('spam_honeypot', []);
+    // Deliberately answers 200 with the ordinary success shape. Telling a bot
+    // which control caught it is how the next version of that bot gets past it.
+    //
+    // The real-user risk is accepted and mitigated rather than ignored: the
+    // field name (`hp_note`) matches no browser autofill heuristic, and every
+    // trip is logged with outcome `spam_honeypot`, so a false positive is
+    // visible and recoverable from the log rather than silently gone.
+    contact_respond(200, 'success', 'Thank you — your enquiry has been received.');
+}
+
+// ------------------------------------------------------------ 6. time-trap
+$timeTrap = Spam::timeTrapResult($input, $config['time_trap_min_ms'], $config['time_trap_max_ms']);
+if ($timeTrap === 'missing') {
+    $logLine('invalid_timestamp', []);
+    contact_respond(400, 'invalid', 'The form did not submit correctly. Please reload the page and try again.');
+}
+if ($timeTrap === 'too_fast') {
+    $logLine('spam_too_fast', []);
+    contact_respond(200, 'success', 'Thank you — your enquiry has been received.');
+}
+if ($timeTrap === 'too_stale') {
+    // NOT treated as spam: the overwhelmingly likely cause is a real person who
+    // left the tab open. Silently swallowing this would lose a genuine enquiry,
+    // so it asks for a resubmit instead.
+    $logLine('stale_form', []);
+    contact_respond(400, 'stale', 'This form has been open for a while. Please reload the page and send it again.');
+}
+
+// ----------------------------------------------------------- 7. rate limit
+$limiter = new RateLimiter($storageDir, $config['rate_limit_max'], $config['rate_limit_window_s']);
+if (!$limiter->allow($ip)) {
+    $logLine('rate_limited', []);
+    contact_respond(429, 'rate_limited', 'Too many enquiries from this connection. Please try again shortly, or message us on WhatsApp.');
+}
+
+// ------------------------------------------------------------ 8. Turnstile
+$token = contact_clean($input['turnstile_token'] ?? ($input['cf-turnstile-response'] ?? ''), 4096);
+if ($token === '') {
+    $logLine('turnstile_missing', []);
+    contact_respond(403, 'captcha', 'Please complete the verification and try again.');
+}
+$turnstile = new Turnstile($config['turnstile_verify_token']);
+if (!$turnstile->verify($token, $ip)) {
+    $logLine('turnstile_failed', []);
+    contact_respond(403, 'captcha', 'Verification failed. Please reload the page and try again.');
+}
+
+// ----------------------------------------------------------- 9. validation
+$name = contact_clean($input['name'] ?? '', 120);
+$email = contact_clean($input['email'] ?? '', 254);
+$company = contact_clean($input['company'] ?? '', 160);
+$message = contact_clean($input['message'] ?? '', 5000);
+
+$errors = [];
+if ($name === '') {
+    $errors['name'] = 'Please tell us your name.';
+}
+if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $errors['email'] = 'Please give us an email address we can reply to.';
+}
+if ($message === '') {
+    $errors['message'] = 'Please tell us what you need.';
+} elseif (mb_strlen($message) < 10) {
+    $errors['message'] = 'Please add a little more detail so we can reply usefully.';
+}
+if ($errors !== []) {
+    $logLine('validation_failed', ['fields' => array_keys($errors)]);
+    contact_respond(400, 'invalid', 'Some details need correcting.', ['errors' => $errors]);
+}
+
+$submission = [
+    'name' => $name,
+    'email' => $email,
+    'company' => $company,
+    'message' => $message,
+    'ip' => $ip,
+    'submitted_at' => $submittedAt,
+    'reference' => $reference,
+];
+
+// --------------------------------------------------- 10. log before sending
+$logLine('received', [
+    'name' => $name,
+    'email' => $email,
+    'company' => $company,
+    'message' => $message,
+]);
+
+// ------------------------------------------------------------- 11. notify
+$mailer = new Mailer($config);
+$mailError = null;
+$notified = $mailer->sendNotification($submission, $mailError);
+
+if (!$notified) {
+    error_log('contact.php notification failed [' . $reference . ']: ' . (string) $mailError);
+    $logLine('mail_failed', ['error' => (string) $mailError]);
+    // Honest failure. The submission is on disk under $reference and is
+    // recoverable, but nobody is watching that file, so this does NOT report
+    // success. The visitor gets the two channels that definitely work.
+    contact_respond(502, 'error', 'We could not send your enquiry just now. Please email services@leadingit.me or message us on WhatsApp.', [
+        'reference' => $reference,
+    ]);
+}
+
+// -------------------------------------------------------- 12. acknowledge
+$ackError = null;
+if (!$mailer->sendAcknowledgement($submission, $ackError)) {
+    // Best-effort by design: the enquiry reached Leading IT, which is what the
+    // visitor actually needed. Recorded so a pattern of failures is visible.
+    error_log('contact.php acknowledgement failed [' . $reference . ']: ' . (string) $ackError);
+    $logLine('ack_failed', ['error' => (string) $ackError]);
+}
+
+// ------------------------------------------------------------- 13. respond
+contact_respond(200, 'success', 'Thank you — your enquiry has been received.', ['reference' => $reference]);

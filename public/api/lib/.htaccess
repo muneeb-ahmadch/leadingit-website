@@ -1,0 +1,8 @@
+# Library code, never fetched over HTTP. PHP executes rather than serves these, so this
+# is defence in depth: it stops a stray .md/.txt/.bak in here from ever being readable.
+Require all denied
+
+<IfModule !mod_authz_core.c>
+  Order allow,deny
+  Deny from all
+</IfModule>
