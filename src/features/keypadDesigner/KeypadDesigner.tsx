@@ -17,7 +17,7 @@ import {
 import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { Button } from '@/components/primitives/Button';
 import { useHydrated } from '@/lib/hydration';
-import { WHATSAPP_NUMBER } from '@/lib/site';
+import { whatsappHref } from '@/lib/site';
 import { href } from '@/seo/paths';
 import {
   COLLECTIONS, COLLECTION_BY_ID, BACKLIGHTS, ICONS, ICON_BY_ID,
@@ -78,9 +78,10 @@ export function KeypadDesigner() {
               <KeypadPreview config={config} />
               <button
                 onClick={() => dispatch({ type: 'toggle_ambient' })}
+                aria-pressed={config.ambient}
                 className="mt-8 mx-auto flex items-center gap-2 text-xs uppercase tracking-luxe text-bone-500 hover:text-gold transition-colors"
               >
-                <span className={`block h-2 w-2 rounded-full ${config.ambient ? 'bg-gold' : 'bg-bone-500/40'}`} />
+                <span aria-hidden="true" className={`block h-2 w-2 rounded-full ${config.ambient ? 'bg-gold' : 'bg-bone-500/40'}`} />
                 {config.ambient ? t('designer.ambientOn') : t('designer.ambientOff')}
               </button>
             </div>
@@ -91,12 +92,29 @@ export function KeypadDesigner() {
 
       {/* step column */}
       <div className="lg:order-1 min-w-0">
-        {/* step rail */}
-        <div className="flex flex-wrap gap-x-5 gap-y-2 border-b border-white/5 pb-5">
+        {/* step rail — WAI-ARIA tabs pattern: role=tab/aria-selected exposes the
+            current step programmatically (previously colour-only, an SC 1.4.1
+            failure), roving tabindex + arrow keys give it real tab keyboard
+            behaviour rather than a half-applied role. */}
+        <div role="tablist" aria-label="Design steps" className="flex flex-wrap gap-x-5 gap-y-2 border-b border-white/5 pb-5">
           {STEPS.map((s, i) => (
             <button
               key={s}
+              role="tab"
+              id={`designer-tab-${s}`}
+              aria-selected={i === stepIndex}
+              aria-controls={`designer-panel-${s}`}
+              tabIndex={i === stepIndex ? 0 : -1}
               onClick={() => setStepIndex(i)}
+              onKeyDown={(e) => {
+                if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+                  e.preventDefault();
+                  const dir = e.key === 'ArrowRight' ? 1 : -1;
+                  const next = (i + dir + STEPS.length) % STEPS.length;
+                  setStepIndex(next);
+                  document.getElementById(`designer-tab-${STEPS[next]}`)?.focus();
+                }
+              }}
               className={`flex items-center gap-2 text-xs uppercase tracking-luxe transition-colors ${
                 i === stepIndex ? 'text-gold' : 'text-bone-500 hover:text-bone-300'
               }`}
@@ -113,6 +131,10 @@ export function KeypadDesigner() {
                 not carry a hidden initial state; step changes animate normally. */}
             <motion.div
               key={step}
+              id={`designer-panel-${step}`}
+              role="tabpanel"
+              aria-labelledby={`designer-tab-${step}`}
+              tabIndex={0}
               initial={hydrated ? { opacity: 0, y: 16 } : false}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
@@ -127,6 +149,7 @@ export function KeypadDesigner() {
                         <button
                           key={c.id}
                           onClick={() => dispatch({ type: 'set_collection', collection: c.id })}
+                          aria-pressed={active}
                           className={`text-start p-5 border transition-all duration-500 ${
                             active ? 'border-gold bg-ink-800' : 'border-white/5 hover:border-white/20'
                           }`}
@@ -149,6 +172,7 @@ export function KeypadDesigner() {
                         <button
                           key={l.id}
                           onClick={() => dispatch({ type: 'set_layout', layout: l.id })}
+                          aria-pressed={active}
                           className={`flex items-center justify-between gap-4 p-4 border transition-all duration-500 ${
                             active ? 'border-gold bg-ink-800' : 'border-white/5 hover:border-white/20'
                           }`}
@@ -157,7 +181,7 @@ export function KeypadDesigner() {
                             <div className={`text-sm uppercase tracking-luxe ${active ? 'text-gold' : 'text-bone-300'}`}>{l.name}</div>
                             <div className="mt-1 text-xs text-bone-500 font-mono">{l.note}</div>
                           </div>
-                          {active && <Check size={16} className="text-gold shrink-0" />}
+                          {active && <Check size={16} aria-hidden="true" className="text-gold shrink-0" />}
                         </button>
                       );
                     })}
@@ -174,11 +198,12 @@ export function KeypadDesigner() {
                         <button
                           key={f.id}
                           onClick={() => dispatch({ type: 'set_finish', finish: f.id })}
+                          aria-pressed={active}
                           className={`flex items-center gap-4 p-4 border transition-all duration-500 ${
                             active ? 'border-gold bg-ink-800' : 'border-white/5 hover:border-white/20'
                           }`}
                         >
-                          <span className="block h-10 w-10 rounded-full border border-white/10 shrink-0" style={{ background: f.swatch }} />
+                          <span aria-hidden="true" className="block h-10 w-10 rounded-full border border-white/10 shrink-0" style={{ background: f.swatch }} />
                           <span className={`text-sm uppercase tracking-luxe text-start ${active ? 'text-gold' : 'text-bone-300'}`}>{f.name}</span>
                         </button>
                       );
@@ -208,11 +233,13 @@ export function KeypadDesigner() {
                         <button
                           key={b.id}
                           onClick={() => dispatch({ type: 'set_backlight_color', color: b.id })}
+                          aria-pressed={active}
                           className={`flex flex-col items-center gap-2 p-3 border transition-all duration-500 ${
                             active ? 'border-gold bg-ink-800' : 'border-white/5 hover:border-white/20'
                           }`}
                         >
                           <span
+                            aria-hidden="true"
                             className="block h-9 w-9 rounded-full border border-white/10"
                             style={{ background: b.color, boxShadow: `0 0 14px ${b.color}88` }}
                           />
@@ -232,6 +259,8 @@ export function KeypadDesigner() {
                       max={100}
                       value={config.backlight.intensity}
                       onChange={(e) => dispatch({ type: 'set_backlight_intensity', intensity: Number(e.target.value) })}
+                      aria-label={t('designer.intensity')}
+                      aria-valuetext={`${config.backlight.intensity}%`}
                       className="lit-slider mt-4"
                     />
                   </div>
@@ -290,12 +319,14 @@ function EngravingEditor({ config, dispatch }: { config: DesignConfig; dispatch:
             <button
               key={i}
               onClick={() => setSelected(i)}
+              aria-pressed={isSel}
+              aria-label={`Button ${i + 1}${b.label || ICON_BY_ID[b.icon]?.label ? `: ${b.label || ICON_BY_ID[b.icon]?.label}` : ''}`}
               className={`h-10 min-w-10 gap-1.5 px-2 flex items-center justify-center border font-mono text-xs transition-all duration-300 ${
                 isSel ? 'border-gold text-gold bg-ink-800' : 'border-white/10 text-bone-500 hover:border-white/25'
               }`}
               title={b.label || ICON_BY_ID[b.icon]?.label}
             >
-              {String(i + 1).padStart(2, '0')}
+              <span aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
               <IconGlyph id={b.icon} />
             </button>
           );
@@ -304,8 +335,9 @@ function EngravingEditor({ config, dispatch }: { config: DesignConfig; dispatch:
 
       {active && (
         <div className="mt-8">
-          <label className="field-label">{t('designer.labelField')}</label>
+          <label htmlFor="engraving-label" className="field-label">{t('designer.labelField')}</label>
           <input
+            id="engraving-label"
             type="text"
             maxLength={14}
             value={active.label}
@@ -314,14 +346,16 @@ function EngravingEditor({ config, dispatch }: { config: DesignConfig; dispatch:
             className="input-luxe"
           />
 
-          <div className="mt-8 field-label">{t('designer.iconField')}</div>
-          <div className="grid grid-cols-5 sm:grid-cols-8 gap-2">
+          <div id="engraving-icon-label" className="mt-8 field-label">{t('designer.iconField')}</div>
+          <div role="group" aria-labelledby="engraving-icon-label" className="grid grid-cols-5 sm:grid-cols-8 gap-2">
             {ICONS.map((ic) => {
               const isSel = ic.id === active.icon;
               return (
                 <button
                   key={ic.id}
                   onClick={() => dispatch({ type: 'set_button', index: selected, icon: ic.id })}
+                  aria-pressed={isSel}
+                  aria-label={ic.label}
                   className={`aspect-square flex items-center justify-center border transition-all duration-300 ${
                     isSel ? 'border-gold bg-ink-800 text-gold' : 'border-white/5 text-bone-500 hover:border-white/25 hover:text-bone-300'
                   }`}
@@ -346,7 +380,7 @@ const GLYPHS: Record<string, LucideIcon> = {
 };
 function IconGlyph({ id }: { id: string }) {
   const Icon = GLYPHS[id] ?? Sun;
-  return <Icon size={18} strokeWidth={1.5} />;
+  return <Icon size={18} strokeWidth={1.5} aria-hidden="true" />;
 }
 
 function SummaryStep({ config }: { config: DesignConfig }) {
@@ -377,7 +411,12 @@ function SummaryStep({ config }: { config: DesignConfig }) {
   ].join('\n');
 
   const contactHref = href(`/contact?message=${encodeURIComponent(spec)}`);
-  const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(spec)}`;
+  // Was rebuilding the deep link inline from WHATSAPP_NUMBER, which is exactly the
+  // second encoder `_CONVENTIONS.md` §7 forbids: two places that both know how to
+  // build a wa.me URL drift, and a hand-encoded prefill is how a literal %20 or a
+  // truncating & ends up in a message. `whatsappHref()` owns the number and the
+  // encoding; callers pass plain text only.
+  const designerWhatsappHref = whatsappHref(spec);
 
   const copyLink = async () => {
     try {
@@ -428,15 +467,15 @@ function SummaryStep({ config }: { config: DesignConfig }) {
           <Link to={contactHref} className="btn-gold group flex-1 justify-center">
             <span>{t('designer.requestDesign')}</span>
           </Link>
-          <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn-gold group flex-1 justify-center">
-            <MessageCircle size={16} />
+          <a href={designerWhatsappHref} target="_blank" rel="noopener noreferrer" className="btn-gold group flex-1 justify-center">
+            <MessageCircle size={16} aria-hidden="true" />
             <span>{t('designer.sendWhatsApp')}</span>
           </a>
         </div>
-        <button onClick={copyLink} className="btn-ghost self-start">
-          {copied ? <Check size={15} /> : <LinkIcon size={15} />}
+        <button onClick={copyLink} aria-live="polite" className="btn-ghost self-start">
+          {copied ? <Check size={15} aria-hidden="true" /> : <LinkIcon size={15} aria-hidden="true" />}
           <span>{copied ? t('designer.linkCopied') : t('designer.copyLink')}</span>
-          {!copied && <Copy size={13} className="opacity-60" />}
+          {!copied && <Copy size={13} aria-hidden="true" className="opacity-60" />}
         </button>
       </div>
     </div>

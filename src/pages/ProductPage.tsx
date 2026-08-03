@@ -9,9 +9,12 @@ import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { ButtonLink } from '@/components/primitives/Button';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { InternalLinks, type InternalLink } from '@/components/InternalLinks';
+import { EnquiryCta } from '@/components/EnquiryCta';
 import { ResponsiveImage } from '@/components/media/ResponsiveImage';
+import { buildLcpImagePreload } from '@/components/media/imageSrcSet';
 import { altFor } from '@/components/media/altText';
 import { useHydrated } from '@/lib/hydration';
+import { productPrefill } from '@/lib/prefill';
 import { Seo } from '@/seo/Seo';
 import { KEYPAD_DESIGNER_PATH, href } from '@/seo/paths';
 import { productMeta } from '@/seo/meta';
@@ -61,6 +64,14 @@ export function ProductPage() {
 
   const meta = productMeta(product, brand);
   const crumbs = productCrumbs(brand.name, brand.slug, product.name, product.slug);
+  /**
+   * One prefill for both conversion blocks on this route, generated from the
+   * record rather than typed here (`src/lib/prefill.ts`) — a model name written
+   * out by hand on 98 pages is 98 chances to drift from `products.ts`. It leads
+   * with the part number and ends with `Quantity: ` because model-number queries
+   * are trade intent (`_CONVENTIONS.md` §7).
+   */
+  const prefill = productPrefill(product, brand.name);
   /**
    * Nine of these routes describe a product RANGE, not a purchasable SKU
    * (`src/seo/ranges.ts`). A range has no single model, MPN or offer, so it must
@@ -114,6 +125,10 @@ export function ProductPage() {
           isRange ? null : buildProduct(product, brand),
           buildBreadcrumbList(crumbs, meta.path),
         ]}
+        // `activeFinish` starts as `product.finishes[0]` (the `useState`
+        // initialiser above), which is exactly what the prerender and first
+        // paint both ship — matches the hero `ResponsiveImage priority` below.
+        lcpImage={buildLcpImagePreload(activeFinish.productImage, '(min-width: 1024px) 50vw, 100vw')}
       />
 
       {/* hero */}
@@ -157,6 +172,34 @@ export function ProductPage() {
             </div>
           </Reveal>
         </div>
+      </section>
+
+      {/*
+       * The page's first conversion block (`_CONVENTIONS.md` §7), directly
+       * under the hero rather than inside the hero's text column.
+       *
+       * That distinction is load-bearing on this template. The hero is a
+       * two-column grid that stacks on mobile as [text, product shot], and the
+       * product shot is this route's LCP element on all 98 pages — the one
+       * image carrying `priority` and the one named in the `<Seo lcpImage>`
+       * preload above. A block placed in the text column would sit *between*
+       * the copy and that image on every small viewport, pushing the preloaded
+       * LCP candidate out of the first screen and re-deciding LCP on a template
+       * that was measured to budget in Phase 5. Below the hero it changes
+       * nothing above it: the image keeps its position, and on desktop the
+       * block is still the first thing after the hero and above the first h2.
+       */}
+      <section className="container-luxe pb-14">
+        <Reveal>
+          <EnquiryCta
+            title={t('product.ctaQuoteTitle', { name: product.name })}
+            prefill={prefill}
+            className="max-w-3xl"
+            placement="product-detail"
+            brand={brand.name}
+            product={product.name}
+          />
+        </Reveal>
       </section>
 
       {/* sticky section nav */}
@@ -323,16 +366,21 @@ export function ProductPage() {
         </Reveal>
       </section>
 
-      {/* inquire */}
+      {/* Second placement, after the body and the sideways links
+          (`_CONVENTIONS.md` §7 — this template renders no FAQ block, so two
+          placements, not a padded third). It replaces a single-channel block
+          that offered only "Inquire" pointing back at /brands: a dead end that
+          gave neither of the two paths every page owes a visitor, and whose
+          eyebrow was a hardcoded English literal. */}
       <section className="container-luxe pb-32">
         <Reveal>
-          <div className="border-t border-gold/20 pt-10 flex flex-col md:flex-row gap-6 md:items-center justify-between">
-            <div>
-              <Eyebrow>Next step</Eyebrow>
-              <h3 className="mt-3 font-serif text-3xl">{t('product.ctaInquire')}</h3>
-            </div>
-            <ButtonLink to="/brands">{t('common.inquire')}</ButtonLink>
-          </div>
+          <EnquiryCta
+            title={t('product.ctaSpecTitle', { name: product.name })}
+            prefill={prefill}
+            placement="product-detail"
+            brand={brand.name}
+            product={product.name}
+          />
         </Reveal>
       </section>
     </>

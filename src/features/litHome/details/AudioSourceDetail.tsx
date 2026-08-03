@@ -22,7 +22,7 @@ export function AudioSourceDetail({ room, roomName, dispatch, onClose }: Props) 
       onClose={onClose}
       topRight={
         <button className="text-bone-500 hover:text-gold transition-colors" aria-label="Radio">
-          <Radio size={14} strokeWidth={1.5} />
+          <Radio size={14} strokeWidth={1.5} aria-hidden="true" />
         </button>
       }
     >
@@ -62,17 +62,17 @@ export function AudioSourceDetail({ room, roomName, dispatch, onClose }: Props) 
             {/* Transport */}
             <div className="mt-6 flex items-center justify-center md:justify-start gap-6">
               <button className="text-bone-300 hover:text-gold transition-colors" aria-label="Previous">
-                <SkipBack size={22} strokeWidth={1.5} />
+                <SkipBack size={22} strokeWidth={1.5} aria-hidden="true" />
               </button>
               <button
                 onClick={() => dispatch({ type: 'audio_toggle' })}
                 className="w-14 h-14 rounded-full bg-gold text-ink-950 hover:bg-gold-400 transition-colors flex items-center justify-center"
                 aria-label={playing ? 'Pause' : 'Play'}
               >
-                {playing ? <Pause size={20} strokeWidth={1.75} /> : <Play size={20} strokeWidth={1.75} className="translate-x-0.5" />}
+                {playing ? <Pause size={20} strokeWidth={1.75} aria-hidden="true" /> : <Play size={20} strokeWidth={1.75} aria-hidden="true" className="translate-x-0.5" />}
               </button>
               <button className="text-bone-300 hover:text-gold transition-colors" aria-label="Next">
-                <SkipForward size={22} strokeWidth={1.5} />
+                <SkipForward size={22} strokeWidth={1.5} aria-hidden="true" />
               </button>
             </div>
           </div>
@@ -85,13 +85,14 @@ export function AudioSourceDetail({ room, roomName, dispatch, onClose }: Props) 
             className="text-bone-500 hover:text-gold transition-colors"
             aria-label="Mute"
           >
-            <VolumeX size={16} strokeWidth={1.5} />
+            <VolumeX size={16} strokeWidth={1.5} aria-hidden="true" />
           </button>
           <button
             onClick={() => dispatch({ type: 'audio_step_volume', delta: -1 })}
+            aria-label="Decrease volume"
             className="text-bone-500 hover:text-gold transition-colors"
           >
-            <Minus size={16} strokeWidth={1.75} />
+            <Minus size={16} strokeWidth={1.75} aria-hidden="true" />
           </button>
           <input
             type="range"
@@ -104,9 +105,10 @@ export function AudioSourceDetail({ room, roomName, dispatch, onClose }: Props) 
           />
           <button
             onClick={() => dispatch({ type: 'audio_step_volume', delta: 1 })}
+            aria-label="Increase volume"
             className="text-bone-500 hover:text-gold transition-colors"
           >
-            <Plus size={16} strokeWidth={1.75} />
+            <Plus size={16} strokeWidth={1.75} aria-hidden="true" />
           </button>
         </div>
       </div>

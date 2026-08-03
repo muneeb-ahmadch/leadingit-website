@@ -1,5 +1,6 @@
 import type { Brand } from '@/data/brands';
 import type { Product } from '@/data/products';
+import type { Solution } from '@/data/solutions';
 import { absoluteUrl } from '@/lib/site';
 import type { JsonLdNode } from './types';
 import { pageUrl } from './ids';
@@ -78,6 +79,29 @@ export function buildBrandsItemList(brands: Brand[]): JsonLdNode | null {
     `${pageUrl('/brands')}#brand-list`,
     brands.map((brand) => ({ name: brand.name, url: `/brands/${brand.slug}`, image: brand.heroImage })),
     'Brands distributed by Leading IT',
+  );
+}
+
+/**
+ * `ItemList` of the solution pages, for `/solutions/`.
+ *
+ * **Pass only solutions whose route returns 200.** `docs/05-URL-TAXONOMY.md` §2
+ * locks six slugs and only the authored ones are built, so this list is shorter
+ * than the IA today and grows as pages ship. Listing an unbuilt sibling here
+ * would publish a 404 to Google as a browsable item — the same defect as linking
+ * one, in machine-readable form (`_CONVENTIONS.md` §8). The retired
+ * `/solutions/shading/` (§14) must never appear at all: it is a 301 target, and
+ * a redirect in a structured-data list is worse again.
+ */
+export function buildSolutionsItemList(solutions: Solution[]): JsonLdNode | null {
+  return buildItemList(
+    `${pageUrl('/solutions')}#solution-list`,
+    solutions.map((solution) => ({
+      name: solution.name,
+      url: `/solutions/${solution.slug}`,
+      image: solution.hero,
+    })),
+    'Automation solutions delivered by Leading IT',
   );
 }
 

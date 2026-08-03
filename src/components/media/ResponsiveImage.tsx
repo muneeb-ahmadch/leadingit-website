@@ -19,11 +19,13 @@
  * truth there). An asset missing from the manifest is a build-time throw, not
  * a silent guess: guessing dimensions is exactly the CLS bug this component
  * exists to prevent.
+ *
+ * The srcset math itself lives in `./imageSrcSet` and is shared with
+ * `Seo.tsx`'s `<link rel="preload">` builder — one function computing both
+ * the `<picture>` this component renders and the preload the page's `<head>`
+ * emits for its LCP image, so the two can never drift apart.
  */
-import manifest from './image-manifest.generated.json';
-
-type ManifestEntry = { widths: number[]; height: number };
-const MANIFEST = manifest as Record<string, ManifestEntry>;
+import { buildSrcSet, getManifestEntry } from './imageSrcSet';
 
 type Props = {
   /** Path to the raster fallback, e.g. `/products/uandksound/cinema-theatre.jpg`. */
@@ -36,26 +38,13 @@ type Props = {
   priority?: boolean;
 };
 
-function withSuffix(src: string, width: number, largest: number, ext: 'avif' | 'webp') {
-  const base = src.replace(/\.[a-z0-9]+$/i, '');
-  return width === largest ? `${base}.${ext}` : `${base}-${width}.${ext}`;
-}
-
 export function ResponsiveImage({ src, alt, sizes, className, priority = false }: Props) {
-  const entry = MANIFEST[src];
-  if (!entry) {
-    throw new Error(
-      `ResponsiveImage: "${src}" is not in image-manifest.generated.json — run ` +
-        `"node scripts/build-images.mjs" against raw/ and commit the regenerated manifest.`,
-    );
-  }
-  const { widths, height } = entry;
+  const { widths, height } = getManifestEntry(src);
   if (widths.length > 1 && !sizes) {
     throw new Error(`ResponsiveImage: "${src}" has ${widths.length} widths and needs a "sizes" prop.`);
   }
-  const largest = widths[widths.length - 1];
-  const avifSrcSet = widths.map((w) => `${withSuffix(src, w, largest, 'avif')} ${w}w`).join(', ');
-  const webpSrcSet = widths.map((w) => `${withSuffix(src, w, largest, 'webp')} ${w}w`).join(', ');
+  const { srcSet: avifSrcSet, largest } = buildSrcSet(src, 'avif');
+  const { srcSet: webpSrcSet } = buildSrcSet(src, 'webp');
 
   return (
     <picture>

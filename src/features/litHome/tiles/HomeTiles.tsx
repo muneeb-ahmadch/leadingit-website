@@ -27,10 +27,15 @@ function StepRow({
   onMinus,
   onPlus,
   middle,
+  minusLabel,
+  plusLabel,
 }: {
   onMinus: (e: React.MouseEvent) => void;
   onPlus: (e: React.MouseEvent) => void;
   middle: React.ReactNode;
+  /** Icon-only buttons need a real accessible name — never `title` alone. */
+  minusLabel: string;
+  plusLabel: string;
 }) {
   return (
     <div className="grid grid-cols-[1fr_2fr_1fr] items-center text-bone-100">
@@ -39,9 +44,10 @@ function StepRow({
           e.stopPropagation();
           onMinus(e);
         }}
+        aria-label={minusLabel}
         className="py-2.5 text-bone-500 hover:text-gold transition-colors flex items-center justify-center border-e border-white/[0.04]"
       >
-        <Minus size={14} strokeWidth={1.75} />
+        <Minus size={14} strokeWidth={1.75} aria-hidden="true" />
       </button>
       <div className="text-center text-[13px]">{middle}</div>
       <button
@@ -49,9 +55,10 @@ function StepRow({
           e.stopPropagation();
           onPlus(e);
         }}
+        aria-label={plusLabel}
         className="py-2.5 text-bone-500 hover:text-gold transition-colors flex items-center justify-center border-s border-white/[0.04]"
       >
-        <Plus size={14} strokeWidth={1.75} />
+        <Plus size={14} strokeWidth={1.75} aria-hidden="true" />
       </button>
     </div>
   );
@@ -89,7 +96,15 @@ export function LightsTile({ room, dispatch, onOpen }: TileProps) {
       title={t('litHome.tileLights')}
       onOpen={onOpen}
       rightSlot={
-        <span className={`inline-block w-2.5 h-2.5 rounded-full ${anyOn ? 'bg-gold' : 'bg-bone-500/30'}`} />
+        <>
+          {/* The dot is colour-only (gold vs bone/30); this tile carries no
+              status text anywhere else, so "any light on" is otherwise
+              invisible to AT users — an SC 1.4.1 gap the sighted-only status
+              dots elsewhere on this tile set avoid by pairing colour with
+              visible text (e.g. ClimateTile's "AC ON/OFF"). */}
+          <span aria-hidden="true" className={`inline-block w-2.5 h-2.5 rounded-full ${anyOn ? 'bg-gold' : 'bg-bone-500/30'}`} />
+          <span className="sr-only">{anyOn ? t('litHome.lightsOn') : t('litHome.lightsOff')}</span>
+        </>
       }
     >
       <div className="grid grid-cols-2 divide-x divide-white/[0.04]">
@@ -127,6 +142,8 @@ export function ClimateTile({ room, dispatch, onOpen }: TileProps) {
       <StepRow
         onMinus={() => dispatch({ type: 'climate_step', delta: -1 })}
         onPlus={() => dispatch({ type: 'climate_step', delta: 1 })}
+        minusLabel="Decrease setpoint"
+        plusLabel="Increase setpoint"
         middle={
           <div className="leading-tight">
             <div className="font-mono text-bone-100">{target}°</div>
@@ -179,6 +196,8 @@ export function AudioTile({ room, dispatch, onOpen }: TileProps) {
       <StepRow
         onMinus={() => dispatch({ type: 'audio_step_volume', delta: -1 })}
         onPlus={() => dispatch({ type: 'audio_step_volume', delta: 1 })}
+        minusLabel="Decrease volume"
+        plusLabel="Increase volume"
         middle={
           <div className="leading-tight">
             <div className="font-mono text-bone-100">{room.audio.volume}</div>
@@ -209,6 +228,8 @@ export function CinemaTile({ room, dispatch, onOpen }: TileProps) {
       <StepRow
         onMinus={() => dispatch({ type: 'cinema_step_volume', delta: -1 })}
         onPlus={() => dispatch({ type: 'cinema_step_volume', delta: 1 })}
+        minusLabel="Decrease volume"
+        plusLabel="Increase volume"
         middle={
           <div className="leading-tight">
             <div className="font-mono text-bone-100">{room.cinema.volume}</div>
@@ -239,6 +260,8 @@ export function VideoTile({ room, dispatch, onOpen }: TileProps) {
       <StepRow
         onMinus={() => dispatch({ type: 'video_step_volume', delta: -1 })}
         onPlus={() => dispatch({ type: 'video_step_volume', delta: 1 })}
+        minusLabel="Decrease volume"
+        plusLabel="Increase volume"
         middle={
           <div className="leading-tight">
             <div className="font-mono text-bone-100">{room.video.volume}</div>
@@ -260,7 +283,7 @@ export function SchedulerTile() {
         onClick={(e) => e.stopPropagation()}
         className="w-full py-2.5 text-[10px] tracking-luxe uppercase text-gold hover:bg-gold/10 transition-colors flex items-center justify-center gap-1.5"
       >
-        <Plus size={12} strokeWidth={2} />
+        <Plus size={12} strokeWidth={2} aria-hidden="true" />
         {t('litHome.newEvent')}
       </button>
     </TileCard>
@@ -336,19 +359,19 @@ export function CiscoTile({ room, dispatch }: TileProps) {
       <div className="grid grid-cols-3 divide-x divide-white/[0.04]">
         <TilePill active={dnd} onClick={() => dispatch({ type: 'cisco_toggle', key: 'dnd' })}>
           <span className="inline-flex items-center gap-1.5">
-            <Ban size={11} strokeWidth={1.75} />
+            <Ban size={11} strokeWidth={1.75} aria-hidden="true" />
             {t('litHome.dnd')}
           </span>
         </TilePill>
         <TilePill active={mute} onClick={() => dispatch({ type: 'cisco_toggle', key: 'mute' })}>
           <span className="inline-flex items-center gap-1.5">
-            <MicOff size={11} strokeWidth={1.75} />
+            <MicOff size={11} strokeWidth={1.75} aria-hidden="true" />
             {t('litHome.mute')}
           </span>
         </TilePill>
         <TilePill active={video} onClick={() => dispatch({ type: 'cisco_toggle', key: 'video' })}>
           <span className="inline-flex items-center gap-1.5">
-            <VideoIcon size={11} strokeWidth={1.75} />
+            <VideoIcon size={11} strokeWidth={1.75} aria-hidden="true" />
             {t('litHome.video')}
           </span>
         </TilePill>

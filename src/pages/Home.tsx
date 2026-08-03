@@ -5,12 +5,19 @@ import { ButtonLink } from '@/components/primitives/Button';
 import { Reveal } from '@/components/primitives/Reveal';
 import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { Parallax } from '@/components/primitives/Parallax';
+import { EnquiryCta } from '@/components/EnquiryCta';
 import { ResponsiveImage } from '@/components/media/ResponsiveImage';
-import { altFor } from '@/components/media/altText';
+import { buildLcpImagePreload } from '@/components/media/imageSrcSet';
+// `altFor` is deliberately not imported: both images remaining on this page are
+// decorative full-bleed backgrounds that name no product and ship `alt=""`.
+// Re-import it the moment a content image is added — never hand-write an alt
+// string here, and never pass a brand or product into it (`altFor(src)` takes
+// only the src on purpose; see src/components/media/altText.ts).
 import { BRANDS } from '@/data/brands';
 import { DeviceFrame } from '@/features/litHome/DeviceFrame';
 import { LitHomeDemo } from '@/features/litHome/LitHomeDemo';
 import { useHydrated } from '@/lib/hydration';
+import { SITE_PREFILLS } from '@/lib/prefill';
 import { Seo } from '@/seo/Seo';
 import { href } from '@/seo/paths';
 import { homeMeta } from '@/seo/meta';
@@ -46,6 +53,8 @@ export function Home() {
         jsonLd={[
           buildWebPage({ path: meta.path, name: meta.title, description: meta.description }),
         ]}
+        // Matches the hero `ResponsiveImage priority` below (`src`, `sizes`).
+        lcpImage={buildLcpImagePreload(HERO_IMAGE, '100vw')}
       />
 
       {/* HERO */}
@@ -104,6 +113,18 @@ export function Home() {
 
       {/* BRAND WALL */}
       <section className="container-luxe py-32">
+        {/* The conversion path, as high on the page as it can honestly go: the
+            hero is a full 100svh band, so this is the first thing under it
+            (`_CONVENTIONS.md` §7). Deliberately above the section's own h2 —
+            `EnquiryCta` renders an `Eyebrow`, never a heading, so it cannot
+            skip a level or inject a non-question h2 into the outline. */}
+        <Reveal>
+          <EnquiryCta
+            title={t('home.ctaTitle')}
+            prefill={SITE_PREFILLS.home}
+            className="mb-24 max-w-3xl"
+          />
+        </Reveal>
         <div className="grid lg:grid-cols-[1fr_2fr] gap-12 mb-16">
           <Reveal>
             <Eyebrow>{t('home.brandWallEyebrow')}</Eyebrow>
@@ -184,35 +205,31 @@ export function Home() {
         </div>
       </section>
 
-      {/* FEATURED PRODUCTS — minimal placeholder strip */}
-      <section className="container-luxe py-32">
+      {/* Second placement, after the body (`_CONVENTIONS.md` §7). The home page
+          renders no FAQ block, so two placements, not a padded third — and the
+          lifestyle band above it means the two are never adjacent. */}
+      <section className="container-luxe py-28">
         <Reveal>
-          <Eyebrow>{t('home.featuredEyebrow')}</Eyebrow>
+          <EnquiryCta title={t('home.footCtaTitle')} prefill={SITE_PREFILLS.home} />
         </Reveal>
-        <div className="mt-12 grid md:grid-cols-3 gap-8">
-          {BRANDS.slice(0, 3).map((b, i) => (
-            <Reveal key={b.slug} delay={i * 0.1}>
-              <a href={href(`/brands/${b.slug}`)} className="group block">
-                <div className="aspect-[4/5] bg-ink-800 overflow-hidden">
-                  <ResponsiveImage
-                    src={b.heroImage}
-                    alt={altFor(b.heroImage)}
-                    sizes="(min-width: 768px) 33vw, 100vw"
-                    className="h-full w-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000 ease-out-luxe"
-                  />
-                </div>
-                <div className="mt-5">
-                  <div className="eyebrow">{b.category === 'interfaces' ? 'Architectural' : 'Cinema'}</div>
-                  <div className="mt-2 font-serif text-2xl group-hover:text-gold transition-colors">
-                    {b.name}
-                  </div>
-                  <div className="mt-1 text-bone-500 text-sm">{b.tagline}</div>
-                </div>
-              </a>
-            </Reveal>
-          ))}
-        </div>
       </section>
+
+      {/*
+       * REMOVED 2026-08-01 (Phase 4): the "FEATURED PRODUCTS" three-card grid.
+       *
+       * Two independent reasons, either sufficient:
+       *   1. Three-card cliché feature grids are banned sitewide
+       *      (docs/02-DESIGN-SOURCE-OF-TRUTH.md — recorded as due under Direction A
+       *      *and* Direction B, so the Direction B lock did not retire the task).
+       *   2. It was labelled a placeholder in its own comment and rendered
+       *      `BRANDS.slice(0, 3)` — an arbitrary first-three, not a curated
+       *      selection. It asserted editorial intent the data never carried.
+       *
+       * No link equity is lost: the BRAND WALL above links all nine brand hubs,
+       * so every destination this section reached is still one click from home.
+       * Do not reinstate it as a four-card or six-card grid — the ban is on the
+       * card-grid presentation, not on the number three.
+       */}
     </>
   );
 }

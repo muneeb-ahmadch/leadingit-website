@@ -41,7 +41,7 @@ export type ProductCategory = { slug: string; label: string; blurb: string };
 export const CATEGORIES_BY_BRAND: Record<string, ProductCategory[]> = {
   crestron: [
     { slug: 'keypads', label: 'Keypads & Interfaces', blurb: 'Horizon and Cameo keypads and faceplates — where the home meets the hand.' },
-    { slug: 'touchscreens', label: 'Touch Screens & Scheduling', blurb: 'From five-inch wall screens to room-scheduling panels, finished edge to edge in glass.' },
+    { slug: 'touchscreens', label: 'Touch Screens & Scheduling', blurb: 'From five-inch wall screens to room-scheduling panels.' },
     { slug: 'sensors', label: 'Sensors & Climate', blurb: 'Occupancy, daylight and thermostat control that lets the building respond on its own.' },
     { slug: 'control', label: 'Control Processors', blurb: 'The 4-Series engine at the core of every system — rack-mount, DIN-rail and Crestron Home OS.' },
     { slug: 'audio', label: 'Audio Processing', blurb: 'Crestron Avia digital signal processors for whole-home and commercial sound.' },
@@ -310,7 +310,14 @@ export const PRODUCTS: Product[] = [
       'Four dimming channels off a single supply feed, in a module that clips onto the DIN rail. One part number covers both 120 V and 220–277 V installations. Each channel carries up to 5 A, 10 A across the module, across electronic and magnetic low-voltage, incandescent, neon and cold-cathode, two-wire dimmable fluorescent and non-dimmable loads.',
     category: 'lighting',
     hero: cr('din-1dim4.png'),
-    finishes: [{ id: 'light-gray', name: 'Light Gray', swatch: crGray, productImage: cr('din-1dim4.png') }],
+    // CORRECTED 2026-08-01 (rule 1). Shipped `name: 'Light Gray'`, which Crestron
+    // does NOT publish for this product: `[P-DIN-1DIM4] › Enclosure` reads
+    // "Aluminum with polycarbonate label overlay", and "light gray" appears zero
+    // times on the page. The four other DIN modules DO publish "Light gray
+    // polycarbonate", which is where the value was copied from — the same
+    // copy-a-sibling's-fact failure that produced the Black Nova finish and the
+    // Savant claim. `swatch` is a design token and carries no manufacturer claim.
+    finishes: [{ id: 'aluminum', name: 'Aluminum', swatch: crGray, productImage: cr('din-1dim4.png') }],
     specs: [
       { label: 'Dimming', rows: [
         { name: 'Channels', value: '4 · 1 feed' },
@@ -343,7 +350,10 @@ export const PRODUCTS: Product[] = [
       'The DIN-1DIMU4 handles forward-phase and reverse-phase loads on the same four-channel module, so a mixed retrofit does not need two different dimmer types. Each channel detects the load type connected to it and picks its own operating mode. Ratings are 5 A per channel and 10 A total, at either 120 V or 220–240 V.',
     category: 'lighting',
     hero: cr('din-1dimu4.png'),
-    finishes: [{ id: 'light-gray', name: 'Light Gray', swatch: crGray, productImage: cr('din-1dimu4.png') }],
+    // CORRECTED 2026-08-01 (rule 1) — same defect and same evidence as din-1dim4
+    // above: `[P-DIN-1DIMU4] › Enclosure` reads "Aluminum with polycarbonate
+    // label overlay", zero occurrences of "light gray" on the page.
+    finishes: [{ id: 'aluminum', name: 'Aluminum', swatch: crGray, productImage: cr('din-1dimu4.png') }],
     specs: [
       { label: 'Dimming', rows: [
         { name: 'Channels', value: '4 universal · 1 feed' },
@@ -472,7 +482,13 @@ export const PRODUCTS: Product[] = [
     collection: 'KNX Secure IP Gateway · DIN Rail',
     tagline: 'The 4-Series system, fluent in KNX.',
     description:
-      'Plenty of Gulf and Pakistani projects are already wired in KNX. The DIN-KXI lets a 4-Series Crestron system address up to 1,000 KNX datapoints over IP, so that existing bus becomes part of the same user interface instead of a second system. It draws its power from the KNX bus, supports AES-128 KNX Security, and doubles as the programming interface for KNX devices in ETS5 or ETS6.',
+      // Opening sentence removed 2026-08-01: it read "Plenty of Gulf and Pakistani
+      // projects are already wired in KNX." That is a two-region market-penetration
+      // claim with no source of any kind, sitting inside a product description
+      // where it reads as established fact. Rule 2 — unverified figures do not
+      // ship, and "plenty" is a figure wearing a hedge. Everything below is
+      // sourced to `[P-DIN-KXI]`.
+      'The DIN-KXI lets a 4-Series Crestron system address up to 1,000 KNX datapoints over IP, so an existing KNX bus becomes part of the same user interface instead of a second system. It draws its power from the KNX bus, supports AES-128 KNX Security, and doubles as the programming interface for KNX devices in ETS5 or ETS6.',
     category: 'lighting',
     hero: cr('din-kxi.png'),
     finishes: [{ id: 'light-gray', name: 'Light Gray', swatch: crGray, productImage: cr('din-kxi.png') }],
@@ -572,7 +588,7 @@ export const PRODUCTS: Product[] = [
     collection: '60 W Cresnet® Power Supply · DIN Rail',
     tagline: 'Clean, front-wired power for the Cresnet bus.',
     description:
-      'Sixty watts of Cresnet power in a DIN-rail module, for feeding processors, keypads and sensors on the bus. Six Cresnet ports fan the supply out, and Cresnet data passes through the unit unaffected. Every terminal is a screw terminal reachable from the front of the board, so an electrician can wire and service it without pulling the module.',
+      'Sixty watts of Cresnet power in a DIN-rail module, for feeding processors, keypads and sensors on the bus. Six Cresnet ports fan the supply out, and the unit feeds power onto the Cresnet run without sitting in the data path. Every terminal is a screw terminal reachable from the front of the board, so an electrician can wire and service it without pulling the module.',
     category: 'network',
     hero: cr('din-pws60.png'),
     finishes: [{ id: 'light-gray', name: 'Light Gray', swatch: crGray, productImage: cr('din-pws60.png') }],
@@ -640,7 +656,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Crestron Avia™ 12×8 DSP with Dante®',
     tagline: 'Avia processing, networked over Dante.',
     description:
-      'The DSP-1281 is the DSP-1280 with Dante on board: the same twelve mic/line inputs and eight balanced outputs, plus 32 channels in and 32 out over the audio network at up to 24-bit 48 kHz. That is how you add inputs without adding a second rack — link units over Dante and the channel count grows. AES67 is supported for interoperating with non-Dante equipment.',
+      'The DSP-1281 is the DSP-1280 with Dante on board: the same twelve mic/line inputs and eight balanced outputs, plus 32 channels in and 32 out over the audio network at up to 24-bit 48 kHz. That is how you add inputs without adding a second rack — link units over Dante and the channel count grows. An AES67 compatibility mode covers interoperating with non-Dante equipment; Crestron notes it may need a Dante firmware upgrade.',
     category: 'audio',
     hero: cr('dsp-1281.png'),
     finishes: [{ id: 'black', name: 'Black', swatch: crBlack, productImage: cr('dsp-1281.png') }],
@@ -708,14 +724,14 @@ export const PRODUCTS: Product[] = [
     collection: 'Occupancy & Daylight Sensor · Cresnet®',
     tagline: 'Presence and daylight, from one ceiling point.',
     description:
-      'One ceiling sensor doing two jobs: passive-infrared presence detection over an area up to 450 sq ft, and a closed-loop photocell reading how much daylight is already in the room. If daylight is above the threshold you set, the photocell overrides the occupancy signal and the lights stay off. It can also be set to vacancy-only, so lights switch off automatically but never on. It reports to the Crestron system over Cresnet and is set up in Crestron Toolbox or with the optional IR remote.',
+      'One ceiling sensor doing two jobs: passive-infrared presence detection over an area up to 450 sq ft, and a closed-loop photocell reading how much daylight is already in the room. Crestron publishes the behaviour as an outcome: lighting dims to a lower level when there is enough natural daylight from windows and skylights. It can also run in vacancy-only mode, where the lights switch off once the room empties and are switched on by hand — with a published 15-second grace period after they go off, during which movement in the room brings them straight back. It reports to the Crestron system over Cresnet and is set up in Crestron Toolbox or with the optional IR remote.',
     category: 'sensors',
     hero: cr('gls-oirlcl.png'),
     finishes: [{ id: 'white', name: 'White', swatch: crWhite, productImage: cr('gls-oirlcl.png') }],
     specs: [
       { label: 'Detection', rows: [
         { name: 'Technology', value: 'Passive infrared, 64 zones' },
-        { name: 'Coverage', value: '450 sq ft · 360° hemispherical' },
+        { name: 'Coverage', value: '450 sq ft · rectangular 18.57 × 24.34 ft' },
         { name: 'Ceiling height', value: 'Up to 16.4 ft' },
       ] },
       { label: 'Daylight', rows: [
@@ -741,7 +757,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Horizon® Wireless Thermostat',
     tagline: 'Climate control, finished to match the room.',
     description:
-      'A wall thermostat with a humidistat in the same housing, which is the combination that matters in Gulf humidity. It drives two-stage heating and cooling, two-stage heat pumps with two auxiliary heat stages, 2-pipe and 4-pipe fan-coil systems, floor warming and humidity control. The 3.5-inch LCD touch screen is used to commission it against the HVAC plant and then to read temperature and humidity. Proximity and ambient-light sensors adjust the display to the room, and it joins the Crestron system over Wi-Fi.',
+      'A wall thermostat with a humidistat in the same housing, which is temperature and humidity together. It drives two-stage heating and cooling, two-stage heat pumps with two auxiliary heat stages, 2-pipe and 4-pipe fan-coil systems, floor warming and humidity control. The 3.5-inch LCD touch screen is used to commission it against the HVAC plant and then to read temperature and humidity. Proximity and ambient-light sensors adjust the display to the room, and it joins the Crestron system over Wi-Fi.',
     category: 'sensors',
     hero: cr('hz-thstat.png'),
     finishes: [
@@ -823,7 +839,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Horizon® 2 Faceplate · 1-Gang',
     tagline: 'The finishing frame for every Horizon device.',
     description:
-      'The faceplate is not an accessory here — a Horizon 2 keypad, dimmer or switch is not finished until one is fitted. This is the single-gang version, and the trim matches the plate rather than contrasting with it. Choose textured white, black or almond; glass in white or black; or metal in brushed black, brushed brass, dark bronze or dark nickel.',
+      'The faceplate is not an accessory here — a Horizon 2 keypad, dimmer or switch is not finished until one is fitted. This is the single-gang version. On glass plates the trim matches the glass; on metal plates the trim is white or black, so it is specified separately. Choose textured white, black or almond; glass in white or black; or metal in brushed black, brushed brass, dark bronze or dark nickel.',
     category: 'keypads',
     hero: cr('hz2-fp-glass-black.png'),
     finishes: [
@@ -841,7 +857,7 @@ export const PRODUCTS: Product[] = [
       { label: 'Design', rows: [
         { name: 'Gang', value: '1-gang' },
         { name: 'Materials', value: 'Textured, glass & metal' },
-        { name: 'Trim', value: 'Faceplate trim matches finish' },
+        { name: 'Trim', value: 'Glass: matches plate. Metal: white or black' },
       ] },
       { label: 'Fit', rows: [
         { name: 'Compatibility', value: 'All Horizon® 2 devices' },
@@ -866,7 +882,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Cameo® Keypad · International',
     tagline: 'A customisable keypad for the European wall box.',
     description:
-      'The Cameo international keypad fits a single-gang European or UK box, which is what is actually in the wall on most UAE and Pakistan projects. Buttons are configurable in several sizes with optional backlit engraving, and auto-brightness keeps the legends readable from daylight through to night. White LEDs report real system state, not just the last button pressed. It connects over wired Cresnet to a Crestron control system or Crestron Home, and two rear sensing inputs take contact-closure devices such as door switches and motion detectors.',
+      'The Cameo international keypad fits a single-gang European or UK box. Buttons are configurable in several sizes with optional backlit engraving, and auto-brightness keeps the legends readable from daylight through to night. White LEDs report real system state, not just the last button pressed. It connects over wired Cresnet to a Crestron control system or Crestron Home, and two rear sensing inputs take contact-closure devices such as door switches and motion detectors.',
     category: 'keypads',
     hero: cr('c2ni-cb-black.png'),
     finishes: [{ id: 'black', name: 'Textured Black', swatch: crBlack, productImage: cr('c2ni-cb-black.png') }],
@@ -921,13 +937,13 @@ export const PRODUCTS: Product[] = [
       ] },
       { label: 'Network & Power', rows: [
         { name: 'Ethernet', value: 'Gigabit with PoE+' },
-        { name: 'Wi-Fi', value: '802.11ax (Wi-Fi 6), 2.4 / 5 GHz' },
+        { name: 'Wi-Fi', value: 'Wi-Fi 6E (802.11ax), 2.4 / 5 / 6 GHz' },
         { name: 'Memory', value: '8 GB RAM · 40 GB storage' },
       ] },
     ],
     inUse: crInterior,
     metaDescription:
-      'Crestron TSW-1080 10.1" wall mount touch screen with PoE+, Wi-Fi 6 (802.11ax) and Rava SIP. Distributed and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron TSW-1080 10.1" wall mount touch screen with PoE+, Wi-Fi 6E (802.11ax) and Rava SIP. Distributed and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron TSW-1080', '10 inch touch screen', 'Crestron touch panel', 'TSW-1080 UAE', 'TSW-1080 Pakistan'],
   },
   {
@@ -935,7 +951,7 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'crestron',
     name: 'TSW-880',
     collection: '8.1" Wall Mount Touch Screen',
-    tagline: 'Eight inches of glass, edge to edge.',
+    tagline: 'Eight inches of glass in a die-cast housing.',
     description:
       'The 8.1-inch panel in the same family — 204 mm of capacitive display, custom-programmable control buttons, and support for an HTML5 interface built specifically for the project. PoE or Wi-Fi for the connection, and the same accessory range for new walls and retrofits. Sized for a bedroom wall or a meeting room where a ten-inch panel would dominate.',
     category: 'touchscreens',
@@ -957,13 +973,13 @@ export const PRODUCTS: Product[] = [
       ] },
       { label: 'Network & Power', rows: [
         { name: 'Ethernet', value: 'Gigabit with PoE+' },
-        { name: 'Wi-Fi', value: '802.11ax (Wi-Fi 6), 2.4 / 5 GHz' },
+        { name: 'Wi-Fi', value: 'Wi-Fi 6E (802.11ax), 2.4 / 5 / 6 GHz' },
         { name: 'Memory', value: '8 GB RAM · 40 GB storage' },
       ] },
     ],
     inUse: crInterior,
     metaDescription:
-      'Crestron TSW-880 8.1" wall mount touch screen with PoE+, Wi-Fi 6 (802.11ax) and Rava SIP. Supplied and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron TSW-880 8.1" wall mount touch screen with PoE+, Wi-Fi 6E (802.11ax) and Rava SIP. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron TSW-880', '8 inch touch screen', 'Crestron touch panel', 'TSW-880 UAE', 'TSW-880 Pakistan'],
   },
   {
@@ -971,7 +987,7 @@ export const PRODUCTS: Product[] = [
     brandSlug: 'crestron',
     name: 'TSW-770',
     collection: '7" Wall Mount Touch Screen',
-    tagline: 'Seven inches, set into the wall rather than onto it.',
+    tagline: 'Seven inches of edge-to-edge glass.',
     description:
       'Seven inches at 1280 × 800 on a 16:10 active-matrix LCD, which is the size most villa corridors and bedrooms end up wanting. It handles a Crestron HTML5 or Smart Graphics interface, web pages, H.265 and H.264 streams from a door camera, and Rava SIP intercom calls. Wi-Fi or PoE for connectivity. Crestron positions it as the alternative to fixing a consumer tablet to the wall, and the mounting range is the reason: it is designed to be part of the wall, not stuck on it.',
     category: 'touchscreens',
@@ -1056,7 +1072,7 @@ export const PRODUCTS: Product[] = [
       { label: 'Display', rows: [
         { name: 'Size', value: '8.1" diagonal' },
         { name: 'Resolution', value: '1280 × 800 WXGA' },
-        { name: 'Light bar', value: 'Integrated room-status LEDs' },
+        { name: 'Light bar', value: 'Integrated light bars, both sides' },
       ] },
       { label: 'Scheduling', rows: [
         { name: 'Services', value: 'Exchange, Google, 25Live, Ad Astra' },
@@ -2305,7 +2321,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Flagship Wireless Speaker · HEOS Built-in',
     tagline: 'The flagship wireless speaker, sculpted as an object of desire.',
     description:
-      'Grand Horizon is Marantz’s flagship wireless speaker — a sculptural sphere wrapped in seamless Radiance fabric. An 8" Gravity woofer, four wideband and three high-frequency drivers are powered by 370 watts of Marantz Rise GaN amplification, streamed through HEOS.',
+      'Grand Horizon is Marantz’s flagship wireless speaker — a sculptural sphere wrapped in Radiance fabric with no visible seam. An 8" Gravity woofer, four wideband and three high-frequency drivers are powered by 370 watts of Marantz Rise GaN amplification, streamed through HEOS.',
     metaDescription:
       'Marantz Grand Horizon flagship wireless speaker with 370W GaN amplification, HEOS, AirPlay 2 and HDMI eARC. Distributed in the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz Grand Horizon', 'Grand Horizon wireless speaker', 'Marantz Grand Horizon UAE', 'Marantz Grand Horizon Pakistan', 'luxury wireless speaker'],
@@ -3091,7 +3107,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Reserve Series · Center Channel',
     tagline: 'Compact center, uncompromised voice.',
     description:
-      'Reserve R300 delivers clear, natural dialogue from a compact chassis — a 1" Pinnacle ring radiator tweeter flanked by dual 5.25" Turbine Cone woofers, voiced to blend seamlessly with any Reserve loudspeaker pair.',
+      'Reserve R300 delivers clear, natural dialogue from a compact chassis — a 1" Pinnacle ring radiator tweeter flanked by dual 5.25" Turbine Cone woofers, voiced to blend with any Reserve loudspeaker pair.',
     metaDescription:
       'Polk Audio Reserve R300 center channel speaker — 1" Pinnacle tweeter, dual 5.25" Turbine Cone woofers. Supplied across the UAE and Pakistan by Leading IT.',
     keywords: ['Polk Reserve R300', 'Reserve R300 center speaker', 'Polk R300 UAE', 'Polk R300 Pakistan', 'compact center channel'],
@@ -3218,7 +3234,7 @@ export const PRODUCTS: Product[] = [
     collection: 'Signature Elite · Compact Tower',
     tagline: 'Slender towers with a surprising reach.',
     description:
-      'Signature Elite ES50 fits the Elite sound into a slender floor-standing profile — a 1" Terylene tweeter and dual 5.25" mid-woofers that elevate music, movies and gaming in medium rooms.',
+      'Signature Elite ES50 fits the Elite sound into a slender floor-standing profile — a 1" Terylene tweeter and dual 5.25" mid-woofers for music, movies and gaming in medium rooms.',
     metaDescription:
       'Polk Audio Signature Elite ES50 compact tower speaker — 1" tweeter, dual 5.25" drivers, Hi-Res certified. Supplied across the UAE and Pakistan by Leading IT.',
     keywords: ['Polk Signature Elite ES50', 'ES50 tower speaker', 'Polk ES50 UAE', 'Polk ES50 Pakistan', 'compact floor-standing speaker'],

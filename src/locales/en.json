@@ -1,6 +1,7 @@
 {
   "nav": {
     "brands": "Brands",
+    "solutions": "Solutions",
     "litHome": "LIT Home",
     "about": "About",
     "contact": "Contact",
@@ -15,7 +16,8 @@
     "allBrandProducts": "All {{brand}} products",
     "allBrandProductsHint": "Brand overview and full product range",
     "browseAllBrands": "Every brand we distribute",
-    "browseAllBrandsHint": "Architectural interfaces, cinema and AV"
+    "browseAllBrandsHint": "Architectural interfaces, cinema and AV",
+    "solutionsUsingBrand": "Systems Leading IT builds with {{brand}}"
   },
   "home": {
     "eyebrow": "Premium Automation · Gulf & Pakistan",
@@ -25,14 +27,15 @@
     "secondaryCta": "Experience LIT Home",
     "brandWallEyebrow": "The portfolio",
     "brandWallTitle": "Brands we represent",
-    "brandWallSub": "Our partners don't simply make devices; they craft every experience, leading their sectors and backing it with industry leading service and warranties. As a value added distributor, we stock and support what we deliver, so you can meet the most demanding requirements and exceed them.",
+    "brandWallSub": "These are the manufacturers whose hardware Leading IT specifies, supplies and installs from Dubai, for the UAE and Pakistan. Each one is carried for what its equipment does in a real room, not to widen a catalogue.",
     "litTeaserEyebrow": "Bespoke Control · LIT Home",
     "litTeaserTitle": "Bespoke control.",
-    "litTeaserBody": "A harmonious integration of hardware and software, creating intuitive, seamless, human centric experiences. It removes unnecessary complexity, leaving control that is powerful and entirely your own.",
+    "litTeaserBody": "Hardware and software designed together, so the interface behaves the way the room does. It removes unnecessary complexity, leaving control that is powerful and entirely your own.",
     "litTeaserCta": "Open the demo",
-    "featuredEyebrow": "Currently featured",
     "lifestyleQuote": "Luxury is not what you add. It is what you remove until only intention remains.",
-    "lifestyleAttribution": "— from the Leading IT design brief"
+    "lifestyleAttribution": "— from the Leading IT design brief",
+    "ctaTitle": "Describe the residence or development, and the reply comes from the engineers who would build it.",
+    "footCtaTitle": "One message with the room, the city and what it has to do is enough to start."
   },
   "brands": {
     "indexEyebrow": "The portfolio",
@@ -42,7 +45,63 @@
     "categoryCinema": "Cinema & AV",
     "explore": "Explore",
     "viewProducts": "View product range",
-    "inquireBrand": "Inquire about {{brand}}"
+    "inquireBrand": "Inquire about {{brand}}",
+    "hubCtaTitle": "Tell us what the room has to do, and Leading IT will specify the {{brand}} hardware for it.",
+    "hubFootCtaTitle": "Not sure which {{brand}} model belongs in the room? Ask, and the reply names one.",
+    "indexCtaTitle": "Not sure which brand fits the project? Describe the room and Leading IT will name one.",
+    "indexFootCtaTitle": "Every brand here is specified and supplied from Dubai — tell us what the project needs."
+  },
+  "solutions": {
+    "indexEyebrow": "Design and installation",
+    "pageEyebrow": "Solutions",
+    "publishedTitle": "Category pages published so far",
+    "faqTitle": "Common questions",
+    "componentsTitle": "What the system is made of",
+    "relatedBrands": "Brands used in this system",
+    "relatedProducts": "Equipment from the catalogue",
+    "crossAxisTitle": "Where to go next",
+    "backToIndex": "Every category Leading IT designs and installs",
+    "backToIndexHint": "The solutions index",
+    "ctaEyebrow": "Begin a project",
+    "ctaWhatsApp": "Message Leading IT on WhatsApp",
+    "ctaEnquiry": "Send an enquiry",
+    "ctaEmailPrefix": "Or write to",
+    "indexCtaTitle": "Describe the project, and Leading IT will point you at the right starting place.",
+    "pageCtaTitle": "Describe the room and the programme, and the reply can be specific.",
+    "faqCtaTitle": "Still deciding? Send the drawings or the room dimensions for a specific answer.",
+    "ctaEmailSubject": "Website enquiry"
+  },
+  "trade": {
+    "eyebrow": "Trade and integrator supply",
+    "crumb": "Trade",
+    "footerLink": "Trade supply for integrators",
+    "brandsTitle": "Every brand Leading IT supplies to the trade",
+    "partNumberCtaTitle": "Send the part numbers and quantities, and the reply comes back with a quotation.",
+    "sendListCtaTitle": "Paste the whole schedule in one message — part numbers, quantities, delivery emirate.",
+    "accountCtaTitle": "Opening a trade account starts with the company name and a first part-number list.",
+    "brandHubLink": "Trade supply and part-number enquiries",
+    "brandHubTitle": "Buying {{brand}} for a trade project"
+  },
+  "pakistan": {
+    "eyebrow": "Supply coverage · Pakistan",
+    "crumb": "Pakistan",
+    "brandHubTitle": "Buying {{brand}} for a project in Pakistan",
+    "brandHubLink": "{{brand}} supplied to Pakistan from Dubai",
+    "parentHubLink": "The full {{brand}} range",
+    "siblingsTitle": "The rest of the portfolio shipped from Dubai",
+    "serviceName": "{{brand}} supply and support for projects in Pakistan",
+    "serviceType": "Cross-border equipment supply, commissioning and warranty handling",
+    "heroCtaTitle": "Send the {{brand}} models and the project, and the reply covers supply into Pakistan.",
+    "warrantyCtaTitle": "Ask about warranty handling before you order, not after.",
+    "faqCtaTitle": "Still deciding? Describe the project and the reply can be specific."
+  },
+  "locations": {
+    "eyebrow": "Dubai, United Arab Emirates",
+    "dubaiCrumb": "Dubai",
+    "footerLink": "Dubai showroom and enquiries",
+    "visitCtaTitle": "Ask about a showroom visit, and the reply comes with the address and directions.",
+    "projectCtaTitle": "Describe the residence and the area, and the reply can be specific.",
+    "faqCtaTitle": "Still unsure whether to visit? Send the floor plan and start the conversation there."
   },
   "product": {
     "navOverview": "Overview",
@@ -55,7 +114,9 @@
     "inUseTitle": "In residence",
     "relatedTitle": "From the same collection",
     "ctaInquire": "Inquire about this product",
-    "ctaPrint": "Download specification sheet"
+    "ctaPrint": "Download specification sheet",
+    "ctaQuoteTitle": "Send the quantity you need for the {{name}} and the reply comes back with a quotation.",
+    "ctaSpecTitle": "Specifying the {{name}} into a project? Describe the room and an engineer will answer."
   },
   "designer": {
     "entryEyebrow": "Keypad Designer",
@@ -94,12 +155,13 @@
     "copyLink": "Copy design link",
     "linkCopied": "Link copied",
     "specHeading": "Black Nova keypad design — via Leading IT",
-    "designLink": "Design link"
+    "designLink": "Design link",
+    "ctaTitle": "Send the finished design and Leading IT will come back with a quotation."
   },
   "litHome": {
     "eyebrow": "LIT Home",
     "title": "Bespoke control.",
-    "subtitle": "A harmonious integration of hardware and software, creating intuitive, seamless, human centric experiences. It removes unnecessary complexity, leaving control that is powerful and entirely your own. One interface unifies the entire residence, so the whole becomes greater than the sum of its parts.",
+    "subtitle": "Hardware and software designed together, so the interface behaves the way the room does. It removes unnecessary complexity, leaving control that is powerful and entirely your own. One interface unifies the entire residence, so the whole becomes greater than the sum of its parts.",
     "demoEyebrow": "Try the interface",
     "demoTitle": "A live preview of LIT Home.",
     "demoSub": "Switch between the residence overview and a suite. Open any tile to drive lights, climate and sources, exactly as it does on a wall panel or tablet in a finished installation.",
@@ -130,6 +192,8 @@
     "roomBalcony": "Balcony",
     "tileQuickActions": "Quick Actions",
     "tileLights": "Lights",
+    "lightsOn": "Lights on",
+    "lightsOff": "Lights off",
     "tileClimate": "Climate",
     "tileCurtains": "Curtains",
     "tileAudio": "Audio",
@@ -179,18 +243,14 @@
     "video": "Video",
     "volume": "Volume",
     "featuresTitle": "What LIT Home does",
-    "compatTitle": "Compatible with the systems you trust"
+    "compatTitle": "Compatible with the systems you trust",
+    "ctaTitle": "Tell us about the villa and LIT Home can be shaped around it.",
+    "footCtaTitle": "Ask what LIT Home would look like driving the systems you already own."
   },
   "about": {
     "eyebrow": "About",
     "title": "Engineers, not a sales team.",
     "lead": "If you are looking for a sales team, we will likely disappoint you. We are a team of engineers who genuinely know our solutions. We have one unifying purpose: to help our clients select, procure and integrate quality solutions that exceed their clients' expectations. We are not just moving boxes; we provide value through the entire system life cycle.",
-    "stat1Value": "01",
-    "stat1Label": "Dubai showroom",
-    "stat2Value": "09",
-    "stat2Label": "Premium brands represented",
-    "stat3Value": "02",
-    "stat3Label": "Regions served: Gulf and Pakistan",
     "teamEyebrow": "You may already know our team",
     "teamTitle": "The people behind Leading IT.",
     "roleManagingDirector": "Managing Director",
@@ -198,7 +258,9 @@
     "roleTerritoryDirector": "Territory Director",
     "ctaTitle": "Have a project in mind?",
     "ctaBody": "Tell us about the residence, development or installation you are planning. Our engineers will respond personally.",
-    "ctaButton": "Begin a project"
+    "ctaButton": "Begin a project",
+    "heroCtaTitle": "Tell us what you are planning, and an engineer will answer.",
+    "ctaAsk": "Send the residence, the city and what you want it to do."
   },
   "contact": {
     "eyebrow": "Contact",
@@ -209,8 +271,22 @@
     "formCompany": "Company",
     "formMessage": "How can we help?",
     "formSubmit": "Send enquiry",
+    "formSubmitting": "Sending…",
     "formSuccessTitle": "One more step.",
     "formSuccessBody": "Your enquiry has opened as a draft in your mail app — press send and it will reach our engineers. If no draft opened, write to us at services@leadingit.me or message us on WhatsApp.",
+    "formSentTitle": "Thank you.",
+    "formSentBody": "Your enquiry has reached our engineers. Someone will reply to you directly.",
+    "noScriptBody": "This form needs JavaScript to guard against spam. With it switched off, email or WhatsApp reach the same team just as quickly:",
+    "formSentReference": "Reference {{reference}}",
+    "formErrorTitle": "That did not send.",
+    "formErrorBody": "Something went wrong at our end and your enquiry did not reach us. Please email services@leadingit.me or message us on WhatsApp — both reach the same team.",
+    "formRateLimitedBody": "That is a few enquiries in a short time. Please wait a moment and try again, or message us on WhatsApp.",
+    "formStaleBody": "This form has been open a while. Please reload the page and send it again.",
+    "formCaptchaBody": "The verification did not complete. Please reload the page and try again.",
+    "formInvalidBody": "Some details need correcting before this can send.",
+    "formStatusLabel": "Form status",
+    "formRetry": "Try again",
+    "whatsappCta": "Message us on WhatsApp",
     "detailsEyebrow": "Direct",
     "officeGulfLabel": "Showroom",
     "officeGulfCity": "Dubai, United Arab Emirates",
@@ -220,6 +296,7 @@
   "footer": {
     "tagline": "Leading IT — premium distribution of harmonious solutions in space automation, audio visual and cinema across the Gulf and Pakistan.",
     "rights": "© {{year}} Leading IT. All rights reserved.",
+    "companyLabel": "Leading IT",
     "languageLabel": "Language",
     "comingSoon": "coming soon"
   },
@@ -231,7 +308,8 @@
     "homeCta": "Return home",
     "brandsCta": "Browse brands",
     "contactPrompt": "Looking for something specific?",
-    "contactLink": "Talk to our team."
+    "contactLink": "Talk to our team.",
+    "ctaTitle": "Tell us what you were looking for and someone will point you at it."
   },
   "common": {
     "back": "Back",

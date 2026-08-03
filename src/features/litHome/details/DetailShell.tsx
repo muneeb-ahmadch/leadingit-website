@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
+import { useDialogA11y } from '@/lib/useDialogA11y';
 
 type Props = {
   eyebrow: string;
@@ -12,11 +13,28 @@ type Props = {
   children: ReactNode;
 };
 
-/** Shared chrome for the four detail overlays — header bar + close, body slot. */
+/**
+ * Shared chrome for the four detail overlays — header bar + close, body slot.
+ *
+ * Carries real dialog semantics (WCAG 2.2 AA): `role="dialog"`/`aria-modal`,
+ * focus moved in on open and returned to the triggering tile on close,
+ * `Escape` to close, and a Tab trap — previously this was a plain `<div>`
+ * with none of that, so a keyboard user could tab straight through it into
+ * the page behind and closing it left focus wherever it happened to be.
+ * See `src/lib/useDialogA11y.ts`.
+ */
 export function DetailShell({ eyebrow, roomName, onClose, topRight, children }: Props) {
+  const { ref, onKeyDown } = useDialogA11y<HTMLDivElement>(onClose);
+
   return (
     <motion.div
       key={eyebrow}
+      ref={ref}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${eyebrow} — ${roomName}`}
+      tabIndex={-1}
+      onKeyDown={onKeyDown}
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 12 }}
@@ -35,7 +53,7 @@ export function DetailShell({ eyebrow, roomName, onClose, topRight, children }: 
             className="text-bone-500 hover:text-gold transition-colors"
             aria-label="Close"
           >
-            <X size={18} strokeWidth={1.5} />
+            <X size={18} strokeWidth={1.5} aria-hidden="true" />
           </button>
         </div>
       </div>

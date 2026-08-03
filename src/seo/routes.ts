@@ -29,26 +29,45 @@
  * ## Scope
  *
  * This manifest describes routes that emit HTML **today**. `docs/05-URL-TAXONOMY.md`
- * locks several paths that are not built yet (`/solutions/*`, `/locations/dubai/`,
- * `/trade/`, `/journal/*`, `/brands/<brand>/pakistan/`, and the disabled
- * `/projects/*`). They are deliberately absent: a sitemap entry for a URL that
- * 404s is worse than no entry. Adding them later is purely additive.
+ * locks several paths that are not built yet (`/journal/*`, the sixth solution
+ * slug `industrial-automation`, and the disabled `/projects/*`). They are
+ * deliberately absent: a sitemap entry for a URL that 404s is worse than no
+ * entry. Adding them later is purely additive.
+ *
+ * `/brands/crestron/pakistan/` and `/brands/marantz/pakistan/` joined in Phase 4
+ * once `docs/OPEN-QUESTIONS.md` #24 supplied the operational facts §6's content
+ * gate requires. **Those two are the whole launch set** — see the cap comment on
+ * `BRAND_PAKISTAN_PAGES` in `src/data/brandPakistan.ts`; adding the other seven
+ * from the same template is the doorway pattern §6 exists to refuse.
+ *
+ * `/solutions/` and `/solutions/home-cinema/` joined in Phase 4. Five of the six
+ * locked solution slugs are still unwritten and stay out until their page exists;
+ * `shading` is not one of them — `/solutions/shading/` was retired 2026-07-31 and
+ * 301s to `/solutions/` from `public/.htaccess`, so it must never re-enter this
+ * manifest (`docs/05` §14).
  */
 import type { Brand } from '@/data/brands';
+import type { BrandPakistanPage } from '@/data/brandPakistan';
 import type { Product } from '@/data/products';
+import type { Solution } from '@/data/solutions';
 import {
   DESCRIPTION_MAX_LENGTH,
   DESCRIPTION_MIN_LENGTH,
   TITLE_MAX_LENGTH,
   aboutMeta,
   brandMeta,
+  brandPakistanMeta,
   brandsIndexMeta,
   contactMeta,
   homeMeta,
   keypadDesignerMeta,
   litHomeMeta,
+  locationDubaiMeta,
   notFoundMeta,
   productMeta,
+  solutionMeta,
+  solutionsIndexMeta,
+  tradeMeta,
   type PageMeta,
 } from './meta';
 import { KEYPAD_DESIGNER_PATH } from './paths';
@@ -64,8 +83,13 @@ export type RouteKind =
   | 'home'
   | 'brands-index'
   | 'brand'
+  | 'brand-pakistan'
   | 'product'
   | 'range'
+  | 'solutions-index'
+  | 'solution'
+  | 'location'
+  | 'trade'
   | 'tool'
   | 'lit-home'
   | 'about'
@@ -119,6 +143,7 @@ const PATH_PATTERN = /^\/[a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-9]+)*){
 export const STATIC_ROUTES: readonly RouteEntry[] = [
   { path: '/', kind: 'home', indexable: true, meta: homeMeta() },
   { path: '/brands', kind: 'brands-index', indexable: true, meta: brandsIndexMeta() },
+  { path: '/solutions', kind: 'solutions-index', indexable: true, meta: solutionsIndexMeta() },
   {
     path: KEYPAD_DESIGNER_PATH,
     kind: 'tool',
@@ -126,6 +151,15 @@ export const STATIC_ROUTES: readonly RouteEntry[] = [
     meta: keypadDesignerMeta(),
     brandSlug: 'black-nova',
   },
+  // The one location page (`docs/05-URL-TAXONOMY.md` §5). `/locations/` itself
+  // is not a route: there is no index while there is one premises, and
+  // `public/.htaccess` 301s it here so a truncated URL never 404s. No other
+  // `/locations/<city>/` may ever be added — see §5a.
+  { path: '/locations/dubai', kind: 'location', indexable: true, meta: locationDubaiMeta() },
+  // One page for T1, T2 and T3 (`docs/04-KEYWORD-MAP.md` §5). It is also the
+  // single target of nine brand-hub links (`docs/05-URL-TAXONOMY.md` §12), which
+  // is a structural reason not to split it into three thin pages later.
+  { path: '/trade', kind: 'trade', indexable: true, meta: tradeMeta() },
   { path: '/lit-home', kind: 'lit-home', indexable: true, meta: litHomeMeta() },
   { path: '/about', kind: 'about', indexable: true, meta: aboutMeta() },
   { path: '/contact', kind: 'contact', indexable: true, meta: contactMeta() },
@@ -147,6 +181,27 @@ async function loadProducts(): Promise<Product[]> {
   return PRODUCTS;
 }
 
+async function loadSolutions(): Promise<Solution[]> {
+  const { SOLUTIONS } = await import('@/data/solutions');
+  return SOLUTIONS;
+}
+
+async function loadBrandPakistanPages(): Promise<BrandPakistanPage[]> {
+  const { BRAND_PAKISTAN_PAGES } = await import('@/data/brandPakistan');
+  return BRAND_PAKISTAN_PAGES;
+}
+
+/**
+ * Retired route, permanently. `/solutions/shading/` was dropped on 2026-07-31
+ * (`docs/OPEN-QUESTIONS.md` #22) because no shading product exists in the
+ * catalogue, and `public/.htaccess` 301s it to `/solutions/`. Re-adding the
+ * record would publish a URL that Apache redirects away from — a self-inflicted
+ * redirect loop in the sitemap — so it fails the build here instead of being
+ * caught in review. The retirement is reversible; reversing it means removing
+ * this guard deliberately, with the redirect, in one change (`docs/05` §14).
+ */
+const RETIRED_SOLUTION_SLUGS: readonly string[] = ['shading'];
+
 /** One entry per brand hub. */
 export async function brandRoutes(): Promise<RouteEntry[]> {
   const brands = await loadBrands();
@@ -159,6 +214,68 @@ export async function brandRoutes(): Promise<RouteEntry[]> {
       brandSlug: brand.slug,
     }),
   );
+}
+
+/**
+ * One entry per `/brands/<brand>/pakistan/` page — the non-local
+ * distribution-coverage template (`docs/05-URL-TAXONOMY.md` §6).
+ *
+ * Two records today, and §6 caps the launch set there. The parent brand must
+ * exist, because the page's breadcrumb, its title and its whole cross-link
+ * block are built from the brand hub: a PK page for a brand with no hub would
+ * be an orphan whose breadcrumb points at a 404.
+ *
+ * `'pakistan'` is in `RESERVED_BRAND_CHILD_SLUGS` above, so `productRoutes()`
+ * already refuses to author a product at any of these paths — the two route
+ * families can never write the same file.
+ */
+export async function brandPakistanRoutes(): Promise<RouteEntry[]> {
+  const [brands, pages] = await Promise.all([loadBrands(), loadBrandPakistanPages()]);
+  const brandSlugs = new Set(brands.map((brand) => brand.slug));
+
+  return pages.map((page): RouteEntry => {
+    if (!brandSlugs.has(page.brandSlug)) {
+      throw manifestError(
+        `brand-pakistan page references unknown brand "${page.brandSlug}" — every ` +
+          `/brands/<brand>/pakistan/ page needs a parent hub that returns 200, because its ` +
+          `breadcrumb and cross-links are built from it. Fix the brandSlug in ` +
+          `src/data/brandPakistan.ts, or add the brand to src/data/brands.ts.`,
+      );
+    }
+    return {
+      path: `/brands/${page.brandSlug}/pakistan`,
+      kind: 'brand-pakistan',
+      indexable: true,
+      meta: brandPakistanMeta(page),
+      brandSlug: page.brandSlug,
+    };
+  });
+}
+
+/**
+ * One entry per solution page. Six slugs are locked in `docs/05-URL-TAXONOMY.md`
+ * §2; only the records actually authored in `src/data/solutions.ts` get a route,
+ * because a route in this manifest is a promise that the URL returns 200 and
+ * enters the sitemap.
+ */
+export async function solutionRoutes(): Promise<RouteEntry[]> {
+  const solutions = await loadSolutions();
+  return solutions.map((solution): RouteEntry => {
+    if (RETIRED_SOLUTION_SLUGS.includes(solution.slug)) {
+      throw manifestError(
+        `solution "${solution.slug}" is a retired route (docs/05-URL-TAXONOMY.md §14) — ` +
+          `public/.htaccess 301s /solutions/${solution.slug}/ to /solutions/, so publishing it ` +
+          `here would put a redirected URL in the sitemap. Remove the record from ` +
+          `src/data/solutions.ts, or reverse the retirement and the redirect together.`,
+      );
+    }
+    return {
+      path: `/solutions/${solution.slug}`,
+      kind: 'solution',
+      indexable: true,
+      meta: solutionMeta(solution),
+    };
+  });
 }
 
 /**
@@ -316,7 +433,13 @@ export function assertManifest(entries: readonly RouteEntry[]): void {
 let manifest: Promise<RouteEntry[]> | null = null;
 
 async function buildManifest(): Promise<RouteEntry[]> {
-  const entries = [...STATIC_ROUTES, ...(await brandRoutes()), ...(await productRoutes())];
+  const entries = [
+    ...STATIC_ROUTES,
+    ...(await brandRoutes()),
+    ...(await productRoutes()),
+    ...(await brandPakistanRoutes()),
+    ...(await solutionRoutes()),
+  ];
   assertManifest(entries);
   return entries;
 }
@@ -335,9 +458,28 @@ export async function sitemapRoutes(): Promise<RouteEntry[]> {
   return (await allRoutes()).filter((route) => route.indexable);
 }
 
+/** Solution page paths for the router's `getStaticPaths`. */
+export async function solutionPaths(): Promise<string[]> {
+  return (await allRoutes()).filter((route) => route.kind === 'solution').map((route) => route.path);
+}
+
 /** Brand hub paths for the router's `getStaticPaths`. */
 export async function brandPaths(): Promise<string[]> {
   return (await allRoutes()).filter((route) => route.kind === 'brand').map((route) => route.path);
+}
+
+/**
+ * `/brands/<brand>/pakistan/` paths for the router's `getStaticPaths`.
+ *
+ * Its route pattern (`/brands/:slug/pakistan`) has a static last segment, which
+ * React Router ranks above `/brands/:slug/:productSlug`, so the two never
+ * compete for the same file — the same mechanism that keeps the keypad designer
+ * out of the product template.
+ */
+export async function brandPakistanPaths(): Promise<string[]> {
+  return (await allRoutes())
+    .filter((route) => route.kind === 'brand-pakistan')
+    .map((route) => route.path);
 }
 
 /**

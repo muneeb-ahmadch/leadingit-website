@@ -27,6 +27,7 @@ export type Crumb = { name: string; path: string };
 
 const HOME: Crumb = { name: 'Home', path: '/' };
 const BRANDS: Crumb = { name: 'Brands', path: '/brands' };
+const SOLUTIONS: Crumb = { name: 'Solutions', path: '/solutions' };
 const BLACK_NOVA: Crumb = { name: 'Black Nova', path: '/brands/black-nova' };
 
 /** Home → Brands → {brand.name}. */
@@ -52,6 +53,36 @@ export function productCrumbs(
     BRANDS,
     { name: brandName, path: `/brands/${brandSlug}` },
     { name: productName, path: `/brands/${brandSlug}/${productSlug}` },
+  ];
+}
+
+/**
+ * Home → Solutions → {solution.name}. The middle crumb is the real
+ * `/solutions/` index page, not a synthetic label — it returns 200 and carries
+ * the category-level intent (`docs/05-URL-TAXONOMY.md` §2a).
+ */
+export function solutionCrumbs(solutionName: string, solutionSlug: string): Crumb[] {
+  return [HOME, SOLUTIONS, { name: solutionName, path: `/solutions/${solutionSlug}` }];
+}
+
+/**
+ * Home → Brands → {brand.name} → Pakistan, for `/brands/<brand>/pakistan/`.
+ *
+ * The last crumb is the **country**, never a city — `docs/05-URL-TAXONOMY.md`
+ * §5a/§6 and gate 4 of the §6 content test. The name is passed in by the caller
+ * from `en.json`, and there is no parameter here a city could be threaded
+ * through: the trail is brand + one fixed label.
+ */
+export function brandPakistanCrumbs(
+  brandName: string,
+  brandSlug: string,
+  countryLabel: string,
+): Crumb[] {
+  return [
+    HOME,
+    BRANDS,
+    { name: brandName, path: `/brands/${brandSlug}` },
+    { name: countryLabel, path: `/brands/${brandSlug}/pakistan` },
   ];
 }
 

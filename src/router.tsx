@@ -31,6 +31,14 @@ const productStaticPaths: StaticPaths = import.meta.env.SSR
   ? async () => (await import('@/seo/routes')).productPaths()
   : undefined;
 
+const solutionStaticPaths: StaticPaths = import.meta.env.SSR
+  ? async () => (await import('@/seo/routes')).solutionPaths()
+  : undefined;
+
+const brandPakistanStaticPaths: StaticPaths = import.meta.env.SSR
+  ? async () => (await import('@/seo/routes')).brandPakistanPaths()
+  : undefined;
+
 /**
  * Route records consumed by `ViteReactSSG`: the same tree drives the build-time
  * prerender and the browser router after hydration.
@@ -78,10 +86,45 @@ export const routes: RouteRecord[] = [
           Component: (await import('@/pages/KeypadDesignerPage')).KeypadDesignerPage,
         }),
       },
+      // Static last segment, so React Router ranks it above
+      // `/brands/:slug/:productSlug` — the same mechanism that keeps the keypad
+      // designer out of the product template. `'pakistan'` is additionally in
+      // `RESERVED_BRAND_CHILD_SLUGS`, so no product can ever claim the path.
+      // Only the brands with a record in `src/data/brandPakistan.ts` are
+      // prerendered; the launch set is capped at two (`docs/05` §6).
+      {
+        path: '/brands/:slug/pakistan',
+        lazy: async () => ({ Component: (await import('@/pages/BrandPakistan')).BrandPakistan }),
+        getStaticPaths: brandPakistanStaticPaths,
+      },
       {
         path: '/brands/:slug/:productSlug',
         lazy: async () => ({ Component: (await import('@/pages/ProductPage')).ProductPage }),
         getStaticPaths: productStaticPaths,
+      },
+      {
+        path: '/solutions',
+        lazy: async () => ({ Component: (await import('@/pages/SolutionsIndex')).SolutionsIndex }),
+      },
+      {
+        path: '/solutions/:slug',
+        lazy: async () => ({ Component: (await import('@/pages/SolutionPage')).SolutionPage }),
+        getStaticPaths: solutionStaticPaths,
+      },
+      // Static segment, no `getStaticPaths`: `/locations/dubai` is a single
+      // route, not a city template, and it must never become one
+      // (`docs/05-URL-TAXONOMY.md` §5a — a city-swap location page is a doorway
+      // page). There is deliberately no `/locations` route: `public/.htaccess`
+      // 301s that URL here.
+      {
+        path: '/locations/dubai',
+        lazy: async () => ({
+          Component: (await import('@/pages/LocationDubai')).LocationDubai,
+        }),
+      },
+      {
+        path: '/trade',
+        lazy: async () => ({ Component: (await import('@/pages/Trade')).Trade }),
       },
       {
         path: '/lit-home',

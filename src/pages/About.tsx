@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { Reveal } from '@/components/primitives/Reveal';
 import { Eyebrow } from '@/components/primitives/Eyebrow';
-import { ButtonLink } from '@/components/primitives/Button';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { EnquiryCta } from '@/components/EnquiryCta';
+import { SITE_PREFILLS } from '@/lib/prefill';
 import { Seo } from '@/seo/Seo';
 import { aboutMeta } from '@/seo/meta';
 import { simplePageCrumbs } from '@/seo/breadcrumbs';
@@ -20,11 +21,6 @@ export function About() {
   const { t } = useTranslation();
   const meta = aboutMeta();
   const crumbs = simplePageCrumbs(t('nav.about'), meta.path);
-  const stats = [
-    { value: t('about.stat1Value'), label: t('about.stat1Label') },
-    { value: t('about.stat2Value'), label: t('about.stat2Label') },
-    { value: t('about.stat3Value'), label: t('about.stat3Label') },
-  ];
 
   return (
     <>
@@ -54,23 +50,44 @@ export function About() {
             {t('about.lead')}
           </p>
         </Reveal>
+        {/* First-viewport conversion path (`_CONVENTIONS.md` §7). */}
+        <Reveal delay={0.3}>
+          <EnquiryCta
+            title={t('about.heroCtaTitle')}
+            prefill={SITE_PREFILLS.about}
+            className="mt-14 max-w-3xl"
+          />
+        </Reveal>
       </section>
 
-      {/* stats */}
-      <section className="container-luxe pb-24">
-        <div className="grid sm:grid-cols-3 gap-px bg-white/5 border border-white/5">
-          {stats.map((s, i) => (
-            <Reveal key={s.label} delay={i * 0.08}>
-              <div className="bg-ink-900 p-10 h-full">
-                <div className="font-serif text-6xl text-gold">{s.value}</div>
-                <div className="mt-4 text-sm uppercase tracking-luxe text-bone-500 leading-relaxed">
-                  {s.label}
-                </div>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </section>
+      {/*
+       * stats — THREE-CARD GRID REMOVED 2026-08-01 (Phase 4).
+       *
+       * This was the genuine three-card cliché on this page, and it is the one
+       * `docs/02-DESIGN-SOURCE-OF-TRUTH.md` obliges removing. Three bordered
+       * tiles, each a big gold numeral over an uppercase label: "01 Dubai
+       * showroom", "09 Premium brands represented", "02 Regions served: Gulf
+       * and Pakistan".
+       *
+       * Two of the three were also weak on their own merits, which is why this
+       * is a deletion rather than a re-presentation:
+       *   - "02 Regions served: Gulf and Pakistan" is the exact framing QA
+       *     flagged in `docs/OPEN-QUESTIONS.md` #13 — a stat block beside the
+       *     Dubai showroom is where a reader looks for offices, and we have one
+       *     office. Removing it does NOT resolve #13; the footer's bare
+       *     "UAE · Pakistan" pair is still live and still Muneeb's call.
+       *   - "09 Premium brands represented" hard-codes a count that goes stale
+       *     the moment a brand is added or dropped, and it was a literal string,
+       *     not derived from `BRANDS.length`.
+       *
+       * The `about.stat*` keys are gone from `src/locales/en.json` too, and
+       * that is load-bearing rather than tidiness: `checkBrandCountMatchesManifest()`
+       * in `scripts/validate-seo.mjs` treats a declared brand-count stat as a
+       * promise that the page renders it, and asserts — when no stat is declared —
+       * that no bare "<number> brands" claim appears here at all. Leaving the
+       * keys behind would fail the build; re-adding a hand-typed total later
+       * will too, which is the point.
+       */}
 
       {/* team */}
       <section className="bg-ink-900 py-28">
@@ -80,23 +97,49 @@ export function About() {
             <h2 className="mt-4 font-serif text-hero max-w-2xl">{t('about.teamTitle')}</h2>
           </Reveal>
 
-          <div className="mt-16 grid md:grid-cols-3 gap-px bg-white/5 border border-white/5">
+          {/*
+           * THREE-CARD GRID REMOVED 2026-08-01 (Phase 4). This was About's
+           * second `md:grid-cols-3` card grid; `docs/02-DESIGN-SOURCE-OF-TRUTH.md`
+           * says "grids", plural, and this page had exactly two.
+           *
+           * The names and roles STAY. Muneeb confirmed consent from all three
+           * named individuals on 2026-08-01 (`docs/00-CONTEXT.md` §4), which is
+           * what closed the Phase 4 exit criterion holding this page back.
+           *
+           * What went with the grid is the **fake portrait**: an `aspect-[4/5]`
+           * tile rendering the person's first initial in 7xl gold under a
+           * comment reading "swap for a portrait in build phase". This IS the
+           * build phase, no portraits exist, and OQ #11 (showroom photography)
+           * is unresolved — so that placeholder would have shipped indefinitely
+           * while looking deliberate. A monogram standing in for a photograph of
+           * a real, named person is the kind of placeholder CLAUDE.md rule 3
+           * exists to keep out of committed code.
+           *
+           * Reinstate portraits as real images the day a shoot happens: add them
+           * through the image pipeline with `ResponsiveImage` + `altFor(src)`,
+           * never as a hand-written alt string.
+           */}
+          {/*
+           * `Reveal` renders a `motion.div` and takes `className`, so it IS the
+           * single wrapper div here. That matters: HTML allows exactly ONE level
+           * of `<div>` between `<dl>` and its `<dt>`/`<dd>` children. Wrapping a
+           * `<div>` inside `<Reveal>` would nest them two deep and produce
+           * invalid markup — so do not add a wrapper element back in.
+           */}
+          <dl className="mt-14 max-w-3xl">
             {TEAM.map((m, i) => (
-              <Reveal key={m.name} delay={i * 0.08}>
-                <div className="bg-ink-950 p-10 h-full">
-                  {/* monogram placeholder — swap for a portrait in build phase */}
-                  <div className="aspect-[4/5] bg-ink-800 flex items-center justify-center relative overflow-hidden">
-                    <div className="absolute inset-0 bg-warm-radial opacity-40" />
-                    <span className="relative font-serif text-7xl text-gold/80">{m.name[0]}</span>
-                  </div>
-                  <div className="mt-6 font-serif text-3xl">{m.name}</div>
-                  <div className="mt-2 text-sm uppercase tracking-luxe text-bone-500">
-                    {t(m.roleKey)}
-                  </div>
-                </div>
+              <Reveal
+                key={m.name}
+                delay={i * 0.08}
+                className={`pt-8 border-t border-white/5${i === 0 ? '' : ' mt-8'}`}
+              >
+                <dt className="font-serif text-3xl">{m.name}</dt>
+                <dd className="mt-2 text-sm uppercase tracking-luxe text-bone-500">
+                  {t(m.roleKey)}
+                </dd>
               </Reveal>
             ))}
-          </div>
+          </dl>
         </div>
       </section>
 
@@ -108,9 +151,16 @@ export function About() {
             <div className="relative max-w-2xl">
               <h2 className="font-serif text-hero">{t('about.ctaTitle')}</h2>
               <p className="mt-6 text-lg leading-relaxed text-bone-300">{t('about.ctaBody')}</p>
-              <div className="mt-10">
-                <ButtonLink to="/contact">{t('about.ctaButton')}</ButtonLink>
-              </div>
+              {/* Second placement (`_CONVENTIONS.md` §7), inside the panel this
+                  page already ends with. It replaces a lone `ButtonLink` to
+                  /contact — the form path only — with both paths. The panel's
+                  own h2 stays where it is; `EnquiryCta` adds no heading of its
+                  own, so the outline is unchanged. */}
+              <EnquiryCta
+                title={t('about.ctaAsk')}
+                prefill={SITE_PREFILLS.about}
+                className="mt-10"
+              />
             </div>
           </div>
         </Reveal>

@@ -27,6 +27,7 @@ export function LightsDetail({ room, roomName, dispatch, onClose }: Props) {
                   <button
                     key={i}
                     onClick={() => dispatch({ type: 'lights_apply_scene', sceneIndex: i })}
+                    aria-pressed={active}
                     className={`py-4 rounded-md border text-[11px] tracking-luxe uppercase transition-colors
                       ${active ? 'border-gold/50 bg-gold/10 text-gold' : 'border-white/[0.06] bg-ink-800/60 text-bone-300 hover:border-gold/30 hover:text-bone-100'}`}
                   >
@@ -43,15 +44,17 @@ export function LightsDetail({ room, roomName, dispatch, onClose }: Props) {
             <div className="mt-3 grid grid-cols-2 gap-2">
               <button
                 onClick={() => dispatch({ type: 'lights_step_all', delta: -1 })}
+                aria-label="Dim all lights"
                 className="py-4 rounded-md border border-white/[0.06] bg-ink-800/60 text-bone-300 hover:border-gold/30 hover:text-gold transition-colors flex items-center justify-center"
               >
-                <Minus size={16} strokeWidth={1.5} />
+                <Minus size={16} strokeWidth={1.5} aria-hidden="true" />
               </button>
               <button
                 onClick={() => dispatch({ type: 'lights_step_all', delta: 1 })}
+                aria-label="Brighten all lights"
                 className="py-4 rounded-md border border-white/[0.06] bg-ink-800/60 text-bone-300 hover:border-gold/30 hover:text-gold transition-colors flex items-center justify-center"
               >
-                <Plus size={16} strokeWidth={1.5} />
+                <Plus size={16} strokeWidth={1.5} aria-hidden="true" />
               </button>
               <button
                 onClick={() => dispatch({ type: 'lights_all_off' })}
@@ -75,7 +78,11 @@ export function LightsDetail({ room, roomName, dispatch, onClose }: Props) {
               {room.lights.sensors.map((s) => (
                 <div key={s.id} className="flex items-center justify-between px-4 py-3.5">
                   <span className="text-[13px] text-bone-100">{s.name}</span>
-                  <Toggle on={s.on} onClick={() => dispatch({ type: 'lights_sensor_toggle', sensorId: s.id })} />
+                  <Toggle
+                    on={s.on}
+                    label={s.name}
+                    onClick={() => dispatch({ type: 'lights_sensor_toggle', sensorId: s.id })}
+                  />
                 </div>
               ))}
             </div>
@@ -100,11 +107,16 @@ export function LightsDetail({ room, roomName, dispatch, onClose }: Props) {
                   <div className="flex items-center gap-2.5">
                     {l.color && (
                       <span
+                        aria-hidden="true"
                         className="inline-block w-4 h-4 rounded-full ring-1 ring-white/10"
                         style={{ background: l.color }}
                       />
                     )}
-                    <Toggle on={l.on} onClick={() => dispatch({ type: 'lights_toggle', lightId: l.id })} />
+                    <Toggle
+                      on={l.on}
+                      label={l.name}
+                      onClick={() => dispatch({ type: 'lights_toggle', lightId: l.id })}
+                    />
                   </div>
                 </div>
                 {l.on && (
@@ -133,21 +145,26 @@ function SectionHeader({ title, action }: { title: string; action?: boolean }) {
       <div className="text-[10px] tracking-luxe uppercase text-bone-500 font-medium">{title}</div>
       {action && (
         <button className="text-bone-500 hover:text-gold transition-colors" aria-label="Edit">
-          <Pencil size={12} strokeWidth={1.5} />
+          <Pencil size={12} strokeWidth={1.5} aria-hidden="true" />
         </button>
       )}
     </div>
   );
 }
 
-function Toggle({ on, onClick }: { on: boolean; onClick: () => void }) {
+function Toggle({ on, onClick, label }: { on: boolean; onClick: () => void; label: string }) {
   return (
     <button
       onClick={onClick}
+      // The button's only visible content is a sliding dot — no text of its
+      // own, so without this it had no accessible name at all beyond the
+      // on/off state `aria-pressed` exposes.
+      aria-label={label}
       className={`relative w-10 h-5 rounded-full transition-colors ${on ? 'bg-gold' : 'bg-ink-700'}`}
       aria-pressed={on}
     >
       <span
+        aria-hidden="true"
         className={`absolute top-0.5 w-4 h-4 rounded-full bg-bone-100 shadow transition-all
           ${on ? 'left-[1.375rem]' : 'left-0.5'}`}
       />

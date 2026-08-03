@@ -2,6 +2,8 @@ import { useTranslation } from 'react-i18next';
 import { Reveal } from '@/components/primitives/Reveal';
 import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { ButtonLink } from '@/components/primitives/Button';
+import { EnquiryCta } from '@/components/EnquiryCta';
+import { SITE_PREFILLS } from '@/lib/prefill';
 import { Seo } from '@/seo/Seo';
 import { href } from '@/seo/paths';
 import { notFoundMeta } from '@/seo/meta';
@@ -48,6 +50,25 @@ export function NotFound() {
               {t('notFound.contactLink')}
             </a>
           </p>
+        </Reveal>
+        {/*
+         * ONE placement on this route rather than the usual two. This page is
+         * three short paragraphs long: a second block would sit in the same
+         * viewport as the first with nothing between them, which is exactly the
+         * broken-template reading `_CONVENTIONS.md` §7 warns against.
+         *
+         * It follows the "talk to our team" line rather than replacing it —
+         * that line is the page's own copy — and its prefill leads with the
+         * failure ("I was looking for something on your site and couldn't find
+         * it") rather than a pitch, because the only useful thing an error page
+         * can do is hand the visitor a human.
+         */}
+        <Reveal delay={0.6}>
+          <EnquiryCta
+            title={t('notFound.ctaTitle')}
+            prefill={SITE_PREFILLS.notFound}
+            className="mt-12 max-w-3xl"
+          />
         </Reveal>
       </section>
     </>

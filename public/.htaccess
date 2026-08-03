@@ -86,6 +86,24 @@ RewriteRule ^brands/uandksound/s-series/?$ https://leadingit.me/brands/uandksoun
 RewriteRule ^solutions/shading/?$ https://leadingit.me/solutions/ [R=301,L,QSA]
 
 # ─────────────────────────────────────────────────────────────
+# Parent paths that are not pages → 301
+# ─────────────────────────────────────────────────────────────
+# Not a retirement — /locations/ never existed and never will. docs/05-URL-TAXONOMY.md §2a is
+# explicit: "No index page while there is one location. 301 → /locations/dubai/ so a truncated
+# URL never 404s." Someone hand-editing a URL, or a crawler walking up the path, must land on
+# the one location page rather than on ErrorDocument 404.
+#
+# Same placement reasoning as the retired routes above: below the scheme/host block so the URL
+# canonicalises first, and above DirectorySlash — /locations/ is not a directory in dist/
+# (only /locations/dubai/ is), so mod_dir cannot help and the `/?$` here handles both forms.
+#
+# This rule is what makes it safe for /locations/dubai/ to carry a two-crumb breadcrumb
+# (Home → Dubai): there is no /locations/ page for a middle crumb to point at, by design.
+# NEVER add a second /locations/<city>/ route — docs/05 §5a: a city-swap location page for a
+# city with no premises is a doorway page, and that includes every Pakistani city, permanently.
+RewriteRule ^locations/?$ https://leadingit.me/locations/dubai/ [R=301,L,QSA]
+
+# ─────────────────────────────────────────────────────────────
 # Trailing slash / directory index
 # ─────────────────────────────────────────────────────────────
 # Canonical URLs always carry a trailing slash (docs/05-URL-TAXONOMY.md). dirStyle "nested"
@@ -197,7 +215,20 @@ ErrorDocument 404 /404.html
   # build output, not user input, but this is a known CSP weakening. A stricter nonce- or
   # hash-based policy needs a build-time change (out of scope here; app code) — flagged for
   # frontend-engineer / Phase 2.
-  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'"
+  # Two third-party origins are allowed, and ONLY these two. Both were added in Phase 5
+  # because the code that needs them shipped inert behind an empty key, so nothing failed
+  # in testing and the omission was invisible until QA read the emitted header:
+  #   - challenges.cloudflare.com — Cloudflare Turnstile on /contact/. Needs script-src to
+  #     load the widget, frame-src because the widget renders in an iframe (there was no
+  #     frame-src directive at all, so it fell back to default-src 'self' and was blocked),
+  #     and connect-src for its own token exchange.
+  #   - googletagmanager.com + google-analytics.com — GA4. script-src loads gtag.js;
+  #     connect-src is where the measurement hits actually go.
+  # Without these the "paste one key and it works" contract in src/lib/turnstile.ts and
+  # src/lib/analytics.ts is false: pasting a Turnstile site key alone would have switched
+  # /contact/ from a working mailto form to one that can never submit, failing only in the
+  # browser console. Do not remove an origin here without removing the feature that needs it.
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.googletagmanager.com; font-src 'self'; connect-src 'self' https://challenges.cloudflare.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; frame-src https://challenges.cloudflare.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'"
   # ─────────────────────────────────────────────────────────────────────────────────
   Header unset X-Powered-By
 </IfModule>

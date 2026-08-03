@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Minus, Plus, Power, ChevronDown, Check, X } from 'lucide-react';
 import { DetailShell } from './DetailShell';
+import { useDialogA11y } from '@/lib/useDialogA11y';
 import type { FanMode, LitAction, RoomState } from '../state';
 
 type Props = {
@@ -99,11 +100,13 @@ export function ClimateDetail({ room, roomName, modal, dispatch, onClose }: Prop
           </div>
           <button
             onClick={() => dispatch({ type: 'open_modal', modal: 'fan' })}
+            aria-haspopup="dialog"
+            aria-expanded={modal === 'fan'}
             className="absolute top-5 right-5 text-end"
           >
             <div className="text-[10px] tracking-luxe uppercase text-bone-500 flex items-center justify-end gap-1">
               {t('litHome.fan')}
-              <ChevronDown size={11} strokeWidth={1.75} />
+              <ChevronDown size={11} strokeWidth={1.75} aria-hidden="true" />
             </div>
             <div className="text-bone-100 mt-1 text-[13px]">{t(`litHome.fan${fan}`)}</div>
           </button>
@@ -115,11 +118,22 @@ export function ClimateDetail({ room, roomName, modal, dispatch, onClose }: Prop
               className="w-12 h-12 rounded-full bg-ink-700/50 text-bone-300 hover:text-gold hover:bg-ink-700 transition-colors flex items-center justify-center"
               aria-label="Decrease setpoint"
             >
-              <Minus size={16} strokeWidth={1.5} />
+              <Minus size={16} strokeWidth={1.5} aria-hidden="true" />
             </button>
 
+            {/*
+             * The dial itself is a pointer/drag-only custom widget — no
+             * keyboard handling, no ARIA role. It is NOT the only way to set
+             * the temperature (the +/- buttons either side dispatch the same
+             * `climate_step` action), so keyboard operability of the
+             * function is intact without it. Marked `aria-hidden` so AT
+             * doesn't present an unoperable control as if it were one; the
+             * setpoint value it displays as SVG <text> is re-exposed via the
+             * sr-only live region below instead of being lost.
+             */}
             <svg
               ref={dialRef}
+              aria-hidden="true"
               viewBox={`0 0 ${SIZE} ${SIZE}`}
               width={SIZE}
               height={SIZE}
@@ -163,9 +177,13 @@ export function ClimateDetail({ room, roomName, modal, dispatch, onClose }: Prop
               className="w-12 h-12 rounded-full bg-ink-700/50 text-bone-300 hover:text-gold hover:bg-ink-700 transition-colors flex items-center justify-center"
               aria-label="Increase setpoint"
             >
-              <Plus size={16} strokeWidth={1.5} />
+              <Plus size={16} strokeWidth={1.5} aria-hidden="true" />
             </button>
           </div>
+
+          {/* The dial's SVG <text> is aria-hidden (see above); this is the
+              re-exposed, AT-announced setpoint value. */}
+          <p className="sr-only" aria-live="polite">{t('litHome.setpoint')}: {target}°</p>
 
           {/* power */}
           <div className="flex justify-center mt-2">
@@ -175,7 +193,7 @@ export function ClimateDetail({ room, roomName, modal, dispatch, onClose }: Prop
                 ${on ? 'text-gold' : 'text-bone-500 hover:text-bone-100'}`}
               aria-pressed={on}
             >
-              <Power size={22} strokeWidth={1.5} />
+              <Power size={22} strokeWidth={1.5} aria-hidden="true" />
               <span className="text-[10px] tracking-luxe uppercase">{on ? t('litHome.acOn') : t('litHome.acOff')}</span>
             </button>
           </div>
@@ -185,48 +203,85 @@ export function ClimateDetail({ room, roomName, modal, dispatch, onClose }: Prop
       {/* Fan modal */}
       <AnimatePresence>
         {modal === 'fan' && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="absolute inset-0 bg-ink-950/60 backdrop-blur-sm flex items-center justify-center"
-            onClick={() => dispatch({ type: 'close_modal' })}
-          >
-            <motion.div
-              initial={{ scale: 0.97, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.97, opacity: 0 }}
-              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              onClick={(e) => e.stopPropagation()}
-              className="rounded-lg bg-ink-900 border border-white/[0.08] w-64 overflow-hidden"
-            >
-              <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
-                <div className="text-[13px] text-bone-100">{t('litHome.fan')}</div>
-                <button onClick={() => dispatch({ type: 'close_modal' })} className="text-bone-500 hover:text-gold">
-                  <X size={14} strokeWidth={1.5} />
-                </button>
-              </div>
-              <div className="divide-y divide-white/[0.04]">
-                {(['Auto', 'High', 'Medium', 'Low', 'Off'] as FanMode[]).map((m) => (
-                  <button
-                    key={m}
-                    onClick={() => {
-                      dispatch({ type: 'climate_fan', fan: m });
-                      dispatch({ type: 'close_modal' });
-                    }}
-                    className={`w-full px-4 py-3 flex items-center justify-between text-[12px] uppercase tracking-luxe transition-colors
-                      ${fan === m ? 'text-gold bg-gold/5' : 'text-bone-300 hover:text-bone-100 hover:bg-white/[0.03]'}`}
-                  >
-                    {t(`litHome.fan${m}`)}
-                    {fan === m && <Check size={14} strokeWidth={1.75} />}
-                  </button>
-                ))}
-              </div>
-            </motion.div>
-          </motion.div>
+          <FanModal
+            fan={fan}
+            onPick={(m) => {
+              dispatch({ type: 'climate_fan', fan: m });
+              dispatch({ type: 'close_modal' });
+            }}
+            onClose={() => dispatch({ type: 'close_modal' })}
+          />
         )}
       </AnimatePresence>
     </DetailShell>
+  );
+}
+
+/**
+ * The "Fan" mode picker — a small nested dialog. Extracted to its own
+ * component so `useDialogA11y` (a hook — can't live inside the conditional
+ * `{modal === 'fan' && ...}` block of `ClimateDetail`) gets real dialog
+ * semantics: focus in on open, focus back to the "Fan" trigger on close,
+ * `Escape` closes only this popup (stops propagation before it reaches
+ * `DetailShell`'s own Escape handler, so it doesn't also close the whole
+ * Climate overlay), Tab trapped within.
+ */
+function FanModal({
+  fan,
+  onPick,
+  onClose,
+}: {
+  fan: FanMode;
+  onPick: (mode: FanMode) => void;
+  onClose: () => void;
+}) {
+  const { t } = useTranslation();
+  const { ref, onKeyDown } = useDialogA11y<HTMLDivElement>(onClose);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="absolute inset-0 bg-ink-950/60 backdrop-blur-sm flex items-center justify-center"
+      onClick={onClose}
+    >
+      <motion.div
+        ref={ref}
+        role="dialog"
+        aria-modal="true"
+        aria-label={t('litHome.fan')}
+        tabIndex={-1}
+        onKeyDown={onKeyDown}
+        initial={{ scale: 0.97, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.97, opacity: 0 }}
+        transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+        onClick={(e) => e.stopPropagation()}
+        className="rounded-lg bg-ink-900 border border-white/[0.08] w-64 overflow-hidden"
+      >
+        <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
+          <div className="text-[13px] text-bone-100">{t('litHome.fan')}</div>
+          <button onClick={onClose} className="text-bone-500 hover:text-gold" aria-label="Close">
+            <X size={14} strokeWidth={1.5} aria-hidden="true" />
+          </button>
+        </div>
+        <div className="divide-y divide-white/[0.04]">
+          {(['Auto', 'High', 'Medium', 'Low', 'Off'] as FanMode[]).map((m) => (
+            <button
+              key={m}
+              onClick={() => onPick(m)}
+              aria-pressed={fan === m}
+              className={`w-full px-4 py-3 flex items-center justify-between text-[12px] uppercase tracking-luxe transition-colors
+                ${fan === m ? 'text-gold bg-gold/5' : 'text-bone-300 hover:text-bone-100 hover:bg-white/[0.03]'}`}
+            >
+              {t(`litHome.fan${m}`)}
+              {fan === m && <Check size={14} strokeWidth={1.75} aria-hidden="true" />}
+            </button>
+          ))}
+        </div>
+      </motion.div>
+    </motion.div>
   );
 }

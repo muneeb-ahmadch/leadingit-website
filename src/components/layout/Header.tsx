@@ -79,6 +79,14 @@ export function Header() {
 
         <nav className="hidden md:flex items-center gap-10">
           <NavItem to="/brands">{t('nav.brands')}</NavItem>
+          {/*
+           * `/solutions` is in global nav from the moment the route emits HTML
+           * (Phase 4) and not a day before — an anchor to a route that 404s is
+           * worse than no anchor (docs/10-CONTENT-BRIEFS/_CONVENTIONS.md §8).
+           * The section link also lights on its children via NavItem's
+           * `startsWith` arm, so /solutions/home-cinema/ marks Solutions active.
+           */}
+          <NavItem to="/solutions">{t('nav.solutions')}</NavItem>
           <NavItem to="/lit-home">{t('nav.litHome')}</NavItem>
           <NavItem to="/about">{t('nav.about')}</NavItem>
           <NavItem to="/contact">{t('nav.contact')}</NavItem>
@@ -97,6 +105,7 @@ export function Header() {
         <div className="md:hidden border-t border-white/5 bg-ink-950/95 backdrop-blur-md">
           <div className="container-luxe flex flex-col gap-5 py-6">
             <NavItem to="/brands" onClick={() => setOpen(false)}>{t('nav.brands')}</NavItem>
+            <NavItem to="/solutions" onClick={() => setOpen(false)}>{t('nav.solutions')}</NavItem>
             <NavItem to="/lit-home" onClick={() => setOpen(false)}>{t('nav.litHome')}</NavItem>
             <NavItem to="/about" onClick={() => setOpen(false)}>{t('nav.about')}</NavItem>
             <NavItem to="/contact" onClick={() => setOpen(false)}>{t('nav.contact')}</NavItem>

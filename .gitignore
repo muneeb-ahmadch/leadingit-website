@@ -52,3 +52,8 @@ secrets/
 # Build-generated (emitted by scripts/build-images.mjs; content-hash cache,
 # not an asset — regenerated locally, never needed by CI or the deployed site)
 /public/.image-pipeline-cache.json
+
+# Vendored third-party PHP fetched at build time by scripts/fetch-phpmailer.mjs,
+# pinned + SHA-256 verified. Never committed: PHPMailer declares its own $Password
+# property, which the fail-closed credential scanner blocks (by design).
+public/api/vendor/

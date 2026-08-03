@@ -33,7 +33,9 @@
  * time and fails the build loudly if a formula or a data change breaks it.
  */
 import type { Brand } from '@/data/brands';
+import type { BrandPakistanPage } from '@/data/brandPakistan';
 import type { Product } from '@/data/products';
+import type { Solution } from '@/data/solutions';
 import { SITE_NAME } from '@/lib/site';
 import { KEYPAD_DESIGNER_PATH } from './paths';
 import { isRangeProduct } from './ranges';
@@ -162,6 +164,158 @@ export function productMeta(product: Product, brand: Brand): PageMeta {
     description,
     path: `/brands/${product.brandSlug}/${product.slug}`,
     ogImage: ownImage(product.hero),
+    ogType: 'website',
+  };
+}
+
+/**
+ * Solution index. The plural is the whole point of this page: `docs/04` §4 (C1)
+ * targets the list phrasings ("home automation companies dubai", "av integration
+ * companies dubai") that map badly onto any single service page, so no
+ * single-solution head phrasing ("home cinema installation dubai") appears in
+ * this title or description — that belongs to `/solutions/home-cinema/`.
+ */
+export function solutionsIndexMeta(): PageMeta {
+  return {
+    // 55 chars. Distinct from `brandsIndexMeta()`'s "Automation & Cinema Brands
+    // We Distribute" — the two pages carry the two different axes and must not
+    // collide on either the title or the description uniqueness assertion.
+    title: `Automation, Cinema & AV Solutions in Dubai | ${SITE_NAME}`,
+    // 150 chars. Names the five categories that have a page emitting HTML today.
+    // It widened from three on 2026-08-01 with `docs/00-CONTEXT.md` §4's Muneeb
+    // confirmations (`docs/OPEN-QUESTIONS.md` #25/#26/#27), not on style grounds.
+    // Industrial automation is confirmed scope (§1) but has no page and is not
+    // buildable on today's evidence (OQ #23), so it is not named in a snippet
+    // that would rank for a URL that does not exist.
+    description: `${SITE_NAME} designs, supplies and installs home cinema, whole-home control, lighting, multi-room audio and hospitality automation in Dubai and the UAE.`,
+    path: '/solutions',
+    ogImage: DEFAULT_OG_IMAGE,
+    ogType: 'website',
+  };
+}
+
+/**
+ * Solution page.
+ *
+ * Title formula: `<name> Installation in Dubai | Leading IT` — 35 chars of
+ * fixture plus the solution's display name. The five live routes run from "Home
+ * Cinema" (46 chars total) to "Hospitality Automation" (57). **A name over 25
+ * chars overflows the 60-char budget**, at which point `assertManifest()` breaks
+ * the build rather than let Google rewrite the title — change the formula or the
+ * name, never truncate. This is also why the hospitality record is named
+ * "Hospitality Automation" and not "Hospitality": the bare noun would title the
+ * page "Hospitality Installation in Dubai", which nobody types.
+ *
+ * Description: the approved solution supply sentence (`_CONVENTIONS.md` §1)
+ * followed by one detail sentence from the record. Neutral wording only — no
+ * dealer or distributor authorisation phrasing, on any solution page, for any
+ * brand (`docs/OPEN-QUESTIONS.md` #3). Worst case over the record set today is
+ * 150 chars (`lighting-control` and `whole-home-control`), against a 155 ceiling;
+ * the record's `metaDetail` is what a new solution has to keep inside the
+ * remaining budget, and each record comments how much that is.
+ */
+export function solutionMeta(solution: Solution): PageMeta {
+  return {
+    title: `${solution.name} Installation in Dubai | ${SITE_NAME}`,
+    description: `${SITE_NAME} designs, supplies and installs ${solution.supplySubject} in Dubai. ${solution.metaDetail}`,
+    path: `/solutions/${solution.slug}`,
+    ogImage: ownImage(solution.hero),
+    ogType: 'website',
+  };
+}
+
+/**
+ * The approved Pakistan-page supply sentence (`_CONVENTIONS.md` §1), minus the
+ * brand name. 65 characters of fixture; the two live brand names are "Crestron"
+ * (8) and "Marantz" (7), so the sentence itself runs 72–73 characters.
+ *
+ * Neutral wording only, exactly as approved. Never "authorized dealer",
+ * "official distributor" or any equivalent (`docs/OPEN-QUESTIONS.md` #3), and
+ * never a city — this snippet is the one piece of copy that gets quoted without
+ * its page around it, so a city here would be a local claim in a SERP.
+ */
+function pakistanSupplySentence(brandName: string): string {
+  return `${SITE_NAME} supplies ${brandName} to projects in Pakistan from its Dubai base.`;
+}
+
+/**
+ * `/brands/<brand>/pakistan/` — the non-local distribution-coverage page
+ * (`docs/05-URL-TAXONOMY.md` §6).
+ *
+ * **Title formula:** `<brand> in Pakistan — Supplied from Dubai | Leading IT`.
+ * 47 characters of fixture plus the brand name, so the budget allows a 13-char
+ * brand name before the 60-char cap bites. Today: Crestron 55, Marantz 54.
+ * Gate 4 of §6 is satisfied structurally — the **country** is in the title and
+ * the H1, and no city can enter either, because neither string interpolates
+ * anything but a brand name.
+ *
+ * **Description:** the approved supply sentence (`_CONVENTIONS.md` §1) plus one
+ * detail sentence from the record. Today: 146 chars (Crestron) and 147
+ * (Marantz), against the 155 ceiling — so a record's `metaDetail` has 81
+ * characters to work with next to an 8-character brand name, and each record
+ * comments its own count. That is tight; re-count on any edit.
+ *
+ * **No duration in either string, ever** (`docs/OPEN-QUESTIONS.md` #24). Both
+ * descriptions say lead time is quoted per order and stop there.
+ */
+export function brandPakistanMeta(page: BrandPakistanPage): PageMeta {
+  return {
+    title: `${page.brandName} in Pakistan — Supplied from Dubai | ${SITE_NAME}`,
+    description: `${pakistanSupplySentence(page.brandName)} ${page.metaDetail}`,
+    path: `/brands/${page.brandSlug}/pakistan`,
+    // Deliberately the sitewide default rather than the brand's hero: an OG
+    // card for this page must not imply a room, a showroom or a place in
+    // Pakistan, and no first-party image depicts cross-border supply.
+    ogImage: DEFAULT_OG_IMAGE,
+    ogType: 'website',
+  };
+}
+
+/**
+ * `/locations/dubai/` — the only location page that will ever exist
+ * (`docs/05-URL-TAXONOMY.md` §5).
+ *
+ * Both strings are fixed text, so the worst case *is* the only case: title 50
+ * chars, description 154 chars, against 60 / 155. Nothing here is derived from a
+ * record, so no data change can push either over the cap — but the description
+ * has only one character of headroom, so any edit to it must be re-counted.
+ *
+ * **No address fragment in either string.** The tower-and-shop line
+ * (`docs/00-CONTEXT.md` §4) appears once, in body copy, and nowhere else; a
+ * partial address in a SERP snippet is the fastest way to seed a wrong citation
+ * while `docs/OPEN-QUESTIONS.md` #1 is open. **No opening hours** (#8) and no
+ * "near you" phrasing either. `LocalBusiness` stays gated in
+ * `./jsonld/localBusiness.ts` — see that file's header.
+ */
+export function locationDubaiMeta(): PageMeta {
+  return {
+    title: `${SITE_NAME} Dubai — Automation Showroom & Enquiries`,
+    description: `${SITE_NAME} runs one showroom, in Dubai. Home cinema, whole-home control, lighting, audio and hospitality automation, supplied across the UAE and Pakistan.`,
+    path: '/locations/dubai',
+    ogImage: DEFAULT_OG_IMAGE,
+    ogType: 'website',
+  };
+}
+
+/**
+ * `/trade/` — three keyword clusters (trade accounts, part-number availability,
+ * commissioning support) on one page (`docs/04-KEYWORD-MAP.md` §5).
+ *
+ * Fixed text again, so the worst case is the only case: title 51 chars,
+ * description 151 chars, against 60 / 155.
+ *
+ * **The description states a process, never a position.** "Availability and lead
+ * time confirmed per part number" is the honest T2 floor; no stock claim, no
+ * turnaround figure and no pricing may enter this snippet while
+ * `docs/OPEN-QUESTIONS.md` #3/T2 is open — a snippet is the one piece of copy
+ * that gets quoted without its page around it.
+ */
+export function tradeMeta(): PageMeta {
+  return {
+    title: `Trade Supply for AV Integrators, Dubai | ${SITE_NAME}`,
+    description: `${SITE_NAME} supplies AV and automation trade accounts across the UAE, and integrators in Pakistan. Availability and lead time confirmed per part number.`,
+    path: '/trade',
+    ogImage: DEFAULT_OG_IMAGE,
     ogType: 'website',
   };
 }
