@@ -34,35 +34,29 @@
  * caller may fire it from a plain `onClick` and let the browser's default navigation
  * proceed on the same tick.
  *
- * ## Consent posture (UNDECIDED — OQ #43. Muneeb decides; see docs/15-ANALYTICS-SETUP.md)
+ * ## Consent posture — DECIDED 2026-08-04 by Muneeb (closes OQ #43)
  *
- * The site has no cookie-consent banner today. This module wires Google's Consent Mode v2
- * signals regardless, because that costs nothing and keeps the door open: `ad_storage`,
- * `ad_user_data` and `ad_personalization` default to `'denied'` unconditionally (this site
- * runs no ads/remarketing, so there is no reason to ever grant them from here).
+ * `ad_storage`, `ad_user_data` and `ad_personalization` are `'denied'` unconditionally and
+ * are not up for discussion here: this site runs no ads and no remarketing, so there is no
+ * reason to ever grant them.
  *
- * `analytics_storage` defaults to `CONSENT_DEFAULT`, which ships `'denied'`. That is a
- * deliberate reversal of this file's first draft, which shipped `'granted'` on the argument
- * that a UAE/Pakistan B2B site has no established GDPR exposure. That argument is sound as
- * far as it goes, and it is *not* why this is `'denied'`. Two reasons override it:
+ * `analytics_storage` ships **`'granted'`, with no cookie banner.** Muneeb was given the
+ * three options in `docs/15-ANALYTICS-SETUP.md` §6 — conservative (cookieless, modelled
+ * numbers), permissive-no-banner, or permissive-with-banner — and chose the middle one on
+ * the stated basis that this is a UAE/Pakistan B2B business and the data quality is worth
+ * more than hedging against EU exposure the site does not target.
  *
- * 1. **The posture is an open question, not a settled one (OQ #43).** Shipping `'granted'`
- *    is not "no decision" — it is silently taking the permissive side of a decision that
- *    was explicitly logged as Muneeb's to make. A default that pre-empts the question is
- *    the one thing OQ #43 says must not happen.
- * 2. **`'granted'` fails open at exactly the wrong moment.** This layer is inert only while
- *    `GA4_MEASUREMENT_ID` is empty. The instant a real ID is pasted in — by someone
- *    following a setup guide, months from now, who has never read this comment — a
- *    `'granted'` default starts dropping analytics cookies on every visitor with no banner
- *    anywhere on the site. `'denied'` still measures: Consent Mode sends cookieless pings,
- *    so conversions are still counted (modelled rather than exact, and cross-session
- *    attribution is weaker) while nothing is stored on the visitor's device. Losing some
- *    attribution precision is reversible by editing one word; having already set cookies on
- *    real visitors is not.
+ * **The accepted risk, recorded so it is never rediscovered as a surprise:** GA4 will set
+ * analytics cookies on every visitor, including any EU/UK visitor, with no consent prompt
+ * anywhere on the site. That is a deliberate, informed business decision, not an oversight,
+ * and it is his to make. **If EU/UK traffic ever becomes material, revisit it** — Search
+ * Console's country report is where that would first show up.
  *
- * `setAnalyticsConsent()` is exported so a consent banner (a component-layer decision, out
- * of this file's scope) can flip the signal per-visitor without touching this file. If
- * Muneeb decides the permissive posture is right, this is a one-word change.
+ * Nothing happens until `GA4_MEASUREMENT_ID` is non-empty; while it is empty this whole
+ * module is tree-shaken out and no cookie of any kind is set.
+ *
+ * `setAnalyticsConsent()` remains exported so a banner can still be added later and flip the
+ * signal per-visitor without touching this file.
  */
 
 /**
@@ -91,7 +85,7 @@ export const GA4_MEASUREMENT_ID: string = '';
  * secret, not a per-visitor value — a single site-wide default until a real consent banner
  * ships and starts calling `setAnalyticsConsent()` per visitor.
  */
-const CONSENT_DEFAULT: 'granted' | 'denied' = 'denied';
+const CONSENT_DEFAULT: 'granted' | 'denied' = 'granted';
 
 declare global {
   interface Window {
