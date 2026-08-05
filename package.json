@@ -15,6 +15,8 @@
     "preview": "vite preview",
     "lint": "tsc -b --noEmit && eslint .",
     "validate:seo": "node scripts/validate-seo.mjs",
+    "verify:deploy": "node scripts/predeploy-verify.mjs",
+    "smoke": "node scripts/smoke-test.mjs",
     "gen:schema-vocab": "node scripts/gen-schema-vocab-subset.mjs"
   },
   "dependencies": {

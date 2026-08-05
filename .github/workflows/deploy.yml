@@ -1,0 +1,167 @@
+name: Deploy
+
+# The repo is PUBLIC. Nothing in this file may ever contain a credential — only
+# the NAMES of repository secrets. Every value below that looks like config is
+# either public (the site URL) or read from `secrets`/`vars` at run time.
+#
+# Deliberately NOT a third-party FTP action. Deploying over a pinned action would
+# mean trusting a supply chain with write access to the live site; `lftp` is in
+# the runner's own package repo, does exactly what is written here, and every
+# flag is auditable in this file.
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'List what would change, upload nothing'
+        type: boolean
+        default: true
+      ref:
+        description: 'Commit SHA or tag to deploy (blank = this branch). ROLLBACK: put the last-good SHA here.'
+        type: string
+        default: ''
+  push:
+    branches: [main]
+
+concurrency:
+  # Two overlapping uploads to one docroot interleave files and leave a site
+  # that matches no commit. Never cancel in progress: a half-finished mirror is
+  # worse than a slow queue.
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Requires the `production` environment. Add required reviewers there to make
+    # every push-to-main deploy wait for a human — recommended until launch has
+    # settled. Secrets live on the environment, not the repo.
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint (typecheck + eslint)
+        run: npm run lint
+
+      # `prebuild` fetches PHPMailer (pinned to v6.9.3, SHA-256 verified per file)
+      # into public/api/vendor/, which is gitignored and therefore absent from a
+      # fresh clone. Without this the deployed endpoint 500s on the first enquiry.
+      - name: Build (prerender all routes + fetch PHPMailer)
+        run: npm run build
+
+      - name: 'Gate: SEO + structured data'
+        run: npm run validate:seo
+
+      - name: 'Gate: deployable artefact'
+        run: node scripts/predeploy-verify.mjs
+
+      # Kept for 30 days so a rollback never depends on rebuilding an old commit
+      # successfully — the exact bytes that were live can be re-uploaded by hand
+      # through cPanel File Manager if the pipeline itself is the thing that broke.
+      - name: Retain this release for rollback
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ github.sha }}
+          path: dist
+          retention-days: 30
+
+      - name: Install lftp
+        run: sudo apt-get update && sudo apt-get install -y lftp
+
+      # FTP_REMOTE_DIR is the addon docroot and is NOT hardcoded: whether it sits
+      # inside public_html or beside it is OPEN-QUESTIONS #10, answered by looking
+      # at cPanel at first access. Failing loudly here beats mirroring the whole
+      # site into the wrong directory on a shared host.
+      - name: Check deploy target is configured
+        env:
+          FTP_REMOTE_DIR: ${{ vars.FTP_REMOTE_DIR }}
+        run: |
+          if [ -z "$FTP_REMOTE_DIR" ]; then
+            echo "::error::vars.FTP_REMOTE_DIR is not set — see docs/07-DEPLOYMENT-HOSTGATOR.md (OQ #10)."
+            exit 1
+          fi
+          echo "Deploy target: $FTP_REMOTE_DIR"
+
+      # `mirror -R` uploads dist/ and mirrors deletions so a removed route does
+      # not linger and stay indexable. ssl-force + verify-certificate make a
+      # server that cannot do FTPS a hard failure rather than a silent
+      # plaintext login. --dry-run is the default for manual runs.
+      - name: Upload over FTPS
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_AUTH_TOKEN: ${{ secrets.FTP_AUTH_TOKEN }}
+          FTP_REMOTE_DIR: ${{ vars.FTP_REMOTE_DIR }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          MIRROR_FLAGS="-R --delete --parallel=4 --verbose"
+          if [ "$DRY_RUN" = "true" ]; then
+            MIRROR_FLAGS="$MIRROR_FLAGS --dry-run"
+            echo "::notice::DRY RUN — nothing will be written to the server."
+          fi
+          lftp -c "
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set ssl:verify-certificate true;
+            set net:max-retries 3;
+            set net:timeout 20;
+            open -u \"$FTP_USERNAME\",\"$FTP_AUTH_TOKEN\" \"$FTP_HOST\";
+            mirror $MIRROR_FLAGS dist/ \"$FTP_REMOTE_DIR\";
+            bye
+          "
+
+      # Cache purge is the LAST step before verification, every time. Skipped on a
+      # dry run because there is nothing new to purge.
+      - name: Purge Cloudflare cache
+        if: ${{ inputs.dry_run != true }}
+        env:
+          CF_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          response=$(curl -sS -X POST \
+            "https://api.cloudflare.com/client/v4/zones/$CF_ZONE_ID/purge_cache" \
+            -H "Authorization: Bearer $CF_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            --data '{"purge_everything":true}')
+          echo "$response" | grep -q '"success":true' || {
+            echo "::error::Cloudflare purge failed — visitors may be served the previous build."
+            echo "$response" | sed 's/[A-Za-z0-9_-]\{30,\}/[redacted]/g'
+            exit 1
+          }
+          echo "Cache purged."
+
+      # The edge needs a moment to start refilling from the origin before the
+      # smoke test asks it questions.
+      - name: Settle
+        if: ${{ inputs.dry_run != true }}
+        run: sleep 20
+
+      - name: Smoke-test the live site
+        if: ${{ inputs.dry_run != true }}
+        run: node scripts/smoke-test.mjs --base https://leadingit.me
+
+      - name: Report
+        if: ${{ !cancelled() }}
+        run: |
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "### Deploy OK — https://leadingit.me" >> "$GITHUB_STEP_SUMMARY"
+          else
+            {
+              echo "### Deploy FAILED"
+              echo "Roll back: re-run this workflow with \`ref\` = the last-good SHA,"
+              echo "or upload the retained \`dist-<sha>\` artifact via cPanel File Manager."
+              echo "See docs/07-DEPLOYMENT-HOSTGATOR.md §Rollback."
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "Deployed ref: ${{ inputs.ref || github.sha }}" >> "$GITHUB_STEP_SUMMARY"
