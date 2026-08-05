@@ -1,7 +1,7 @@
 {
   "note": "Compact excerpt of https://schema.org — only the @types and properties this site's JSON-LD builders (src/seo/jsonld/*) actually emit, each one verified against the real schema.org rdfs:domainIncludes/rdfs:subClassOf graph. Regenerate with \"npm run gen:schema-vocab\" (needs network) after adding a new @type or property — scripts/validate-seo.mjs fails loudly, not silently, on anything emitted that is absent from this file.",
   "source": "https://schema.org/version/latest/schemaorg-current-https.jsonld",
-  "generatedAt": "2026-08-01T11:31:50.572Z",
+  "generatedAt": "2026-08-05T11:53:53.872Z",
   "types": {
     "AboutPage": {
       "ancestors": [
@@ -115,6 +115,18 @@
         "mainEntity"
       ]
     },
+    "GeoCoordinates": {
+      "ancestors": [
+        "GeoCoordinates",
+        "Intangible",
+        "StructuredValue",
+        "Thing"
+      ],
+      "properties": [
+        "latitude",
+        "longitude"
+      ]
+    },
     "ImageObject": {
       "ancestors": [
         "CreativeWork",
@@ -152,6 +164,22 @@
         "url"
       ]
     },
+    "LocalBusiness": {
+      "ancestors": [
+        "LocalBusiness",
+        "Organization",
+        "Place",
+        "Thing"
+      ],
+      "properties": [
+        "address",
+        "geo",
+        "name",
+        "parentOrganization",
+        "telephone",
+        "url"
+      ]
+    },
     "Organization": {
       "ancestors": [
         "Organization",
@@ -161,8 +189,28 @@
         "areaServed",
         "contactPoint",
         "description",
+        "foundingDate",
+        "legalName",
+        "location",
         "name",
+        "numberOfEmployees",
+        "sameAs",
         "url"
+      ]
+    },
+    "PostalAddress": {
+      "ancestors": [
+        "ContactPoint",
+        "Intangible",
+        "PostalAddress",
+        "StructuredValue",
+        "Thing"
+      ],
+      "properties": [
+        "addressCountry",
+        "addressLocality",
+        "addressRegion",
+        "streetAddress"
       ]
     },
     "Product": {
@@ -192,6 +240,18 @@
       "properties": [
         "name",
         "value"
+      ]
+    },
+    "QuantitativeValue": {
+      "ancestors": [
+        "Intangible",
+        "QuantitativeValue",
+        "StructuredValue",
+        "Thing"
+      ],
+      "properties": [
+        "maxValue",
+        "minValue"
       ]
     },
     "Question": {

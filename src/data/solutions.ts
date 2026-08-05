@@ -186,9 +186,9 @@ export const SOLUTIONS_INDEX: SolutionsIndexContent = {
         'Each of those five has its own page, and each one names the equipment behind it rather than ' +
           'describing a capability in the abstract. The table below is the fastest way in: find the ' +
           'sentence that sounds like the project and follow the link.',
-        'Industrial and building automation is part of the same scope and has no category page yet. ' +
-          'It is quoted from drawings and a specification rather than from a page, so the route to it ' +
-          'is the two contact channels on this page.',
+        'Security systems are supplied per project alongside those five. They are specified from ' +
+          'drawings and a schedule rather than from a catalogue page, so the route to them is the ' +
+          'two contact channels on this page.',
         'The other way in is the brand axis. Nine manufacturers each have a hub page and a full ' +
           'product listing, covering control processors, keypads, dimming, loudspeakers, projection ' +
           'and signal distribution.',
@@ -222,12 +222,11 @@ export const SOLUTIONS_INDEX: SolutionsIndexContent = {
             { text: 'Hospitality automation', to: '/solutions/hospitality' },
             { text: 'Guest-room control, keypads, and integration with the specified GRMS' },
           ],
-          // TODO(OQ #23): the sixth row — "Plant, BMS or an industrial facility"
-          // → /solutions/industrial-automation/ — lands here when that route
-          // exists. It is the last evidence-free locked slug: no industrial
-          // product in the catalogue, no named platform, no describable
-          // reference work. Six rows then, never seven — no shading row, ever
-          // (docs/05 §14).
+          // RETIRED (2026-08-05): the sixth row will never land. Muneeb dropped
+          // industrial automation as a line of business outright ("not doing
+          // this anymore"), closing OQ #23 — /solutions/industrial-automation/
+          // is retired unbuilt, not deferred. Five rows, never six — and no
+          // shading row either, ever (docs/05 §14).
         ],
       },
     },
@@ -235,13 +234,13 @@ export const SOLUTIONS_INDEX: SolutionsIndexContent = {
       id: 'who-leading-it-works-with',
       question: 'Who does Leading IT work with?',
       answer:
-        'Leading IT works on private homes, developments, hotels and industrial facilities in the ' +
+        'Leading IT works on private homes, developments and hotels in the ' +
         'United Arab Emirates, and supplies projects in Pakistan.',
       body: [
         'Homeowners usually arrive with a room in mind — a cinema, a music system, a house that ' +
           'should behave from one interface. Developers and their consultants arrive earlier, at ' +
           'the stage where conduit routes and rack positions are still drawings rather than walls.',
-        'Hospitality groups and industrial clients arrive with a specification and a programme, and ' +
+        'Hospitality groups arrive with a specification and a programme, and ' +
           'the conversation starts at integration and commissioning rather than at product choice. ' +
           'Integrators and installers are a separate audience with their own path — part numbers, ' +
           'quantities and lead times — and reach the team on the same two channels below.',
@@ -1593,10 +1592,10 @@ export const SOLUTIONS: Solution[] = [
               // Wording is load-bearing — see this record's header comment. Do not
               // soften "Integrated, not supplied" into an implied supply.
               { text: 'Integrated, not supplied — Leading IT interfaces to the platform the project specifies' },
-              // TODO(OQ #23): the brief points this cell at
-              // /solutions/industrial-automation/, which is not built and is not
-              // buildable on today's evidence. No link until that route returns
-              // 200 (_CONVENTIONS.md §8).
+              // No link here, permanently: the brief pointed this cell at
+              // /solutions/industrial-automation/, which was retired unbuilt on
+              // 2026-08-05 (Muneeb dropped the line of business; OQ #23 closed).
+              // The "Integrated, not supplied" wording above is unaffected.
               { text: 'Agreed at specification stage' },
             ],
           ],

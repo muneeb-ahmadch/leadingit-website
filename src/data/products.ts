@@ -196,7 +196,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crRack,
     metaDescription:
-      'Crestron CP4 4-Series rack-mount control processor. Distributed, programmed and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron CP4 4-Series rack-mount control processor. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron CP4', 'CP4 control processor', '4-Series control system', 'Crestron CP4 UAE', 'Crestron CP4 Pakistan'],
   },
   {
@@ -262,7 +262,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crRack,
     metaDescription:
-      'Crestron DIN-AP4 4-Series DIN-rail control system. Distributed, programmed and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron DIN-AP4 4-Series DIN-rail control system. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron DIN-AP4', 'DIN rail control system', '4-Series DIN', 'DIN-AP4 UAE', 'DIN-AP4 Pakistan'],
   },
   {
@@ -337,7 +337,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crInterior,
     metaDescription:
-      'Crestron DIN-1DIM4 4-channel DIN-rail dimmer for architectural lighting. Distributed and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron DIN-1DIM4 4-channel DIN-rail dimmer for architectural lighting. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron DIN-1DIM4', 'DIN rail dimmer', '4-channel dimmer', 'DIN-1DIM4 UAE', 'DIN-1DIM4 Pakistan'],
   },
   {
@@ -406,7 +406,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crInterior,
     metaDescription:
-      'Crestron DIN-2MC2 2-channel DIN-rail motor control for shades, drapes and screens. Distributed and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron DIN-2MC2 2-channel DIN-rail motor control for shades, drapes and screens. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron DIN-2MC2', 'motor control module', 'shade control', 'DIN-2MC2 UAE', 'DIN-2MC2 Pakistan'],
   },
   {
@@ -472,7 +472,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crInterior,
     metaDescription:
-      'Crestron DIN-DLI DALI-2 certified DIN-rail DALI interface. Distributed and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron DIN-DLI DALI-2 certified DIN-rail DALI interface. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron DIN-DLI', 'DALI interface', 'DALI-2 gateway', 'DIN-DLI UAE', 'DIN-DLI Pakistan'],
   },
   {
@@ -546,7 +546,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crRack,
     metaDescription:
-      'Crestron DIN-CENCN-2-POE Ethernet-to-Cresnet bridge with PoE and dual subnets. Distributed and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron DIN-CENCN-2-POE Ethernet-to-Cresnet bridge with PoE and dual subnets. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron DIN-CENCN-2-POE', 'Cresnet bridge', 'Ethernet Cresnet', 'DIN-CENCN UAE', 'DIN-CENCN Pakistan'],
   },
   {
@@ -611,7 +611,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crRack,
     metaDescription:
-      'Crestron DIN-PWS60 60 W DIN-rail Cresnet power supply. Distributed and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron DIN-PWS60 60 W DIN-rail Cresnet power supply. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron DIN-PWS60', 'Cresnet power supply', 'DIN rail power', 'DIN-PWS60 UAE', 'DIN-PWS60 Pakistan'],
   },
 
@@ -646,7 +646,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crRack,
     metaDescription:
-      'Crestron Avia DSP-1280 12×8 digital signal processor. Distributed, configured and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron Avia DSP-1280 12×8 digital signal processor. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron DSP-1280', 'Crestron Avia DSP', 'digital signal processor', 'DSP-1280 UAE', 'DSP-1280 Pakistan'],
   },
   {
@@ -712,7 +712,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crRack,
     metaDescription:
-      'Crestron Avia DSP-860 8×6 digital signal processor. Distributed, configured and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron Avia DSP-860 8×6 digital signal processor. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron DSP-860', 'Avia 8x6 DSP', 'digital signal processor', 'DSP-860 UAE', 'DSP-860 Pakistan'],
   },
 
@@ -747,7 +747,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crInterior,
     metaDescription:
-      'Crestron GLS-OIRLCL-C-CN ceiling occupancy & daylight sensor on Cresnet. Distributed and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron GLS-OIRLCL-C-CN ceiling occupancy & daylight sensor on Cresnet. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron GLS-OIRLCL-C-CN', 'occupancy sensor', 'daylight sensor', 'GLS-OIRLCL UAE', 'GLS-OIRLCL Pakistan'],
   },
   {
@@ -829,7 +829,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crInterior,
     metaDescription:
-      'Crestron HZ2-KPCN Horizon 2 keypad on Cresnet, in textured, glass and metal finishes. Distributed and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron HZ2-KPCN Horizon 2 keypad on Cresnet, in textured, glass and metal finishes. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron HZ2-KPCN', 'Horizon 2 keypad', 'Crestron keypad', 'HZ2-KPCN UAE', 'HZ2-KPCN Pakistan', 'luxury keypad Dubai'],
   },
   {
@@ -905,7 +905,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crInterior,
     metaDescription:
-      'Crestron C2NI-CB Cameo international keypad for EU/UK boxes, textured finishes. Distributed and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron C2NI-CB Cameo international keypad for EU/UK boxes, textured finishes. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron C2NI-CB', 'Cameo keypad', 'Crestron international keypad', 'C2NI-CB UAE', 'C2NI-CB Pakistan'],
   },
 
@@ -943,7 +943,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crInterior,
     metaDescription:
-      'Crestron TSW-1080 10.1" wall mount touch screen with PoE+, Wi-Fi 6E (802.11ax) and Rava SIP. Distributed and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron TSW-1080 10.1" wall mount touch screen with PoE+, Wi-Fi 6E (802.11ax) and Rava SIP. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron TSW-1080', '10 inch touch screen', 'Crestron touch panel', 'TSW-1080 UAE', 'TSW-1080 Pakistan'],
   },
   {
@@ -1015,7 +1015,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crInterior,
     metaDescription:
-      'Crestron TSW-770 7" wall mount touch screen with Smart Graphics, Rava SIP and PoE+. Distributed and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron TSW-770 7" wall mount touch screen with Smart Graphics, Rava SIP and PoE+. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron TSW-770', '7 inch touch screen', 'Crestron touch panel', 'TSW-770 UAE', 'TSW-770 Pakistan'],
   },
   {
@@ -1086,7 +1086,7 @@ export const PRODUCTS: Product[] = [
     ],
     inUse: crInterior,
     metaDescription:
-      'Crestron TSS-880 8.1" room scheduling touch screen with light bars and XiO Cloud. Distributed and supported across the UAE and Pakistan by Leading IT.',
+      'Crestron TSS-880 8.1" room scheduling touch screen with light bars and XiO Cloud. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Crestron TSS-880', 'room scheduling panel', 'Crestron scheduling', 'TSS-880 UAE', 'TSS-880 Pakistan'],
   },
   // ─── Basalte ──────────────────────────────────────────────────────────────
@@ -1099,7 +1099,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Sentido replaces the light switch with a touch surface: press it for lights or music, press the whole plate to kill every light in the room at once. It is made in Belgium, in a two-button or four-button layout, with a temperature sensor and a multicolour LED built in. Finishes run from brushed aluminium and satin white to bronze, brushed brass, rosé and fer forgé, so it can be specified against the joinery rather than in spite of it. It speaks KNX, Crestron and Lutron.',
     metaDescription:
-      'Basalte Sentido touch-sensitive design switch — KNX, Crestron and Lutron compatible, handmade in Belgium. Distributed in the UAE and Pakistan by Leading IT.',
+      'Basalte Sentido touch-sensitive design switch — KNX, Crestron and Lutron compatible, handmade in Belgium. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Basalte Sentido', 'Sentido design switch', 'Basalte Sentido UAE', 'Basalte Sentido Pakistan', 'luxury light switch'],
     hero: '/products/basalte/sentido-brushed-brass.png',
     finishes: [
@@ -1148,7 +1148,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Fibonacci is a touch switch whose proportions follow the golden ratio, which is why it reads as a piece of the wall rather than a control. Its labels are laser-engraved and backlit, and they illuminate as you approach instead of glowing all night. The icons and text are specified per project, so a switch can say what it actually does. Available in Basalte’s high-end finish range, and compatible with KNX, Crestron and Lutron HomeWorks.',
     metaDescription:
-      'Basalte Fibonacci touch-sensitive design switch with backlit laser-engraved labels — KNX, Crestron and Lutron compatible. Supplied in the UAE and Pakistan by Leading IT.',
+      'Basalte Fibonacci touch-sensitive design switch with backlit laser-engraved labels — KNX, Crestron and Lutron compatible. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Basalte Fibonacci', 'Fibonacci design switch', 'Basalte Fibonacci UAE', 'Basalte Fibonacci Pakistan', 'luxury keypad'],
     hero: '/products/basalte/fibonacci-brushed-brass.png',
     finishes: [
@@ -1196,7 +1196,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Deseo is a thermostat that also runs the room. Set the temperature, dim the lights, start the music — all from one touch plate, so a bedroom wall needs one device instead of three. A multicolour OLED display shows the setpoint and the actual reading. It comes in the same high-quality finish range as the rest of the Basalte line, and works with KNX and Crestron systems.',
     metaDescription:
-      'Basalte Deseo touch-sensitive design thermostat and room controller with multicolour OLED display — KNX and Crestron compatible. Distributed in the UAE and Pakistan by Leading IT.',
+      'Basalte Deseo touch-sensitive design thermostat and room controller with multicolour OLED display — KNX and Crestron compatible. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Basalte Deseo', 'Deseo thermostat', 'Basalte Deseo UAE', 'Basalte Deseo Pakistan', 'design thermostat'],
     hero: '/products/basalte/deseo.jpg',
     finishes: [
@@ -1236,7 +1236,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Auro switches the lights on when someone walks into a hallway, a dressing room or a cloakroom, and off again when they leave. It fits flush to the ceiling or wall, and integrated LEDs let it work as a low-level night light on its own. Finishes include white and black plus Basalte’s high-quality metal range, so it can be matched to the switches in the same corridor.',
     metaDescription:
-      'Basalte Auro flush-fitting motion sensor with integrated night light — Crestron, Lutron HomeWorks and KNX compatible. Supplied in the UAE and Pakistan by Leading IT.',
+      'Basalte Auro flush-fitting motion sensor with integrated night light — Crestron, Lutron HomeWorks and KNX compatible. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Basalte Auro', 'Auro motion sensor', 'Basalte Auro UAE', 'Basalte Auro Pakistan', 'design motion sensor'],
     hero: '/products/basalte/auro.jpg',
     finishes: [
@@ -1276,7 +1276,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Eve fixes an iPad to the wall as a permanent touch panel and keeps it charged while it is there — no dock to lift it out of, no flat battery at 8pm. It is precision-machined from solid aluminium and finished to the same standard as Basalte’s switches. Specified for houses, hotel suites and offices where a wall-mounted tablet has to look deliberate.',
     metaDescription:
-      'Basalte Eve elegant iPad wall mount, precision-machined from solid aluminium with permanent charging. Distributed in the UAE and Pakistan by Leading IT.',
+      'Basalte Eve elegant iPad wall mount, precision-machined from solid aluminium with permanent charging. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Basalte Eve', 'Eve iPad mount', 'Basalte Eve UAE', 'Basalte Eve Pakistan', 'luxury iPad wall mount'],
     hero: '/products/basalte/eve.png',
     finishes: [
@@ -1319,7 +1319,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Miro puts the room in one hand: switch on the television, start the music, take the lights down. A 2-inch super-black touch display sits above physical buttons and a joystick, in an aluminium body slim enough to leave on the arm of a chair. It reaches the system over Basalte Beam, a low-power wireless network, so it needs no line of sight.',
     metaDescription:
-      'Basalte Miro design remote with 2" touch display and aluminium body, connected via Basalte Beam wireless. Supplied in the UAE and Pakistan by Leading IT.',
+      'Basalte Miro design remote with 2" touch display and aluminium body, connected via Basalte Beam wireless. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Basalte Miro', 'Miro remote', 'Basalte Miro UAE', 'Basalte Miro Pakistan', 'design remote control'],
     hero: '/products/basalte/miro.png',
     finishes: [
@@ -1360,7 +1360,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Aalto is a speaker family you specify as a set rather than a single model: in-wall, on-wall and freestanding cabinets, soundbars, and stands for placing a speaker on a cabinet or on the floor. Aalto F5 is the largest of them. They are built in Belgium and dressed in Basalte’s own finishes and fabrics, which is the point — they are meant to be seen. Bluetooth is built in, with direct access for guests as well as the owner.',
     metaDescription:
-      'Basalte Aalto design speaker collection — in-wall, on-wall and freestanding, crafted in Belgium with integrated Bluetooth. Distributed in the UAE and Pakistan by Leading IT.',
+      'Basalte Aalto design speaker collection — in-wall, on-wall and freestanding, crafted in Belgium with integrated Bluetooth. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Basalte Aalto', 'Aalto speakers', 'Basalte Aalto UAE', 'Basalte Aalto Pakistan', 'design speakers'],
     hero: '/products/basalte/aalto-brushed-black.png',
     finishes: [
@@ -1401,7 +1401,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Plano is a passive in-wall speaker range, so the amplification stays in the rack and the wall holds only the driver assembly. Plano R3 is the compact one, for smaller rooms or surround positions; Plano R5 is the larger reference cabinet, intended for front left and right or a centre channel. Both use an AMT ribbon tweeter for wide dispersion and directivity, aluminium mid-woofers with an aluminium phase plug, and Kevlar bass woofers.',
     metaDescription:
-      'Basalte Plano high-performance passive in-wall speakers with AMT ribbon tweeter and kevlar woofers. Supplied in the UAE and Pakistan by Leading IT.',
+      'Basalte Plano high-performance passive in-wall speakers with AMT ribbon tweeter and kevlar woofers. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Basalte Plano', 'Plano in-wall speakers', 'Basalte Plano UAE', 'Basalte Plano Pakistan', 'in-wall design speakers'],
     hero: '/products/basalte/plano.jpg',
     finishes: [
@@ -1444,7 +1444,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Blustream’s Dante range brings Audinate’s Dante audio networking to residential and commercial installations. Encoders, decoders, matrix processors and networked power amplifiers move multi-channel audio over standard 1Gb network infrastructure — from a single wall plate to a fully switched building.',
     metaDescription:
-      'Blustream Dante audio-over-IP range — encoders, decoders, the DA1414 matrix and NPA networked amplifiers over standard networks. Distributed in the UAE and Pakistan by Leading IT.',
+      'Blustream Dante audio-over-IP range — encoders, decoders, the DA1414 matrix and NPA networked amplifiers over standard networks. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Blustream Dante', 'Dante audio over IP', 'Blustream Dante UAE', 'Blustream Dante Pakistan', 'networked audio distribution'],
     hero: '/products/blustream/dante-matrix.png',
     finishes: [
@@ -1487,7 +1487,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Blustream’s Wireless & BYOD range lets anyone present to the room’s display without cables. Wireless presentation switches and plug-and-play dongles bring AirPlay, Chromecast, Miracast, HDMI and USB-C sources together for boardrooms, meeting rooms and living spaces — with multiview and full 4K output.',
     metaDescription:
-      'Blustream Wireless & BYOD range — WMF presentation switches and HDMI/USB-C dongles supporting AirPlay, Chromecast and Miracast. Supplied in the UAE and Pakistan by Leading IT.',
+      'Blustream Wireless & BYOD range — WMF presentation switches and HDMI/USB-C dongles supporting AirPlay, Chromecast and Miracast. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Blustream BYOD', 'Blustream wireless presentation', 'Blustream WMF UAE', 'Blustream WMF Pakistan', 'wireless screen sharing'],
     hero: '/products/blustream/byod-switch.png',
     finishes: [
@@ -1530,7 +1530,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Blustream’s Video over IP range distributes and switches AV across standard network infrastructure, scaling from a handful of screens to hundreds. SDVoE transceivers carry uncompressed 4K at 100 microseconds of latency; 1Gb 4K systems with Dante and 100Mbps HD endpoints share the same control architecture for video walls, matrix switching, KVM and digital signage.',
     metaDescription:
-      'Blustream Video over IP range — SDVoE, 1Gb 4K with Dante and HD endpoints for video wall, matrix and KVM. Distributed in the UAE and Pakistan by Leading IT.',
+      'Blustream Video over IP range — SDVoE, 1Gb 4K with Dante and HD endpoints for video wall, matrix and KVM. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Blustream Video over IP', 'Blustream SDVoE', 'Blustream AV over IP UAE', 'Blustream AV over IP Pakistan', 'video wall distribution'],
     hero: '/products/blustream/ip-sdvoe.png',
     finishes: [
@@ -1573,7 +1573,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Long HDMI runs are where 8K falls over. Precision 48 is an active optic copper cable with integrated circuits in the connector that keep the signal inside spec at 10 m, 15 m and 30 m — HDMI 2.1 at 8K/60 and 4K/120, with 10-, 12- and 16-bit colour and eARC. The construction resists EMI and RFI, which matters in a riser shared with mains and lighting circuits. It is certified Ultra High Speed by HDMI Licensing rather than only rated by the manufacturer.',
     metaDescription:
-      'Blustream Precision 48 — 48Gbps 8K active optical HDMI 2.1 cable with eARC, HDR and integrated signal conditioning. Supplied in the UAE and Pakistan by Leading IT.',
+      'Blustream Precision 48 — 48Gbps 8K active optical HDMI 2.1 cable with eARC, HDR and integrated signal conditioning. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Blustream Precision 48', '48Gbps HDMI cable', '8K AOC HDMI cable', 'Blustream Precision 48 UAE', 'Blustream Precision 48 Pakistan'],
     hero: '/products/blustream/precision-48-detail.png',
     finishes: [
@@ -1675,7 +1675,7 @@ export const PRODUCTS: Product[] = [
     description:
       'ARIA reduces the keypad to a single sheet of glass. Touch points respond immediately under engraved icons and text, each backlight takes its own colour and intensity, and the whole panel dims itself once the room settles. The ARIA 12 adds a slider function; the ARIA M1 carries a monochrome OLED for temperature control.',
     metaDescription:
-      'Black Nova ARIA glass touch keypad — ARIA M1, ARIA 12 and ARIA Slider layouts with engraved icons and customisable LED backlight. Supplied in the UAE and Pakistan by Leading IT.',
+      'Black Nova ARIA glass touch keypad — ARIA M1, ARIA 12 and ARIA Slider layouts with engraved icons and customisable LED backlight. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Black Nova ARIA', 'ARIA keypad', 'ARIA 12', 'ARIA Slider', 'glass touch keypad', 'Black Nova UAE', 'Black Nova Pakistan'],
     hero: bn('aria-off.png'),
     finishes: [
@@ -1719,7 +1719,7 @@ export const PRODUCTS: Product[] = [
     description:
       'ANY is Black Nova’s smart touch panel — a design masterpiece built around an 841-LED matrix and a multitouch capacitive surface. Proximity, gesture and ambient-light sensors let it wake as you approach and dim into the night, while its display and thermostat functions bring an entire room under one considered control.',
     metaDescription:
-      'Black Nova ANY smart touch panel with 841-LED matrix, multitouch, proximity, gesture and ambient-light sensors, and thermostat functions. Distributed in the UAE and Pakistan by Leading IT.',
+      'Black Nova ANY smart touch panel with 841-LED matrix, multitouch, proximity, gesture and ambient-light sensors, and thermostat functions. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Black Nova ANY', 'ANY touch panel', 'ANY smart panel', 'LED matrix keypad', 'Black Nova UAE', 'Black Nova Pakistan', 'luxury touch panel Dubai'],
     hero: bn('any-on.png'),
     finishes: [
@@ -1760,7 +1760,7 @@ export const PRODUCTS: Product[] = [
     description:
       'AXES is Black Nova’s hospitality family: guest-room touch panels, door panels with an RGB accessibility status indicator, numeric keypads and card holders that can carry a Mifare-compatible reader. Engraved icons and per-point programmable backlights let a whole floor be finished to one hotel’s brand identity.',
     metaDescription:
-      'Black Nova AXES hospitality touch panels — AXES TT, 9, CH, DR, KN and N3 for guest rooms, doors and card holders. Supplied in the UAE and Pakistan by Leading IT.',
+      'Black Nova AXES hospitality touch panels — AXES TT, 9, CH, DR, KN and N3 for guest rooms, doors and card holders. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Black Nova AXES', 'AXES touch panel', 'AXES TT', 'AXES KN', 'hotel keypad', 'hospitality touch panel', 'Black Nova UAE Pakistan'],
     hero: bn('axes-tt.png'),
     finishes: [
@@ -1807,7 +1807,7 @@ export const PRODUCTS: Product[] = [
     description:
       'BLACK JACK is Black Nova’s capsule collection with La Maison Meljac. The frame and buttons are brass, finished in Mat Noir, Nickel Brossé, Champagne or Médaille Allemand, with round or square buttons. Every keypad carries a dimmable RGB backlight and temperature and humidity sensors; the M1 pairs six of them with a monochrome OLED that can show temperature, media or room information from the controller.',
     metaDescription:
-      'Black Nova BLACK JACK keypad — a capsule collection with Meljac of France, RGB backlight, temperature & humidity sensors and the M1 OLED display. Distributed in the UAE and Pakistan by Leading IT.',
+      'Black Nova BLACK JACK keypad — a capsule collection with Meljac of France, RGB backlight, temperature & humidity sensors and the M1 OLED display. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Black Nova Black Jack', 'Black Jack keypad', 'Black Jack M1', 'Meljac keypad', 'Black Nova Meljac', 'Black Nova UAE', 'Black Nova Pakistan'],
     hero: bn('bj-m1.png'),
     finishes: [
@@ -1855,7 +1855,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Eleven amplified channels at 140 W each make Cinema 30 the Marantz receiver for rooms that would otherwise need separates. Discrete HDAM SA-2 circuitry, dual-DAC conversion and a monolithic symmetrical amplifier sit behind seven 8K HDMI inputs with eARC, and Audyssey MultEQ XT32 handles calibration with Dirac Live available. Built at Marantz’s Shirakawa plant in Japan.',
     metaDescription:
-      'Marantz Cinema 30 reference 11.4 channel 8K AV receiver with Dolby Atmos, DTS:X Pro and HEOS. Distributed and supported across the UAE and Pakistan by Leading IT.',
+      'Marantz Cinema 30 reference 11.4 channel 8K AV receiver with Dolby Atmos, DTS:X Pro and HEOS. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz Cinema 30', 'Cinema 30 AV receiver', 'Marantz Cinema 30 UAE', 'Marantz Cinema 30 Pakistan', '11.4 channel AV receiver'],
     hero: '/products/marantz/cinema-30.png',
     finishes: [mzBlack('/products/marantz/cinema-30.png'), mzSilverGold('/products/marantz/cinema-30-silver.png')],
@@ -1884,7 +1884,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Cinema 40 delivers reference-tier home cinema with nine amplified channels at 125 watts each. Extensive 8K connectivity, IMAX Enhanced and Dirac-ready calibration make it the heart of an uncompromising theatre.',
     metaDescription:
-      'Marantz Cinema 40 reference 9.4 channel 8K AV receiver, 125W per channel with Dolby Atmos and Audyssey XT32. Supplied across the UAE and Pakistan by Leading IT.',
+      'Marantz Cinema 40 reference 9.4 channel 8K AV receiver, 125W per channel with Dolby Atmos and Audyssey XT32. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz Cinema 40', 'Cinema 40 AV receiver', 'Marantz Cinema 40 UAE', 'Marantz Cinema 40 Pakistan', '9.4 channel 8K receiver'],
     hero: '/products/marantz/cinema-40.png',
     finishes: [mzBlack('/products/marantz/cinema-40.png'), mzSilverGold('/products/marantz/cinema-40-silver.png')],
@@ -1913,7 +1913,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Cinema 50 carries 9.4 channels at 110 W with six 8K HDMI inputs — the point in the Cinema range where speaker-layout freedom stops being a compromise. Audyssey MultEQ XT32 plus optional Dirac Live lets an installer tune it to a treated room or an untreated one. Marantz’s official tier for it is Premium.',
     metaDescription:
-      'Marantz Cinema 50 premium 9.4 channel 8K AV receiver, 110W per channel with Dolby Atmos and Audyssey XT32. Distributed in the UAE and Pakistan by Leading IT.',
+      'Marantz Cinema 50 premium 9.4 channel 8K AV receiver, 110W per channel with Dolby Atmos and Audyssey XT32. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz Cinema 50', 'Cinema 50 AV receiver', 'Marantz Cinema 50 UAE', 'Marantz Cinema 50 Pakistan', '9.4 channel AV receiver'],
     hero: '/products/marantz/cinema-50.png',
     finishes: [mzBlack('/products/marantz/cinema-50.png'), mzSilverGold('/products/marantz/cinema-50-silver.png')],
@@ -1944,7 +1944,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Cinema 60 is the 7.2-channel entry to the Cinema range: 100 W per channel, six HDMI inputs and the full immersive format set, in the chassis depth an apartment or family room can actually take. Marantz’s own tier name for it is Signature.',
     metaDescription:
-      'Marantz Cinema 60 premium 7.2 channel 8K AV receiver with Dolby Atmos, DTS:X and HEOS streaming. Supplied across the UAE and Pakistan by Leading IT.',
+      'Marantz Cinema 60 premium 7.2 channel 8K AV receiver with Dolby Atmos, DTS:X and HEOS streaming. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz Cinema 60', 'Cinema 60 AV receiver', 'Marantz Cinema 60 UAE', 'Marantz Cinema 60 Pakistan', '7.2 channel AV receiver'],
     hero: '/products/marantz/cinema-60.png',
     finishes: [mzBlack('/products/marantz/cinema-60.png'), mzSilverGold('/products/marantz/cinema-60-silver.png')],
@@ -1973,7 +1973,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Cinema 70s puts 7.2 channels at 50 W into a chassis short enough for a closed credenza or a shallow rack — the reason it gets specified where a full-height receiver will not go. Six HDMI inputs (three 8K) with eARC, the current immersive formats, and an HD on-screen interface for setup from the seat.',
     metaDescription:
-      'Marantz Cinema 70s slimline 7.2 channel 8K AV receiver with Dolby Atmos and HEOS streaming. Distributed in the UAE and Pakistan by Leading IT.',
+      'Marantz Cinema 70s slimline 7.2 channel 8K AV receiver with Dolby Atmos and HEOS streaming. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz Cinema 70s', 'Cinema 70s AV receiver', 'Marantz Cinema 70s UAE', 'Marantz Cinema 70s Pakistan', 'slimline AV receiver'],
     hero: '/products/marantz/cinema-70s.png',
     finishes: [mzBlack('/products/marantz/cinema-70s.png'), mzSilverGold('/products/marantz/cinema-70s-silver.png')],
@@ -2002,7 +2002,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Stereo 70s answers the client who wants one box for the television and the record player. Two channels at 75 W plus dual subwoofer outputs, six 8K HDMI inputs with ARC, an MM phono stage and HEOS streaming, in the same shallow chassis as Cinema 70s.',
     metaDescription:
-      'Marantz Stereo 70s slimline stereo network receiver, 75W per channel with 8K HDMI, HEOS and phono input. Supplied across the UAE and Pakistan by Leading IT.',
+      'Marantz Stereo 70s slimline stereo network receiver, 75W per channel with 8K HDMI, HEOS and phono input. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz Stereo 70s', 'Stereo 70s receiver', 'Marantz Stereo 70s UAE', 'Marantz Stereo 70s Pakistan', 'stereo network receiver'],
     hero: '/products/marantz/stereo-70s.png',
     finishes: [mzBlack('/products/marantz/stereo-70s.png'), mzSilverGold('/products/marantz/stereo-70s-silver.png')],
@@ -2031,7 +2031,7 @@ export const PRODUCTS: Product[] = [
     description:
       'AV 10 is Marantz’s reference home theatre processor, built in Shirakawa with proprietary HDAM circuitry. Fifteen channels of fully balanced output, immersive 8K formats and Dirac-ready calibration meet the most demanding installations.',
     metaDescription:
-      'Marantz AV 10 reference 15.4 channel AV processor with fully balanced outputs, 8K HDMI and Dolby Atmos. Supplied across the UAE and Pakistan by Leading IT.',
+      'Marantz AV 10 reference 15.4 channel AV processor with fully balanced outputs, 8K HDMI and Dolby Atmos. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz AV 10', 'AV 10 processor', 'Marantz AV 10 UAE', 'Marantz AV 10 Pakistan', 'reference AV processor'],
     hero: '/products/marantz/av-10.png',
     finishes: [mzBlack('/products/marantz/av-10.png')],
@@ -2060,7 +2060,7 @@ export const PRODUCTS: Product[] = [
     description:
       'AV 20 is a thirteen-channel balanced AV preamplifier engineered for reference installations. Seven 8K HDMI inputs, full immersive format support and HEOS streaming deliver precise, room-corrected cinema sound.',
     metaDescription:
-      'Marantz AV 20 reference 13.4 channel balanced AV preamplifier with 8K HDMI, Dolby Atmos and Audyssey XT32. Distributed in the UAE and Pakistan by Leading IT.',
+      'Marantz AV 20 reference 13.4 channel balanced AV preamplifier with 8K HDMI, Dolby Atmos and Audyssey XT32. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz AV 20', 'AV 20 preamplifier', 'Marantz AV 20 UAE', 'Marantz AV 20 Pakistan', 'balanced AV preamplifier'],
     hero: '/products/marantz/av-20.png',
     finishes: [mzBlack('/products/marantz/av-20.png')],
@@ -2089,7 +2089,7 @@ export const PRODUCTS: Product[] = [
     description:
       'AV 30 is an eleven-channel balanced AV preamplifier delivering cinema-quality sound to dedicated theatres. Marantz HDAM circuitry, 8K-ready HDMI and HEOS streaming combine with comprehensive surround format support.',
     metaDescription:
-      'Marantz AV 30 reference 11.4 channel balanced AV preamplifier with 8K HDMI, Dolby Atmos and Audyssey XT32. Supplied in the UAE and Pakistan by Leading IT.',
+      'Marantz AV 30 reference 11.4 channel balanced AV preamplifier with 8K HDMI, Dolby Atmos and Audyssey XT32. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz AV 30', 'AV 30 preamplifier', 'Marantz AV 30 UAE', 'Marantz AV 30 Pakistan', 'balanced AV preamplifier'],
     hero: '/products/marantz/av-30.png',
     finishes: [mzBlack('/products/marantz/av-30.png')],
@@ -2120,7 +2120,7 @@ export const PRODUCTS: Product[] = [
     description:
       'AMP 10 is a sixteen-channel reference power amplifier delivering 200 watts per channel with custom HDAM technology. Built in Shirakawa, Japan, it pairs Marantz’s signature musicality with the channel count and headroom flagship cinema demands.',
     metaDescription:
-      'Marantz AMP 10 sixteen-channel reference power amplifier, 200W per channel with custom HDAM. Distributed in the UAE and Pakistan by Leading IT.',
+      'Marantz AMP 10 sixteen-channel reference power amplifier, 200W per channel with custom HDAM. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz AMP 10', 'AMP 10 amplifier', 'Marantz AMP 10 UAE', 'Marantz AMP 10 Pakistan', '16 channel power amplifier'],
     hero: '/products/marantz/amp-10.png',
     finishes: [mzBlack('/products/marantz/amp-10.png')],
@@ -2149,7 +2149,7 @@ export const PRODUCTS: Product[] = [
     description:
       'AMP 20 is a twelve-channel reference power amplifier delivering 200 watts per channel through custom Class D amplification. Crafted in Shirakawa, Japan with a copper-plated chassis, it is the twelve-channel partner specified alongside AV 20.',
     metaDescription:
-      'Marantz AMP 20 twelve-channel reference power amplifier, 200W per channel with HDAM-SA2 and copper-plated chassis. Supplied in the UAE and Pakistan by Leading IT.',
+      'Marantz AMP 20 twelve-channel reference power amplifier, 200W per channel with HDAM-SA2 and copper-plated chassis. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz AMP 20', 'AMP 20 amplifier', 'Marantz AMP 20 UAE', 'Marantz AMP 20 Pakistan', '12 channel power amplifier'],
     hero: '/products/marantz/amp-20.png',
     finishes: [mzBlack('/products/marantz/amp-20.png')],
@@ -2178,7 +2178,7 @@ export const PRODUCTS: Product[] = [
     description:
       'AMP 30 is a slimline six-channel power amplifier delivering 200 watts per channel. Built in Shirakawa with exclusive HDAM and Class D amplification, it extends AV separates or stacks with other AMP models to scale any high-performance system.',
     metaDescription:
-      'Marantz AMP 30 slimline six-channel power amplifier, 200W per channel with exclusive HDAM. Distributed in the UAE and Pakistan by Leading IT.',
+      'Marantz AMP 30 slimline six-channel power amplifier, 200W per channel with exclusive HDAM. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz AMP 30', 'AMP 30 amplifier', 'Marantz AMP 30 UAE', 'Marantz AMP 30 Pakistan', '6 channel power amplifier'],
     hero: '/products/marantz/amp-30.png',
     finishes: [mzBlack('/products/marantz/amp-30.png')],
@@ -2207,7 +2207,7 @@ export const PRODUCTS: Product[] = [
     description:
       'M-CR612 puts CD, tuner, network streaming and 60 W per channel into one shallow box for a bedroom, study or second lounge. HEOS multi-room, AirPlay 2 and Bluetooth cover streaming; the disc drive and AM/FM tuner cover the collection already in the room.',
     metaDescription:
-      'Marantz M-CR612 compact network CD receiver with HEOS multi-room streaming, AirPlay 2 and 60W per channel. Distributed in the UAE and Pakistan by Leading IT.',
+      'Marantz M-CR612 compact network CD receiver with HEOS multi-room streaming, AirPlay 2 and 60W per channel. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz M-CR612', 'M-CR612 network CD receiver', 'Marantz M-CR612 UAE', 'Marantz M-CR612 Pakistan', 'compact network receiver'],
     hero: '/products/marantz/m-cr612.png',
     finishes: [mzBlack('/products/marantz/m-cr612.png'), mzSilverGold('/products/marantz/m-cr612-silver.png')],
@@ -2236,7 +2236,7 @@ export const PRODUCTS: Product[] = [
     description:
       'CD6007 is a slimline disc player with a custom HDAM output buffer and 192 kHz/24-bit conversion with two selectable digital filters. A front USB port handles WAV, FLAC, ALAC, AIFF and DSD, so one shelf unit covers both the disc collection and a file library.',
     metaDescription:
-      'Marantz CD6007 CD player with custom HDAM, 192kHz/24-bit and DSD playback from CD and USB. Supplied across the UAE and Pakistan by Leading IT.',
+      'Marantz CD6007 CD player with custom HDAM, 192kHz/24-bit and DSD playback from CD and USB. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz CD6007', 'CD6007 CD player', 'Marantz CD6007 UAE', 'Marantz CD6007 Pakistan', 'hi-res CD player'],
     hero: '/products/marantz/cd6007.png',
     finishes: [mzBlack('/products/marantz/cd6007.png'), mzSilverGold('/products/marantz/cd6007-silver.png')],
@@ -2265,7 +2265,7 @@ export const PRODUCTS: Product[] = [
     description:
       'LINK 10n is the 10 Series front end: a streamer and full preamplifier in one, on a fully balanced 2.1 architecture inside a triple-layer aluminium chassis with copper plating. Balanced and single-ended analogue inputs, digital inputs, an MM/MC phono stage and a full-colour HD display mean it can be the only source component in a reference stereo system.',
     metaDescription:
-      'Marantz LINK 10n reference streaming preamplifier with fully balanced architecture, HEOS, Roon Ready and phono input. Distributed in the UAE and Pakistan by Leading IT.',
+      'Marantz LINK 10n reference streaming preamplifier with fully balanced architecture, HEOS, Roon Ready and phono input. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz LINK 10n', 'LINK 10n streamer', 'Marantz LINK 10n UAE', 'Marantz LINK 10n Pakistan', 'reference streaming preamplifier'],
     hero: '/products/marantz/link-10n.png',
     finishes: [mzBlack('/products/marantz/link-10n.png')],
@@ -2294,7 +2294,7 @@ export const PRODUCTS: Product[] = [
     description:
       'MODEL 10 is Marantz’s new reference integrated amplifier, delivering 250 watts per channel through a fully balanced dual-mono topology and an all-new Marantz SMPS. A triple-layer copper-plated chassis houses it, and Marantz states the amplifier was conceived and engineered at its Shirakawa facility in Japan.',
     metaDescription:
-      'Marantz MODEL 10 reference integrated amplifier, 250W per channel with dual-mono Class D and all-new SMPS. Supplied across the UAE and Pakistan by Leading IT.',
+      'Marantz MODEL 10 reference integrated amplifier, 250W per channel with dual-mono Class D and all-new SMPS. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz MODEL 10', 'MODEL 10 integrated amplifier', 'Marantz MODEL 10 UAE', 'Marantz MODEL 10 Pakistan', 'reference integrated amplifier'],
     hero: '/products/marantz/model-10.png',
     finishes: [mzSilverGold('/products/marantz/model-10.png')],
@@ -2323,7 +2323,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Grand Horizon is Marantz’s flagship wireless speaker — a sculptural sphere wrapped in Radiance fabric with no visible seam. An 8" Gravity woofer, four wideband and three high-frequency drivers are powered by 370 watts of Marantz Rise GaN amplification, streamed through HEOS.',
     metaDescription:
-      'Marantz Grand Horizon flagship wireless speaker with 370W GaN amplification, HEOS, AirPlay 2 and HDMI eARC. Distributed in the UAE and Pakistan by Leading IT.',
+      'Marantz Grand Horizon flagship wireless speaker with 370W GaN amplification, HEOS, AirPlay 2 and HDMI eARC. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz Grand Horizon', 'Grand Horizon wireless speaker', 'Marantz Grand Horizon UAE', 'Marantz Grand Horizon Pakistan', 'luxury wireless speaker'],
     hero: '/products/marantz/grand-horizon.png',
     finishes: [
@@ -2359,7 +2359,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Horizon is Marantz’s wireless speaker for clients who want the sound without the rack. A 6.5" Gravity woofer, three wideband and two high-frequency drivers are driven by 310 W (FTC) of Marantz Rise GaN FET amplification, with HEOS streaming and HDMI eARC for television sound.',
     metaDescription:
-      'Marantz Horizon reference wireless speaker with 310W GaN amplification, HEOS, AirPlay 2 and HDMI eARC. Supplied across the UAE and Pakistan by Leading IT.',
+      'Marantz Horizon reference wireless speaker with 310W GaN amplification, HEOS, AirPlay 2 and HDMI eARC. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz Horizon', 'Horizon wireless speaker', 'Marantz Horizon UAE', 'Marantz Horizon Pakistan', 'premium wireless speaker'],
     hero: '/products/marantz/horizon.png',
     finishes: [
@@ -2429,7 +2429,7 @@ export const PRODUCTS: Product[] = [
     description:
       'DLA-NZ900 is JVC’s flagship projector — three native 4K D-ILA devices with 8K/e-shiftX, a 3,300-lumen BLU-Escent laser and 150,000:1 native contrast behind a 100 mm all-glass lens. The final word in dedicated home cinema.',
     metaDescription:
-      'JVC DLA-NZ900 flagship 8K D-ILA laser projector — 3,300 lumens, 150,000:1 native contrast, HDR10+. Distributed in the UAE and Pakistan by Leading IT.',
+      'JVC DLA-NZ900 flagship 8K D-ILA laser projector — 3,300 lumens, 150,000:1 native contrast, HDR10+. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['JVC DLA-NZ900', 'DLA-NZ900 projector', 'JVC NZ900 UAE', 'JVC NZ900 Pakistan', '8K home cinema projector'],
     hero: '/products/jvc/dla-nz900.png',
     finishes: [mzBlack('/products/jvc/dla-nz900.png')],
@@ -2458,7 +2458,7 @@ export const PRODUCTS: Product[] = [
     description:
       'DLA-NZ800 brings JVC’s reference imaging to dedicated theatres — native 4K D-ILA with 8K/e-shiftX, a 2,700-lumen BLU-Escent laser and 100,000:1 native contrast, with second-generation Frame Adapt HDR for disc and streaming alike.',
     metaDescription:
-      'JVC DLA-NZ800 reference 8K D-ILA laser projector — 2,700 lumens, 100,000:1 native contrast, HDR10+. Supplied across the UAE and Pakistan by Leading IT.',
+      'JVC DLA-NZ800 reference 8K D-ILA laser projector — 2,700 lumens, 100,000:1 native contrast, HDR10+. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['JVC DLA-NZ800', 'DLA-NZ800 projector', 'JVC NZ800 UAE', 'JVC NZ800 Pakistan', '8K laser projector'],
     hero: '/products/jvc/dla-nz800.png',
     finishes: [mzBlack('/products/jvc/dla-nz800.png')],
@@ -2487,7 +2487,7 @@ export const PRODUCTS: Product[] = [
     description:
       'DLA-NZ700 delivers true native 4K D-ILA imaging from a compact chassis — a 2,300-lumen BLU-Escent laser, 80,000:1 native contrast and HDR10+ with Frame Adapt HDR bring genuine cinema depth to more rooms.',
     metaDescription:
-      'JVC DLA-NZ700 native 4K D-ILA laser projector — 2,300 lumens, 80,000:1 native contrast, HDR10+. Distributed in the UAE and Pakistan by Leading IT.',
+      'JVC DLA-NZ700 native 4K D-ILA laser projector — 2,300 lumens, 80,000:1 native contrast, HDR10+. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['JVC DLA-NZ700', 'DLA-NZ700 projector', 'JVC NZ700 UAE', 'JVC NZ700 Pakistan', '4K laser projector'],
     hero: '/products/jvc/dla-nz700.png',
     finishes: [mzBlack('/products/jvc/dla-nz700.png')],
@@ -2519,7 +2519,7 @@ export const PRODUCTS: Product[] = [
     description:
       'DLA-NZ500 opens the door to genuine JVC cinema — native 4K D-ILA imaging, a 2,000-lumen BLU-Escent laser and 40,000:1 native contrast in the same compact chassis as the NZ700, with HDR10+ support throughout.',
     metaDescription:
-      'JVC DLA-NZ500 native 4K D-ILA laser projector — 2,000 lumens, 40,000:1 native contrast, HDR10+. Supplied across the UAE and Pakistan by Leading IT.',
+      'JVC DLA-NZ500 native 4K D-ILA laser projector — 2,000 lumens, 40,000:1 native contrast, HDR10+. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['JVC DLA-NZ500', 'DLA-NZ500 projector', 'JVC NZ500 UAE', 'JVC NZ500 Pakistan', '4K D-ILA projector'],
     hero: '/products/jvc/dla-nz500.png',
     finishes: [mzBlack('/products/jvc/dla-nz500.png')],
@@ -2548,7 +2548,7 @@ export const PRODUCTS: Product[] = [
     description:
       'LX-NZ30 brings JVC picture science to bright, multi-purpose rooms — a 3,300-lumen BLU-Escent laser drives a 4K DLP engine with HDR10, HLG and JVC’s acclaimed auto-tone-mapping, in a compact body that installs anywhere.',
     metaDescription:
-      'JVC LX-NZ30 4K laser DLP projector — 3,300 lumens, HDR10 and HLG, BLU-Escent laser light source. Distributed in the UAE and Pakistan by Leading IT.',
+      'JVC LX-NZ30 4K laser DLP projector — 3,300 lumens, HDR10 and HLG, BLU-Escent laser light source. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['JVC LX-NZ30', 'LX-NZ30 projector', 'JVC LX-NZ30 UAE', 'JVC LX-NZ30 Pakistan', '4K laser projector'],
     hero: '/products/jvc/lx-nz30.png',
     finishes: [mzBlack('/products/jvc/lx-nz30.png'), pkWhite('/products/jvc/lx-nz30-white.png')],
@@ -2581,7 +2581,7 @@ export const PRODUCTS: Product[] = [
     description:
       'AVC-A1H carries fifteen amplified channels at 150 W and supports layouts up to 9.4.6 — Denon presents it as the world’s first 15-channel AV receiver. Denon states it is designed and manufactured at its Japanese facilities and handcrafted at Shirakawa Audio Works, with audiophile-grade DACs, gold-plated terminals and a triple-layer chassis.',
     metaDescription:
-      'Denon AVC-A1H flagship 15.4 channel 8K AV amplifier, 150W per channel with Dolby Atmos, DTS:X Pro and Auro-3D. Distributed in the UAE and Pakistan by Leading IT.',
+      'Denon AVC-A1H flagship 15.4 channel 8K AV amplifier, 150W per channel with Dolby Atmos, DTS:X Pro and Auro-3D. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Denon AVC-A1H', 'AVC-A1H amplifier', 'Denon A1H UAE', 'Denon A1H Pakistan', '15.4 channel AV amplifier'],
     hero: '/products/denon/avc-a1h.png',
     finishes: [mzBlack('/products/denon/avc-a1h.png')],
@@ -2610,7 +2610,7 @@ export const PRODUCTS: Product[] = [
     description:
       'AVC-A10H sits one step below the A1H: 13.4 channels at 150 W, seven HDMI inputs, and layouts up to 7.4.6 or 9.4.4. Nine two-channel DACs, gold-plated terminals and a rigid triple-layer chassis do the work Denon reserves for its Shirakawa-built receivers, and it will run three zones.',
     metaDescription:
-      'Denon AVC-A10H reference 13.4 channel 8K AV amplifier, 150W per channel with Dolby Atmos and DTS:X Pro. Supplied across the UAE and Pakistan by Leading IT.',
+      'Denon AVC-A10H reference 13.4 channel 8K AV amplifier, 150W per channel with Dolby Atmos and DTS:X Pro. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Denon AVC-A10H', 'AVC-A10H amplifier', 'Denon A10H UAE', 'Denon A10H Pakistan', '13.4 channel AV amplifier'],
     hero: '/products/denon/avc-a10h.png',
     finishes: [mzBlack('/products/denon/avc-a10h.png')],
@@ -2643,7 +2643,7 @@ export const PRODUCTS: Product[] = [
     description:
       'AVC-X8500H is a superseded model — Denon lists it under its product archive, and the current equivalent is the AVC-X8500HA. It carries thirteen amplified channels at 150 watts each, with monolithic amplifier construction and full immersive format support for large theatres. Talk to us before specifying it on a new project.',
     metaDescription:
-      'Denon AVC-X8500H 13.2 channel AV amplifier, 150W per channel — archived by Denon and superseded by the AVC-X8500HA. Distributed in the UAE and Pakistan by Leading IT.',
+      'Denon AVC-X8500H 13.2 channel AV amplifier, 150W per channel — archived by Denon and superseded by the AVC-X8500HA. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Denon AVC-X8500H', 'AVC-X8500H amplifier', 'Denon X8500H UAE', 'Denon X8500H Pakistan', '13.2 channel AV amplifier'],
     hero: '/products/denon/avc-x8500h.png',
     finishes: [mzBlack('/products/denon/avc-x8500h.png')],
@@ -2672,7 +2672,7 @@ export const PRODUCTS: Product[] = [
     description:
       'AVC-X6800H commands large theatres with eleven amplified channels at 140 watts each. Full 8K connectivity, four independent subwoofer outputs and Dirac-ready calibration bring flagship capability within reach.',
     metaDescription:
-      'Denon AVC-X6800H 11.4 channel 8K AV amplifier, 140W per channel with Dolby Atmos, DTS:X Pro and HEOS. Supplied across the UAE and Pakistan by Leading IT.',
+      'Denon AVC-X6800H 11.4 channel 8K AV amplifier, 140W per channel with Dolby Atmos, DTS:X Pro and HEOS. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Denon AVC-X6800H', 'AVC-X6800H amplifier', 'Denon X6800H UAE', 'Denon X6800H Pakistan', '11.4 channel AV amplifier'],
     hero: '/products/denon/avc-x6800h.png',
     finishes: [mzBlack('/products/denon/avc-x6800h.png')],
@@ -2701,7 +2701,7 @@ export const PRODUCTS: Product[] = [
     description:
       'AVC-X4800H is the 9.4-channel receiver for a large living room rather than a dedicated cinema: 125 W a channel, seven 8K-ready HDMI inputs and three outputs, and the full immersive set including Auro-3D and IMAX Enhanced. Audyssey is installed; Dirac Live Room Correction and Bass Control are paid upgrades. Denon states it is designed and manufactured in Japan.',
     metaDescription:
-      'Denon AVC-X4800H 9.4 channel 8K AV amplifier, 125W per channel with Dolby Atmos and DTS:X Pro. Distributed in the UAE and Pakistan by Leading IT.',
+      'Denon AVC-X4800H 9.4 channel 8K AV amplifier, 125W per channel with Dolby Atmos and DTS:X Pro. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Denon AVC-X4800H', 'AVC-X4800H amplifier', 'Denon X4800H UAE', 'Denon X4800H Pakistan', '9.4 channel AV amplifier'],
     hero: '/products/denon/avc-x4800h.png',
     finishes: [mzBlack('/products/denon/avc-x4800h.png')],
@@ -2730,7 +2730,7 @@ export const PRODUCTS: Product[] = [
     description:
       'AVC-X3800H is the model integrators reach for when the brief needs four separately controlled subwoofers without stepping up to the 6800H. Nine amplified channels at 105 W, eleven-channel processing, six 8K HDMI inputs and three outputs, and Dirac Live available over the installed Audyssey MultEQ XT32.',
     metaDescription:
-      'Denon AVC-X3800H 9.4 channel 8K AV amplifier, 105W per channel with Dolby Atmos and four subwoofer outputs. Supplied in the UAE and Pakistan by Leading IT.',
+      'Denon AVC-X3800H 9.4 channel 8K AV amplifier, 105W per channel with Dolby Atmos and four subwoofer outputs. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Denon AVC-X3800H', 'AVC-X3800H amplifier', 'Denon X3800H UAE', 'Denon X3800H Pakistan', '9.4 channel AV amplifier'],
     hero: '/products/denon/avc-x3800h.png',
     finishes: [mzBlack('/products/denon/avc-x3800h.png')],
@@ -2759,7 +2759,7 @@ export const PRODUCTS: Product[] = [
     description:
       'AVR-X2800H is the 7.2-channel receiver for a medium room at 95 W a channel, with six HDMI inputs (three 8K-ready) and two outputs. The extra channels can drive a second zone instead of height speakers, which is what makes it flexible on a retrofit.',
     metaDescription:
-      'Denon AVR-X2800H 7.2 channel 8K AV receiver, 95W per channel with Dolby Atmos, DTS:X and HEOS. Distributed in the UAE and Pakistan by Leading IT.',
+      'Denon AVR-X2800H 7.2 channel 8K AV receiver, 95W per channel with Dolby Atmos, DTS:X and HEOS. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Denon AVR-X2800H', 'AVR-X2800H receiver', 'Denon X2800H UAE', 'Denon X2800H Pakistan', '7.2 channel AV receiver'],
     hero: '/products/denon/avr-x2800h.png',
     finishes: [mzBlack('/products/denon/avr-x2800h.png')],
@@ -2788,7 +2788,7 @@ export const PRODUCTS: Product[] = [
     description:
       'AVR-X1800H makes true home theatre effortless — seven amplified channels at 80 watts, Dolby Atmos and DTS:X, 8K-ready HDMI and HEOS streaming, with Denon’s guided setup assistant.',
     metaDescription:
-      'Denon AVR-X1800H 7.2 channel 8K AV receiver, 80W per channel with Dolby Atmos and HEOS streaming. Supplied across the UAE and Pakistan by Leading IT.',
+      'Denon AVR-X1800H 7.2 channel 8K AV receiver, 80W per channel with Dolby Atmos and HEOS streaming. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Denon AVR-X1800H', 'AVR-X1800H receiver', 'Denon X1800H UAE', 'Denon X1800H Pakistan', '7.2 channel AV receiver'],
     hero: '/products/denon/avr-x1800h.png',
     finishes: [mzBlack('/products/denon/avr-x1800h.png')],
@@ -2817,7 +2817,7 @@ export const PRODUCTS: Product[] = [
     description:
       'AVR-S970H covers a 7.2 or 5.2.2 layout at 90 W a channel with 8K/60 and 4K/120 pass-through. Dolby Atmos Height Virtualizer and DTS Virtual:X give an overhead impression where height speakers cannot be installed, and Denon’s guided setup plus Audyssey MultEQ handle calibration.',
     metaDescription:
-      'Denon AVR-S970H 7.2 channel 8K AV receiver with Dolby Atmos, DTS:X and HEOS Built-in. Distributed in the UAE and Pakistan by Leading IT.',
+      'Denon AVR-S970H 7.2 channel 8K AV receiver with Dolby Atmos, DTS:X and HEOS Built-in. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Denon AVR-S970H', 'AVR-S970H receiver', 'Denon S970H UAE', 'Denon S970H Pakistan', '7.2 channel 8K receiver'],
     hero: '/products/denon/avr-s970h.png',
     finishes: [mzBlack('/products/denon/avr-s970h.png')],
@@ -2846,7 +2846,7 @@ export const PRODUCTS: Product[] = [
     description:
       'AVC-S670H is a 5.2-channel amplifier at 75 W a channel with discrete high-current output stages on every channel. It decodes Dolby TrueHD and DTS-HD Master Audio, passes 8K, and joins a HEOS multi-room system, which suits a compact media room rather than a dedicated cinema.',
     metaDescription:
-      'Denon AVC-S670H 5.2 channel 8K AV amplifier with Dolby TrueHD, DTS-HD Master Audio and HEOS. Supplied across the UAE and Pakistan by Leading IT.',
+      'Denon AVC-S670H 5.2 channel 8K AV amplifier with Dolby TrueHD, DTS-HD Master Audio and HEOS. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Denon AVC-S670H', 'AVC-S670H amplifier', 'Denon S670H UAE', 'Denon S670H Pakistan', '5.2 channel AV amplifier'],
     hero: '/products/denon/avc-s670h.png',
     finishes: [mzBlack('/products/denon/avc-s670h.png')],
@@ -2875,7 +2875,7 @@ export const PRODUCTS: Product[] = [
     description:
       'AVR-X580BT is the 5.2-channel option for a small room: 70 W a channel, four HDMI inputs with 8K and eARC, Dolby TrueHD and DTS-HD decoding, and VRR/ALLM/QFT for a console. Streaming is Bluetooth only — there is no network stage, which is the trade for the price.',
     metaDescription:
-      'Denon AVR-X580BT 5.2 channel 8K AV receiver with Dolby TrueHD, DTS-HD and Bluetooth streaming. Distributed in the UAE and Pakistan by Leading IT.',
+      'Denon AVR-X580BT 5.2 channel 8K AV receiver with Dolby TrueHD, DTS-HD and Bluetooth streaming. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Denon AVR-X580BT', 'AVR-X580BT receiver', 'Denon X580BT UAE', 'Denon X580BT Pakistan', '5.2 channel 8K receiver'],
     hero: '/products/denon/avr-x580bt.png',
     finishes: [mzBlack('/products/denon/avr-x580bt.png')],
@@ -2904,7 +2904,7 @@ export const PRODUCTS: Product[] = [
     description:
       'AVR-X250BT is the smallest Denon we carry: 5.1 channels, five HDMI inputs with 4K and ARC pass-through, and Bluetooth for music. Denon rates it at 130 W per channel maximum. It is the right answer for a guest room or a first system, not for a treated cinema.',
     metaDescription:
-      'Denon AVR-X250BT 5.1 channel 4K AV receiver with HDR passthrough and Bluetooth streaming. Supplied across the UAE and Pakistan by Leading IT.',
+      'Denon AVR-X250BT 5.1 channel 4K AV receiver with HDR passthrough and Bluetooth streaming. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Denon AVR-X250BT', 'AVR-X250BT receiver', 'Denon X250BT UAE', 'Denon X250BT Pakistan', '5.1 channel AV receiver'],
     hero: '/products/denon/avr-x250bt.jpg',
     finishes: [mzBlack('/products/denon/avr-x250bt.jpg')],
@@ -2933,7 +2933,7 @@ export const PRODUCTS: Product[] = [
     description:
       'DRA-900H is a two-channel receiver with the video switching of an AV model: 100 W a channel, six HDMI inputs (three 8K-ready) with eARC, an MM phono stage and two subwoofer outputs. It suits the client whose main system is a pair of speakers but whose sources include a projector.',
     metaDescription:
-      'Denon DRA-900H 2.2 channel 8K stereo network receiver, 100W per channel with phono input and HEOS. Distributed in the UAE and Pakistan by Leading IT.',
+      'Denon DRA-900H 2.2 channel 8K stereo network receiver, 100W per channel with phono input and HEOS. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Denon DRA-900H', 'DRA-900H receiver', 'Denon DRA-900H UAE', 'Denon DRA-900H Pakistan', 'stereo network receiver'],
     hero: '/products/denon/dra-900h.png',
     finishes: [mzBlack('/products/denon/dra-900h.png')],
@@ -2964,7 +2964,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Reserve R700 is the largest tower in the Reserve range — a 1" Pinnacle ring radiator tweeter, 6.5" Turbine Cone midrange and dual 8" woofers with Power Port 2.0 and X-Port bass loading. IMAX Enhanced and Hi-Res certified for reference theatre and music alike.',
     metaDescription:
-      'Polk Audio Reserve R700 flagship tower speaker — Pinnacle tweeter, Turbine Cone mid, dual 8" woofers, IMAX Enhanced. Distributed in the UAE and Pakistan by Leading IT.',
+      'Polk Audio Reserve R700 flagship tower speaker — Pinnacle tweeter, Turbine Cone mid, dual 8" woofers, IMAX Enhanced. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Polk Reserve R700', 'Reserve R700 tower speaker', 'Polk R700 UAE', 'Polk R700 Pakistan', 'flagship floor-standing speaker'],
     hero: '/products/polk-audio/reserve-r700.png',
     finishes: [mzBlack('/products/polk-audio/reserve-r700.png'), pkBrown('/products/polk-audio/reserve-r700-brown.png')],
@@ -2993,7 +2993,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Reserve R600 is the tower to specify when R700 will not fit the room or the budget: the same 1" Pinnacle ring radiator tweeter over dual 6.5" Turbine Cone woofers with Power Port 2.0. Polk rates it 43 Hz–38 kHz at −3 dB and 87.5 dB sensitivity, and it is Hi-Res Audio certified.',
     metaDescription:
-      'Polk Audio Reserve R600 tower speaker — 1" Pinnacle tweeter, dual 6.5" Turbine Cone woofers, Hi-Res certified. Supplied across the UAE and Pakistan by Leading IT.',
+      'Polk Audio Reserve R600 tower speaker — 1" Pinnacle tweeter, dual 6.5" Turbine Cone woofers, Hi-Res certified. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Polk Reserve R600', 'Reserve R600 tower speaker', 'Polk R600 UAE', 'Polk R600 Pakistan', 'floor-standing speaker'],
     hero: '/products/polk-audio/reserve-r600.png',
     finishes: [mzBlack('/products/polk-audio/reserve-r600.png'), pkWhite('/products/polk-audio/reserve-r600-white.png'), pkBrown('/products/polk-audio/reserve-r600-brown.png')],
@@ -3022,7 +3022,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Reserve R500 packs the full Reserve voicing into a compact, room-friendly tower — a 1" Pinnacle ring radiator tweeter and dual 5.25" Turbine Cone woofers that disappear into the architecture and the soundstage alike.',
     metaDescription:
-      'Polk Audio Reserve R500 slim tower speaker — 1" Pinnacle tweeter, dual 5.25" Turbine Cone woofers. Distributed in the UAE and Pakistan by Leading IT.',
+      'Polk Audio Reserve R500 slim tower speaker — 1" Pinnacle tweeter, dual 5.25" Turbine Cone woofers. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Polk Reserve R500', 'Reserve R500 tower speaker', 'Polk R500 UAE', 'Polk R500 Pakistan', 'slim floor-standing speaker'],
     hero: '/products/polk-audio/reserve-r500.png',
     finishes: [mzBlack('/products/polk-audio/reserve-r500.png'), pkWhite('/products/polk-audio/reserve-r500-white.png')],
@@ -3051,7 +3051,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Reserve R400 anchors the front stage with a 1" Pinnacle ring radiator tweeter and dual 6.5" Turbine Cone woofers — dialogue with weight and clarity to match the Reserve towers on either side.',
     metaDescription:
-      'Polk Audio Reserve R400 center channel speaker — 1" Pinnacle tweeter, dual 6.5" Turbine Cone woofers. Supplied across the UAE and Pakistan by Leading IT.',
+      'Polk Audio Reserve R400 center channel speaker — 1" Pinnacle tweeter, dual 6.5" Turbine Cone woofers. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Polk Reserve R400', 'Reserve R400 center speaker', 'Polk R400 UAE', 'Polk R400 Pakistan', 'center channel speaker'],
     hero: '/products/polk-audio/reserve-r400.png',
     finishes: [mzBlack('/products/polk-audio/reserve-r400.png')],
@@ -3080,7 +3080,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Reserve R350 is a 5"-deep enclosure with a 1" Pinnacle ring radiator tweeter and four 4" Turbine Cone woofers, sealed rather than ported. Because it works vertically as well as horizontally and takes a four-way wall mount, one specification covers the centre channel or a full slim front stage on-wall.',
     metaDescription:
-      'Polk Audio Reserve R350 slim LCR speaker — 1" Pinnacle tweeter, four 4" Turbine Cone woofers, wall-mountable. Distributed in the UAE and Pakistan by Leading IT.',
+      'Polk Audio Reserve R350 slim LCR speaker — 1" Pinnacle tweeter, four 4" Turbine Cone woofers, wall-mountable. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Polk Reserve R350', 'Reserve R350 LCR speaker', 'Polk R350 UAE', 'Polk R350 Pakistan', 'slim center channel'],
     hero: '/products/polk-audio/reserve-r350.png',
     finishes: [mzBlack('/products/polk-audio/reserve-r350.png')],
@@ -3109,7 +3109,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Reserve R300 delivers clear, natural dialogue from a compact chassis — a 1" Pinnacle ring radiator tweeter flanked by dual 5.25" Turbine Cone woofers, voiced to blend with any Reserve loudspeaker pair.',
     metaDescription:
-      'Polk Audio Reserve R300 center channel speaker — 1" Pinnacle tweeter, dual 5.25" Turbine Cone woofers. Supplied across the UAE and Pakistan by Leading IT.',
+      'Polk Audio Reserve R300 center channel speaker — 1" Pinnacle tweeter, dual 5.25" Turbine Cone woofers. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Polk Reserve R300', 'Reserve R300 center speaker', 'Polk R300 UAE', 'Polk R300 Pakistan', 'compact center channel'],
     hero: '/products/polk-audio/reserve-r300.png',
     finishes: [mzBlack('/products/polk-audio/reserve-r300.png')],
@@ -3138,7 +3138,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Reserve R900 places the height layer exactly where the mix intends it — an up-firing Dolby Atmos module with a 0.75" Pinnacle ring radiator tweeter and 4" Turbine Cone woofer that perches atop Reserve towers and bookshelves.',
     metaDescription:
-      'Polk Audio Reserve R900 Dolby Atmos height module — Pinnacle tweeter and Turbine Cone woofer for Reserve towers. Distributed in the UAE and Pakistan by Leading IT.',
+      'Polk Audio Reserve R900 Dolby Atmos height module — Pinnacle tweeter and Turbine Cone woofer for Reserve towers. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Polk Reserve R900', 'Reserve R900 height module', 'Polk R900 UAE', 'Polk R900 Pakistan', 'Dolby Atmos speaker module'],
     hero: '/products/polk-audio/reserve-r900.png',
     finishes: [mzBlack('/products/polk-audio/reserve-r900.png')],
@@ -3178,7 +3178,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Signature Elite ES60 is the largest of the Elite towers — a 1" Terylene tweeter over three 6.5" mid-woofers with Power Port bass, filling big rooms with the dynamic, cinema-scale sound Polk built its name on.',
     metaDescription:
-      'Polk Audio Signature Elite ES60 tower speaker — 1" tweeter, three 6.5" drivers, Hi-Res certified. Supplied across the UAE and Pakistan by Leading IT.',
+      'Polk Audio Signature Elite ES60 tower speaker — 1" tweeter, three 6.5" drivers, Hi-Res certified. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Polk Signature Elite ES60', 'ES60 tower speaker', 'Polk ES60 UAE', 'Polk ES60 Pakistan', 'floor-standing speaker'],
     hero: '/products/polk-audio/signature-elite-es60.png',
     finishes: [mzBlack('/products/polk-audio/signature-elite-es60.png'), pkWhite('/products/polk-audio/signature-elite-es60-white.png'), pkBrown('/products/polk-audio/signature-elite-es60-brown.png')],
@@ -3207,7 +3207,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Signature Elite ES55 balances the Elite range — a 1" Terylene tweeter and dual 6.5" mid-woofers deliver detailed music and convincing home theatre from a gracefully proportioned cabinet.',
     metaDescription:
-      'Polk Audio Signature Elite ES55 tower speaker — 1" tweeter, dual 6.5" drivers, Hi-Res certified. Distributed in the UAE and Pakistan by Leading IT.',
+      'Polk Audio Signature Elite ES55 tower speaker — 1" tweeter, dual 6.5" drivers, Hi-Res certified. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Polk Signature Elite ES55', 'ES55 tower speaker', 'Polk ES55 UAE', 'Polk ES55 Pakistan', 'floor-standing speaker'],
     hero: '/products/polk-audio/signature-elite-es55.png',
     finishes: [mzBlack('/products/polk-audio/signature-elite-es55.png'), pkWhite('/products/polk-audio/signature-elite-es55-white.png'), pkBrown('/products/polk-audio/signature-elite-es55-brown.png')],
@@ -3236,7 +3236,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Signature Elite ES50 fits the Elite sound into a slender floor-standing profile — a 1" Terylene tweeter and dual 5.25" mid-woofers for music, movies and gaming in medium rooms.',
     metaDescription:
-      'Polk Audio Signature Elite ES50 compact tower speaker — 1" tweeter, dual 5.25" drivers, Hi-Res certified. Supplied across the UAE and Pakistan by Leading IT.',
+      'Polk Audio Signature Elite ES50 compact tower speaker — 1" tweeter, dual 5.25" drivers, Hi-Res certified. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Polk Signature Elite ES50', 'ES50 tower speaker', 'Polk ES50 UAE', 'Polk ES50 Pakistan', 'compact floor-standing speaker'],
     hero: '/products/polk-audio/signature-elite-es50.png',
     finishes: [mzBlack('/products/polk-audio/signature-elite-es50.png'), pkWhite('/products/polk-audio/signature-elite-es50-white.png'), pkBrown('/products/polk-audio/signature-elite-es50-brown.png')],
@@ -3265,7 +3265,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Signature Elite ES35 solves the low-profile cabinet and the TV console alike — a 1" Terylene tweeter with six 3" mid-woofers in a slim enclosure that keeps dialogue locked to the screen.',
     metaDescription:
-      'Polk Audio Signature Elite ES35 slim center channel speaker — 1" tweeter and six 3" drivers. Distributed in the UAE and Pakistan by Leading IT.',
+      'Polk Audio Signature Elite ES35 slim center channel speaker — 1" tweeter and six 3" drivers. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Polk Signature Elite ES35', 'ES35 center speaker', 'Polk ES35 UAE', 'Polk ES35 Pakistan', 'slim center channel'],
     hero: '/products/polk-audio/signature-elite-es35.png',
     finishes: [mzBlack('/products/polk-audio/signature-elite-es35.png')],
@@ -3294,7 +3294,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Signature Elite ES30 gives the front stage its voice — a 1" Terylene tweeter and dual 5.25" mid-woofers deliver clear, dynamic dialogue that matches the Elite towers and bookshelves around it.',
     metaDescription:
-      'Polk Audio Signature Elite ES30 center channel speaker — 1" tweeter and dual 5.25" drivers. Supplied across the UAE and Pakistan by Leading IT.',
+      'Polk Audio Signature Elite ES30 center channel speaker — 1" tweeter and dual 5.25" drivers. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Polk Signature Elite ES30', 'ES30 center speaker', 'Polk ES30 UAE', 'Polk ES30 Pakistan', 'center channel speaker'],
     hero: '/products/polk-audio/signature-elite-es30.png',
     finishes: [mzBlack('/products/polk-audio/signature-elite-es30.png')],
@@ -3323,7 +3323,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Signature Elite ES90 adds an up-firing height pair on top of an existing Signature Elite tower or bookshelf, so an Atmos layer goes in without opening the ceiling. It uses a 1" Terylene dome tweeter and a 5.25" mica-fortified polypropylene midrange woofer, and Polk rates it at 85 dB. Polk lists it as fitting ES20, ES55 and ES60 (and Signature S20/S55/S60) only — not ES50/S50 or ES15/S15.',
     metaDescription:
-      'Polk Audio Signature Elite ES90 Dolby Atmos-certified height module for Signature Elite speakers. Distributed in the UAE and Pakistan by Leading IT.',
+      'Polk Audio Signature Elite ES90 Dolby Atmos-certified height module for Signature Elite speakers. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Polk Signature Elite ES90', 'ES90 height module', 'Polk ES90 UAE', 'Polk ES90 Pakistan', 'Dolby Atmos module'],
     hero: '/products/polk-audio/signature-elite-es90.png',
     finishes: [mzBlack('/products/polk-audio/signature-elite-es90.png')],
@@ -3358,7 +3358,7 @@ export const PRODUCTS: Product[] = [
     description:
       'Reference Series is the horn-loaded range UandKSound positions for dedicated cinema rooms, and the only one it describes as developed with film-industry sound engineers. The M1200LCR pairs a single 12" ferrite-magnet woofer with a horn tweeter on the same baffle plane and is rated 45 Hz–20 kHz ±3 dB at 97 dB; the M1800SW adds an 18" passive bass-reflex subwoofer. UandKSound states the high-density MDF enclosure was developed to meet THX standards and that the modular format is intended for placement behind large projection screens.',
     metaDescription:
-      'UandKSound Reference Series cinema speakers — horn-loaded M1200LCR, M800SR and M1800SW subwoofer, THX-standard enclosures. Distributed in the UAE and Pakistan by Leading IT.',
+      'UandKSound Reference Series cinema speakers — horn-loaded M1200LCR, M800SR and M1800SW subwoofer, THX-standard enclosures. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['UandKSound Reference Series', 'M1200LCR', 'M1800SW subwoofer', 'UandKSound cinema speakers UAE', 'UandKSound Pakistan', 'horn-loaded cinema loudspeaker'],
     hero: uk('reference-m1200lcr.png'),
     finishes: [ukBlack(uk('reference-m1200lcr.png'), 'Black Yarn Paint')],
@@ -3420,7 +3420,7 @@ export const PRODUCTS: Product[] = [
     description:
       'M8 Series is the three-way tier of the UandKSound cinema range, crossed over at 12 dB/octave. The M850N on-wall model runs 2 × 8" and 2 × 4" composite-pulp drivers behind a 1" brushed aluminium oxide treble panel, rated 90 dB and 45 Hz–22 kHz ±3 dB; the M820IW is the in-wall equivalent. The matching M1500N subwoofer is a 15" Class D design rated 1200 W peak with room EQ.',
     metaDescription:
-      'UandKSound M8 Series three-way on-wall and in-wall cinema speakers — M850N, M820IW and the M1500N subwoofer. Supplied in the UAE and Pakistan by Leading IT.',
+      'UandKSound M8 Series three-way on-wall and in-wall cinema speakers — M850N, M820IW and the M1500N subwoofer. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['UandKSound M8 Series', 'M850N', 'M820IW in-wall', 'M1500N subwoofer', 'three-way cinema speaker', 'UandKSound UAE', 'UandKSound Pakistan'],
     hero: uk('m8-m850n.png'),
     finishes: [ukBlack(uk('m8-m850n.png'), 'Satin Black')],
@@ -3483,7 +3483,7 @@ export const PRODUCTS: Product[] = [
     description:
       'M6 Series is the slim tier: the same Air Motion tweeter as M8 in a shallower cabinet, available on-wall (M610N, M620N) and in-wall (M610IW, M600IW). The M620N is 132 mm deep, runs 2 × 6.5" and 2 × 4" drivers at 89 dB and 45 Hz–22 kHz ±3 dB, and weighs 13 kg — the depth is why it gets specified into stud walls and joinery. The M1200N subwoofer completes it with a 12" Class D driver rated 1200 W peak.',
     metaDescription:
-      'UandKSound M6 Series slim on-wall and in-wall cinema speakers with Air Motion tweeter — M610N, M620N, in-wall models and M1200N subwoofer. Distributed in the UAE and Pakistan by Leading IT.',
+      'UandKSound M6 Series slim on-wall and in-wall cinema speakers with Air Motion tweeter — M610N, M620N, in-wall models and M1200N subwoofer. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['UandKSound M6 Series', 'M620N', 'M610IW', 'M1200N subwoofer', 'Air Motion tweeter', 'UandKSound UAE Pakistan'],
     hero: uk('m6-m620n.png'),
     finishes: [ukBlack(uk('m6-m620n.png'), 'Satin Black')],
@@ -3571,7 +3571,7 @@ export const PRODUCTS: Product[] = [
     description:
       'E Series is the architectural range: in-wall (E610IW, E620IW), in-ceiling (E610C, E650FX) and a 12" subwoofer (E1200I), all voice- and timbre-matched to the rest of the UandKSound line. Mounting depth on the E620IW is 98 mm behind a 456 × 186 mm cut-out, and the paintable micro-perforated grille attaches magnetically, so the finished result is a painted wall with a 220 mm-wide outline. Aluminium 6.5" cones and a 1" aluminium tweeter with ±3 dB adjustment handle the tuning.',
     metaDescription:
-      'UandKSound E Series in-wall and in-ceiling custom speakers with paintable micro-perforated grilles — E610, E620, E650 and E1200I subwoofer. Distributed in the UAE and Pakistan by Leading IT.',
+      'UandKSound E Series in-wall and in-ceiling custom speakers with paintable micro-perforated grilles — E610, E620, E650 and E1200I subwoofer. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['UandKSound E Series', 'E620IW', 'E610C in-ceiling', 'E1200I subwoofer', 'invisible in-wall speaker', 'UandKSound UAE Pakistan'],
     hero: uk('e-e620iw.png'),
     finishes: [ukBlack(uk('e-e620iw.png'), 'Black · Paintable Grille')],
@@ -3654,7 +3654,7 @@ export const PRODUCTS: Product[] = [
     description:
       'The M4500D is the one M Series amplifier still in production: four bridgeable Class D channels, 750 W each into 4 Ω, in a single chassis. Published distortion is under 0.001% from 20 Hz to 20 kHz, with signal-to-noise above 110 dB. A 12 V DC trigger brings the amplifier up with the processor, so a rack in a Dubai villa cinema wakes in the right order instead of thumping through the room. UandKSound has discontinued the rest of the M Series — the M2300, M7300 and M7300D — so the M4500D is the amplifier Leading IT specifies in the UAE and supplies into Pakistan.',
     metaDescription:
-      'UandKSound M Series: M4500D is the current model — four Class D channels, 750 W each into 4 Ω, bridgeable. Supplied in the UAE and Pakistan by Leading IT.',
+      'UandKSound M Series: M4500D is the current model — four Class D channels, 750 W each into 4 Ω, bridgeable. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['UandKSound M Series amplifier', 'M4500D', 'multichannel cinema amplifier', 'UandKSound UAE Pakistan'],
     hero: uk('m-m4500d.png'),
     finishes: [ukBlack(uk('m-m4500d.png'), 'Black')],

@@ -8,21 +8,29 @@
  * `.env.example`: that file documents real secrets, and mixing a public value
  * into it teaches the next maintainer that the file is not sensitive.
  *
- * ## It ships empty, and that is load-bearing
+ * ## Configured 2026-08-05 — and that has a deploy precondition
  *
- * No Turnstile keys exist yet — the pair has never been created and was never
- * raised as a question in Phases 0–4 (logged as OPEN-QUESTIONS #44).
+ * The widget is named `leadingit.me contact form` in Cloudflare: mode
+ * **Managed**, hostnames `leadingit.me` and `www.leadingit.me`, pre-clearance
+ * off. Its site key is the constant below (OPEN-QUESTIONS #44; full setup
+ * write-up in the local `docs/17-TURNSTILE-SETUP.md`).
+ *
+ * Because that constant is now non-empty, `isTurnstileConfigured()` returns
+ * true, and `Contact.tsx` takes the **live POST path** to `/api/contact.php`
+ * instead of the `mailto:` fallback it used through Phases 0–5.
  *
  * `/api/contact.php` **requires** a valid Turnstile token and rejects any
- * submission without one. So a contact form that POSTed to it today would fail
- * 100% of the time. Rather than ship a form that is guaranteed to be broken,
- * `Contact.tsx` reads `isTurnstileConfigured()` and keeps the pre-Phase-5
- * behaviour — composing an honest `mailto:` draft, never a fake "message sent"
- * — until a real key is pasted in here. The moment it is, the same form starts
- * POSTing to the endpoint with no other change.
+ * submission without one — verified against Cloudflare using the paired
+ * server-side key, which lives ONLY in the server env file outside the web
+ * root, under `TURNSTILE_VERIFY_TOKEN`, and never in this repo. **Therefore:
+ * do not deploy a build of this site until that env value is populated on the
+ * server.** With the site key present and the server value missing, every
+ * submission fails — which is louder than the fallback it replaced.
  *
- * That is deliberate: the handoff's standing rule is that the working mailto
- * path is never deleted without a working replacement in place.
+ * Emptying this constant is still a valid rollback: it restores the `mailto:`
+ * path, which composes an honest draft and never claims a message was sent.
+ * The standing rule that produced that design holds — the working mailto path
+ * is never deleted without a working replacement in place.
  */
 // Annotated `: string` deliberately. Without it TypeScript narrows this to the
 // literal type `""`, and `isTurnstileConfigured()`'s comparison below becomes
@@ -31,7 +39,7 @@
 // Verified by pasting a test key in and watching `npm run lint` fail.
 // The widened type costs nothing: Rollup still sees the literal value and
 // dead-code-eliminates the unreachable branch at build time.
-export const TURNSTILE_SITE_KEY: string = '';
+export const TURNSTILE_SITE_KEY: string = '0x4AAAAAAEHAKltFGPHTvMqV';
 
 /**
  * Turnstile's own script, loaded only when a key exists. Implicit rendering:

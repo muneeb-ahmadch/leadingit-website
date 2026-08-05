@@ -6,14 +6,22 @@
  * one of those. See `docs/15-ANALYTICS-SETUP.md` for the click-by-click setup guide and
  * `plans/phase-5-conversion-forms.md` for the six events this layer implements.
  *
- * ## Inertness contract
+ * ## Status — LIVE since 2026-08-05
  *
- * `GA4_MEASUREMENT_ID` below ships **empty** because no GA4 property exists yet. While it
- * is empty this entire module is a no-op: no `<script>` tag is ever injected, no request is
- * ever sent to `googletagmanager.com`, and no cookie is ever set. Every exported tracking
- * function funnels through `sendEvent()`, which returns immediately if the ID is empty —
- * before anything touches the DOM or the network. The day a real `G-XXXXXXXXXX` is pasted
- * into the constant, all six events start reporting with no other code change required.
+ * The GA4 property now exists and `GA4_MEASUREMENT_ID` below holds its real value, so this
+ * module is no longer inert: from the next build onward it injects the gtag script and sets
+ * an analytics cookie per the consent posture recorded below. Property/account identifiers
+ * and the owning Google login are deliberately NOT recorded here — the repo is public and
+ * they are not needed at runtime. They live in `docs/15-ANALYTICS-SETUP.md` §3a (gitignored).
+ *
+ * ## Inertness contract (historic — applies only while the ID is empty)
+ *
+ * While `GA4_MEASUREMENT_ID` is the empty string this entire module is a no-op: no `<script>`
+ * tag is ever injected, no request is ever sent to `googletagmanager.com`, and no cookie is
+ * ever set. Every exported tracking function funnels through `sendEvent()`, which returns
+ * immediately if the ID is empty — before anything touches the DOM or the network. Verified
+ * against emitted `dist/` output on 2026-08-03 (Rollup dead-code-eliminates the whole module).
+ * Kept documented because blanking the constant is the one-line kill switch for all tracking.
  *
  * ## SSG safety
  *
@@ -52,16 +60,16 @@
  * and it is his to make. **If EU/UK traffic ever becomes material, revisit it** — Search
  * Console's country report is where that would first show up.
  *
- * Nothing happens until `GA4_MEASUREMENT_ID` is non-empty; while it is empty this whole
- * module is tree-shaken out and no cookie of any kind is set.
+ * As of 2026-08-05 the measurement ID is populated, so this posture is now in force on every
+ * build rather than pending — cookies are set for real visitors from the next deploy.
  *
  * `setAnalyticsConsent()` remains exported so a banner can still be added later and flip the
  * signal per-visitor without touching this file.
  */
 
 /**
- * GA4 measurement ID. Empty until a GA4 property exists — see "Inertness contract" above
- * and docs/15-ANALYTICS-SETUP.md for exactly where to paste the real value.
+ * GA4 measurement ID for the `leadingit.me` property, created 2026-08-05 (closes OQ #42).
+ * Set to `''` to switch all tracking off again — the module tree-shakes away entirely.
  *
  * Deliberately a plain exported constant, not an environment variable. This is a static
  * SSG build with no server at request time (HostGator shared cPanel, no Node) — a GA4
@@ -78,7 +86,7 @@
 // against it a type error the moment a real ID is pasted in — breaking the build
 // for whoever follows the setup guide. Rollup still sees the literal value and
 // tree-shakes this module out entirely while the ID is empty.
-export const GA4_MEASUREMENT_ID: string = '';
+export const GA4_MEASUREMENT_ID: string = 'G-G9GQ6YZNYV';
 
 /**
  * Consent Mode v2 default for `analytics_storage`. See "Consent posture" above. Not a

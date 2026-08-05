@@ -94,7 +94,9 @@ export function homeMeta(): PageMeta {
     // "Dubai" — brand-name defence needs both (docs/04 §8, N1).
     title: `${SITE_NAME} — Premium Automation Distributor, Dubai`,
     // 128 chars.
-    description: `${SITE_NAME} is a Dubai-based distributor of premium home, cinema and industrial automation, supplied across the UAE and Pakistan.`,
+    // "Industrial" left this sentence 2026-08-05: Muneeb dropped that line of
+    // business outright ("not doing this anymore" — document.md answers).
+    description: `${SITE_NAME} is a Dubai-based distributor of premium home and cinema automation, supplied across the UAE and Pakistan.`,
     path: '/',
     ogImage: DEFAULT_OG_IMAGE,
     ogType: 'website',

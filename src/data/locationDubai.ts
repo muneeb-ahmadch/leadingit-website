@@ -8,31 +8,19 @@
  * because `src/components/AnswerBlocks.tsx` renders exactly those shapes — one
  * renderer, one contract, and a second near-identical type would drift.
  *
- * ## The NAP constraint is the whole design of this page
+ * ## The NAP was confirmed 2026-08-05 — one source feeds every mention
  *
- * `docs/OPEN-QUESTIONS.md` #1 is unanswered: the exact registered address in
- * trade-licence format (unit, tower, street, community, PO Box) does not exist
- * in any source available here. `docs/00-CONTEXT.md` §4 confirms exactly three
- * things about the premises, and those three are all that appear below:
+ * Muneeb answered `docs/OPEN-QUESTIONS.md` #1/#8: the tower is the **Business
+ * Bay** International Business Tower, and the showroom is **by appointment
+ * only**. The canonical strings live in `src/data/nap.ts` (`NAP_ADDRESS_LINE`,
+ * `SHOWROOM_VISIT_POLICY`) and are composed into the copy below — never
+ * retyped — so the footer, the contact page, this page and the `LocalBusiness`
+ * JSON-LD (now emitted sitewide by `<Seo>`) stay character-identical.
  *
- *   1. one showroom, **International Business Tower, Shop 6, Dubai**;
- *   2. the single number **+971 58 586 5222**;
- *   3. the single enquiry address **services@leadingit.me**.
- *
- * Everything else a location page normally carries is **absent, not hedged**:
- * no street, no community, no PO Box, no latitude/longitude, no map embed, no
- * legal entity name, and **no opening hours anywhere — in copy or in schema**
- * (`docs/OPEN-QUESTIONS.md` #8). Hours are the single most-checked field in a
- * local result, and a vague answer is worse than no answer, so the "when is it
- * open" H2 the brief lists is deliberately not written and no FAQ implies an
- * appointment policy either.
- *
- * The confirmed tower-and-shop line ships **as prose only**. It is never
- * rendered as a formatted address block and never becomes a `PostalAddress`:
- * `src/seo/jsonld/localBusiness.ts` stays gated behind `NAP_CONFIRMED === false`
- * and this page does not call it. A partial `LocalBusiness` would fail the
- * zero-warnings gate *and* publish an unverified NAP into citations that then
- * have to be corrected one by one.
+ * Still absent, not hedged, because still unsupplied: the PO Box, the street
+ * line, and day/time opening hours (there are none — the policy is
+ * appointment-only, so no `openingHours` is emitted in schema and no invented
+ * times appear in copy).
  *
  * ## What the brief asked for and is not here
  *
@@ -54,6 +42,7 @@
  * places below (`docs/05-URL-TAXONOMY.md` §5a).
  */
 import type { SolutionFaq, SolutionSection } from '@/data/solutions';
+import { NAP_ADDRESS_LINE, SHOWROOM_VISIT_POLICY } from '@/data/nap';
 
 export type LocationContent = {
   /** The one `<h1>` on the page. */
@@ -83,15 +72,13 @@ export const DUBAI_LOCATION: LocationContent = {
       id: 'where-is-leading-it-in-dubai',
       question: 'Where is Leading IT based in Dubai?',
       answer:
-        'Leading IT operates a showroom in Dubai, United Arab Emirates, at Shop 6, International ' +
-        'Business Tower. It is the only Leading IT premises.',
+        `Leading IT operates a showroom at ${NAP_ADDRESS_LINE}. ` +
+        'It is the only Leading IT premises.',
       body: [
-        // The confirmed line from `docs/00-CONTEXT.md` §4 and nothing beyond it.
-        // The community, the PO Box and the geo-coordinates are OQ #1 and are
-        // stated as absent rather than approximated — see the file header.
-        'The rest of the postal address is not published here yet. Send a message on either channel ' +
-          'below and the team replies with the full address and directions, so nobody travels on ' +
-          'half of one.',
+        // Address and visit policy render from `src/data/nap.ts` — the one
+        // source — never retyped here (see the file header).
+        `Visits are ${SHOWROOM_VISIT_POLICY.toLowerCase()}. Send a message on either channel ` +
+          'below to arrange one, and the team confirms a time and directions in the reply.',
         'There is no second office. Work in the other Emirates, and supply into Pakistan, is ' +
           'delivered from Dubai rather than from a local branch. This site therefore has no page ' +
           'claiming one.',
@@ -109,8 +96,8 @@ export const DUBAI_LOCATION: LocationContent = {
           'audio; JVC covers projection. Each has a hub page here carrying its full range.',
         'LIT Home, the control interface Leading IT builds itself, runs alongside them. It is ' +
           'demonstrated in full on this site rather than described.',
-        'Industrial and building automation is part of the same scope. It is quoted from drawings ' +
-          'and a specification rather than from a page, so the route to it is the two channels below.',
+        'Security systems are supplied on the same basis. They are specified per project rather ' +
+          'than from a catalogue page, so the route to them is the two channels below.',
         'Integrators have their own path. Trade supply runs on part numbers and quantities rather ' +
           'than on rooms, and it has a separate page.',
       ],
@@ -206,6 +193,13 @@ export const DUBAI_LOCATION: LocationContent = {
     },
   ],
   faq: [
+    {
+      question: 'Is the Leading IT showroom open by appointment only?',
+      answer:
+        'Yes. The Dubai showroom at Shop 6, International Business Tower, Business Bay receives ' +
+        'visitors by appointment only. Message +971 58 586 5222 on WhatsApp or email ' +
+        'services@leadingit.me and the team confirms a time and sends directions.',
+    },
     {
       question: 'Does Leading IT cover Abu Dhabi and Sharjah?',
       answer:

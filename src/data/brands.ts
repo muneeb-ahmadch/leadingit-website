@@ -47,7 +47,10 @@ export const BRANDS: Brand[] = [
     tagline: 'Design-led architectural interfaces, made in Belgium.',
     category: 'interfaces',
     story:
-      'Basalte makes the switches, panels and audio speakers that disappear into architecture — and the moments where the building meets the hand. Anodized aluminium, sculpted glass, and an obsession with finish.',
+      // The award sentence shipped 2026-08-05 on Muneeb's confirmation (OQ #31,
+      // "put the basalte award"); both awards were verified on basalte.be for
+      // the Miro switch before the sentence was first drafted.
+      'Basalte makes the switches, panels and audio speakers that disappear into architecture — and the moments where the building meets the hand. Anodized aluminium, sculpted glass, and an obsession with finish. Its Miro switch holds both a Red Dot Award and an iF Design Award.',
     heroImage: '/products/basalte/deseo-hero.jpg',
     accent: '#C9A961',
   },

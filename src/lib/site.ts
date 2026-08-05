@@ -3,6 +3,26 @@ export const SITE_URL = 'https://leadingit.me';
 export const SITE_NAME = 'Leading IT';
 export const SITE_TAGLINE = 'Premium Automation Distribution · Gulf & Pakistan';
 
+// Organization identity facts, confirmed by Muneeb 2026-08-05
+// (docs/OPEN-QUESTIONS.md #2 and #8, answered in one batch). These live here —
+// not in src/data/ — because the JSON-LD builders consume them and the builder
+// rule is "no src/data value imports" (src/seo/jsonld/index.ts). The trade
+// licence NUMBER was not supplied and is omitted everywhere, not guessed.
+export const ORG_LEGAL_NAME = 'Leading IT Middle East LLC';
+export const ORG_FOUNDING_YEAR = '2018';
+export const ORG_EMPLOYEES_MIN = 11;
+export const ORG_EMPLOYEES_MAX = 50;
+
+// Verified 2026-08-05: the Instagram handle is the domain itself and the
+// LinkedIn company page lists website leadingit.me + founded 2018, matching
+// Muneeb's confirmed facts — ownership is unambiguous. (LinkedIn's own page
+// data is stale — "Abu Dhabi, 2–10 employees" — flagged to Muneeb to update;
+// that staleness does not make the profile any less officially Leading IT's.)
+export const ORG_SOCIAL_PROFILES: readonly string[] = [
+  'https://www.instagram.com/leadingit.me/',
+  'https://www.linkedin.com/company/leadingit-me',
+];
+
 // Primary WhatsApp lead channel for PK/UAE (international format, digits only, no +).
 export const WHATSAPP_NUMBER = '971585865222';
 

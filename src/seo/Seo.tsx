@@ -37,6 +37,10 @@ import { DEFAULT_OG_IMAGE, type PageMeta } from './meta';
 import { buildGraph } from './jsonld/graph';
 import { buildOrganization } from './jsonld/organization';
 import { buildWebSite } from './jsonld/website';
+import { buildLocalBusiness } from './jsonld/localBusiness';
+// Tiny constant (one address), not a catalog — the manifest-import warning in
+// `imagePreloadLink()`'s comment does not apply at this size.
+import { DUBAI_NAP } from '@/data/nap';
 import { pageUrl } from './jsonld/ids';
 import { CRITICAL_FONT_PRELOADS } from './criticalFonts';
 import type { JsonLdNode } from './jsonld/types';
@@ -213,9 +217,15 @@ export function Seo({ meta, jsonLd, noindex = false, lcpImage }: SeoProps) {
   // that also builds them explicitly stays correct.
   //
   // A page passing no nodes at all (the 404 template) still emits no script.
+  //
+  // The Dubai showroom LocalBusiness node joined the sitewide prepend on
+  // 2026-08-05, the day the NAP was confirmed (OQ #1/#2/#8): Organization
+  // .location references it on every page, so the node must be present on
+  // every page — a dangling `@id` reference is malformed. It also makes each
+  // page self-describing for local queries, same rationale as the other two.
   const graph =
     jsonLd && jsonLd.length > 0
-      ? buildGraph([buildOrganization(), buildWebSite(), ...jsonLd])
+      ? buildGraph([buildOrganization(), buildWebSite(), buildLocalBusiness(DUBAI_NAP), ...jsonLd])
       : null;
 
   return (
