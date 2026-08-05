@@ -37,6 +37,20 @@ declare(strict_types=1);
  * docs/12-PROVENANCE/phase5-endpoint.md.
  */
 
+/**
+ * This endpoint answers JSON and nothing else, so no PHP diagnostic may ever
+ * reach the response body. On the first real execution (Phase 7, PHP 8.5.9) a
+ * single Deprecated notice from curl_close() in Turnstile.php was printed ahead
+ * of the JSON: every response became unparseable by the front end AND the
+ * client was handed the absolute server path. The notice is fixed at source;
+ * these two lines make the CLASS of failure impossible on any host config,
+ * because the shared-hosting PHP settings are not ours to rely on. Diagnostics
+ * still reach error_log, and the endpoint reports its own faults as JSON.
+ */
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
+ob_start();
+
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/lib/Storage.php';
 require_once __DIR__ . '/lib/Spam.php';
@@ -57,6 +71,15 @@ header('Cache-Control: no-store', true);
  */
 function contact_respond(int $httpStatus, string $status, string $message, array $extra = []): never
 {
+    // Discard anything that reached an output buffer before us. Nothing in this
+    // endpoint prints, but a notice or warning raised inside PHPMailer or any
+    // future dependency would otherwise be prepended to the body and break
+    // JSON.parse() in the browser — the exact failure observed on first
+    // execution. The buffer is opened at the top of this file.
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+
     http_response_code($httpStatus);
     echo json_encode(['status' => $status, 'message' => $message] + $extra, JSON_UNESCAPED_SLASHES);
     exit;

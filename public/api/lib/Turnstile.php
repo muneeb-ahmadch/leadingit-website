@@ -41,11 +41,17 @@ final class Turnstile
                 CURLOPT_CONNECTTIMEOUT => 5,
             ]);
             $result = curl_exec($ch);
-            $curlFailed = $result === false;
-            curl_close($ch);
-            if ($curlFailed) {
+            if ($result === false) {
                 $result = null;
             }
+            // No curl_close(). Since PHP 8.0 the handle is an object freed when
+            // $ch goes out of scope, so the call is a no-op on 8.0-8.4 and
+            // raises a Deprecated notice on 8.5+. On a host with display_errors
+            // on, that notice printed itself INTO this endpoint's JSON response
+            // body — making every reply unparseable by the front end and leaking
+            // the absolute server path to the client. Found on the endpoint's
+            // first-ever execution (Phase 7, PHP 8.5.9); contact.php now also
+            // buffers defensively, but the correct fix is not to call it.
         }
 
         if ($result === null) {

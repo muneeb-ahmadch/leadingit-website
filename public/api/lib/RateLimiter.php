@@ -42,6 +42,59 @@ final class RateLimiter
             return $recent;
         });
 
+        $this->maybeCollectGarbage($dir, $now);
+
         return $allowed;
+    }
+
+    /**
+     * Deletes state files that can no longer affect any decision.
+     *
+     * Without this the directory grows by one file per distinct visitor IP and
+     * never shrinks — on shared hosting that is an inode leak measured in years,
+     * and it was accepted into Phase 7 as a known gap rather than shipped
+     * unnoticed. A file is only removed once it is older than TWICE the window,
+     * so a file that is merely idle mid-window is never taken out from under a
+     * concurrent request; and because a returning visitor simply gets a fresh
+     * file, deleting an expired one can never let anyone exceed the limit.
+     *
+     * The 1-in-50 gate keeps the directory scan off the critical path of a
+     * normal submission. It lives in this wrapper and NOT in collectGarbage()
+     * so the sweep itself can be exercised deterministically — folding the two
+     * together makes the only interesting logic here untestable, and a sweep
+     * nobody can test is how an inode leak gets "fixed" twice.
+     */
+    private function maybeCollectGarbage(string $dir, int $now): void
+    {
+        if (random_int(1, 50) !== 1) {
+            return;
+        }
+
+        $this->collectGarbage($dir, $now);
+    }
+
+    /**
+     * The sweep itself. unlink() failures are ignored on purpose: another
+     * worker collecting the same file concurrently is the expected race, and
+     * housekeeping must never take down a live enquiry.
+     */
+    private function collectGarbage(string $dir, int $now): void
+    {
+        $entries = @scandir($dir);
+        if ($entries === false) {
+            return;
+        }
+
+        $expiresBefore = $now - ($this->windowSeconds * 2);
+        foreach ($entries as $entry) {
+            if (!str_ends_with($entry, '.json')) {
+                continue;
+            }
+            $path = $dir . '/' . $entry;
+            $mtime = @filemtime($path);
+            if ($mtime !== false && $mtime < $expiresBefore) {
+                @unlink($path);
+            }
+        }
     }
 }
