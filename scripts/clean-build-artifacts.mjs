@@ -17,7 +17,14 @@
 import { rm } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
-const targets = ['dist/.vite'];
+// dist/.image-pipeline-cache.json is defence in depth, not the fix: the cache was
+// moved out of public/ on 2026-08-06 so it is no longer copied here at all. This
+// entry catches a stale copy left in public/ by an older checkout, so it can never
+// silently ride along into a deploy again.
+//
+// NOTE what is deliberately NOT here: dist/static-loader-data-manifest-*.json is
+// fetched client-side at runtime and must ship. Do not add it.
+const targets = ['dist/.vite', 'dist/.image-pipeline-cache.json'];
 
 for (const target of targets) {
   const abs = resolve(process.cwd(), target);

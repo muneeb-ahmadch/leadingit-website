@@ -26,9 +26,17 @@ import { buildCollectionPage } from '@/seo/jsonld/itemList';
 import { buildBreadcrumbList } from '@/seo/jsonld/breadcrumbList';
 import { breadcrumbNodeId } from '@/seo/jsonld/ids';
 
+/**
+ * Every entry here MUST have a matching `<section id="...">` rendered below.
+ * A `design` entry sat in this list from the start with no section to match it,
+ * so 98 of 124 routes shipped a sticky-nav control that did nothing when
+ * clicked — the exact thing the `hasInUse` comment below says must never ship.
+ * It was invisible to every check that asked "does the link exist?" instead of
+ * "does its target exist?". If you add one, render the section in the same
+ * change; never close the gap with an empty section.
+ */
 const SECTIONS = [
   { id: 'overview', i18nKey: 'product.navOverview' },
-  { id: 'design', i18nKey: 'product.navDesign' },
   { id: 'finishes', i18nKey: 'product.navFinishes' },
   { id: 'specs', i18nKey: 'product.navSpecs' },
   { id: 'in-use', i18nKey: 'product.navInUse' },
