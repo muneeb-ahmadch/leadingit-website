@@ -14,6 +14,7 @@ import { buildWebPage } from '@/seo/jsonld/webpage';
 import { buildBreadcrumbList } from '@/seo/jsonld/breadcrumbList';
 import { breadcrumbNodeId } from '@/seo/jsonld/ids';
 import { whatsappHref } from '@/lib/site';
+import { NAP_ADDRESS_LINE, SHOWROOM_VISIT_POLICY } from '@/data/nap';
 import { SITE_PREFILLS } from '@/lib/prefill';
 import { trackFormSubmit, trackWhatsAppClick, trackEmailClick } from '@/lib/analytics';
 import {
@@ -408,7 +409,13 @@ export function Contact() {
               <MapPin size={18} className="mt-1 shrink-0 text-gold" />
               <div>
                 <div className="text-sm uppercase tracking-luxe text-bone-500">{t('contact.officeGulfLabel')}</div>
-                <div className="mt-2 font-serif text-2xl">{t('contact.officeGulfCity')}</div>
+                {/* Rendered from `src/data/nap.ts` (confirmed 2026-08-05,
+                    OQ #1/#8) — never retyped, so footer, this page, the
+                    location page and the JSON-LD stay character-identical. */}
+                <address className="mt-2 not-italic font-serif text-2xl leading-snug">
+                  {NAP_ADDRESS_LINE}
+                </address>
+                <div className="mt-2 text-sm text-bone-500">{SHOWROOM_VISIT_POLICY}</div>
               </div>
             </div>
 

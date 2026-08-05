@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { href } from '@/seo/paths';
+import { NAP_ADDRESS_LINE, NAP_PHONE_DISPLAY } from '@/data/nap';
 import { LocaleSwitcher } from './LocaleSwitcher';
 
 export function Footer() {
@@ -12,6 +13,16 @@ export function Footer() {
             Leading <span className="text-gold">IT</span>
           </div>
           <p className="mt-6 max-w-md text-bone-500 leading-relaxed">{t('footer.tagline')}</p>
+          {/* The NAP block — confirmed 2026-08-05 (OQ #1/#2/#8) and rendered
+              from `src/data/nap.ts`, never retyped, so this string stays
+              character-identical to the contact page, the location page and
+              the LocalBusiness JSON-LD. `address` is the semantic element;
+              not-italic resets the browser default. */}
+          <address className="mt-6 max-w-md not-italic text-bone-500 leading-relaxed">
+            {NAP_ADDRESS_LINE}
+            <br />
+            {NAP_PHONE_DISPLAY} · services@leadingit.me
+          </address>
         </div>
 
         <div>

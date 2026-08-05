@@ -55,7 +55,10 @@ export const GOOGLE_SPECS = [
     requiredAcknowledgedGaps: [],
     // Google: "There are no required properties; instead, we recommend adding
     // as many properties that are relevant to your organization."
-    recommendedChecked: ['name', 'url', 'description', 'contactPoint'],
+    // foundingDate joined the checked set 2026-08-05: Muneeb confirmed 2018
+    // (OQ #8), and legalName/numberOfEmployees/location shipped in the same
+    // change (src/seo/jsonld/organization.ts).
+    recommendedChecked: ['name', 'url', 'description', 'contactPoint', 'foundingDate'],
     recommendedAcknowledgedGaps: [
       {
         props: ['logo'],
@@ -64,20 +67,10 @@ export const GOOGLE_SPECS = [
         ref: 'docs/OPEN-QUESTIONS.md #8; CLAUDE.md — never invent a value to satisfy a schema property.',
       },
       {
-        props: ['sameAs'],
-        reason: 'no confirmed social profile URLs.',
-        ref: 'docs/OPEN-QUESTIONS.md #8',
-      },
-      {
         props: ['address'],
         reason:
-          'NAP not confirmed yet — gated behind NAP_CONFIRMED in src/seo/jsonld/localBusiness.ts; Dubai-only, never fabricated.',
-        ref: 'docs/OPEN-QUESTIONS.md #1',
-      },
-      {
-        props: ['foundingDate'],
-        reason: 'unverified.',
-        ref: 'docs/OPEN-QUESTIONS.md #8',
+          'deliberate placement, not a gap in the data: the confirmed NAP (2026-08-05) lives on the LocalBusiness showroom node that Organization.location references — duplicating the PostalAddress onto Organization would be a second copy to drift.',
+        ref: 'docs/OPEN-QUESTIONS.md #1 (answered); src/data/nap.ts',
       },
     ],
   },

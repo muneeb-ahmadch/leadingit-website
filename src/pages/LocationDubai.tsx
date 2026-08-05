@@ -19,31 +19,16 @@ import { breadcrumbNodeId } from '@/seo/jsonld/ids';
  * (`docs/05-URL-TAXONOMY.md` §5). Copy lives in `src/data/locationDubai.ts`;
  * this file renders it and decides nothing about content.
  *
- * ## `LocalBusiness` is absent, and that is the point of the page
+ * ## `LocalBusiness` arrives via `<Seo>`, not from this page
  *
- * `src/seo/jsonld/localBusiness.ts` exports `NAP_CONFIRMED = false` and
- * `buildLocalBusiness()` returns `null` while it is. **This page does not call
- * it, does not import it, and must not flip it.** `docs/OPEN-QUESTIONS.md` #1
- * (the registered address in trade-licence format) and #8 (opening hours) are
- * both unanswered, so every property the node needs would have to be invented.
- * Two separate failures follow from emitting it half-populated: Google treats a
- * missing `address`/`geo`/`openingHours` as a *warning*, and this project's gate
- * is zero errors **and** zero warnings; and a guessed NAP propagates into
- * third-party citations that then have to be corrected one at a time.
- *
- * **To turn it on when #1 and #8 land** — one line here, after a real `DubaiNap`
- * value exists in the NAP constants file and `NAP_CONFIRMED` has been flipped in
- * `localBusiness.ts`: add `buildLocalBusiness(DUBAI_NAP)` to the `jsonLd` array
- * below. `<Seo>` drops a `null` node silently, so the call is safe to add before
- * the flag moves, and `Organization.location` gains `SHOWROOM_DUBAI_ID` in the
- * same change. Nothing else on this page depends on it.
- *
- * So the emitted graph is `WebPage` + `BreadcrumbList` + `FAQPage` (plus the
- * sitewide `Organization` and `WebSite` that `<Seo>` prepends). No
- * `PostalAddress`, no `GeoCoordinates`, no `openingHoursSpecification`, no
- * `hasMap`, no `priceRange`, no `aggregateRating`, no `review` — none of them
- * has a source, and an absent property is safe where a fabricated one is a
- * liability.
+ * The NAP was confirmed 2026-08-05 (OQ #1/#2/#8) and `<Seo>` now prepends
+ * `buildLocalBusiness(DUBAI_NAP)` to every page's graph alongside Organization
+ * and WebSite — so this page's own `jsonLd` array stays exactly as it was, and
+ * adding the node here again would only be deduplicated away. The emitted graph
+ * is `WebPage` + `BreadcrumbList` + `FAQPage` + the three sitewide identity
+ * nodes. Still absent because still unsourced: `openingHoursSpecification`
+ * (appointment-only policy, no honest day/time string), `hasMap`, `priceRange`,
+ * `aggregateRating`, `review`.
  *
  * ## Two rendering decisions worth not re-deriving
  *
@@ -95,8 +80,6 @@ export function LocationDubai() {
           }),
           buildBreadcrumbList(crumbs, meta.path),
           buildFaqPage(DUBAI_LOCATION.faq, meta.path),
-          // TODO(OQ #1, OQ #8): buildLocalBusiness(DUBAI_NAP) goes here — see
-          // the header. Do not add it before the address and the hours exist.
         ]}
       />
 

@@ -1,29 +1,23 @@
 import type { JsonLdNode } from './types';
-import { ORG_ID, SHOWROOM_DUBAI_ID } from './ids';
+import { ORG_ID, SHOWROOM_DUBAI_ID, pageUrl } from './ids';
 
 /**
- * GATED — NOT wired into any page yet. `NAP_CONFIRMED` stays `false` until
- * Muneeb confirms the exact registered Dubai NAP, geo-coordinates and opening
- * hours (docs/OPEN-QUESTIONS.md #1, #8). Do not flip this flag as part of
- * routine wiring work.
+ * UNLOCKED 2026-08-05. Muneeb confirmed the NAP (docs/OPEN-QUESTIONS.md #1/#2/#8
+ * answered in one batch): Shop 6, International Business Tower, **Business Bay**
+ * — he answered the Business-Bay-vs-Sheikh-Zayed-Road ambiguity directly. The
+ * one real `DubaiNap` value lives in `src/data/nap.ts` and is passed in by
+ * `<Seo>` sitewide; never retype an address inline.
  *
- * Why gate rather than emit a partial node: Google's LocalBusiness rich
- * result treats a missing `address`/`openingHours`/`geo` as a WARNING, not an
- * error, and this project's structured-data gate (docs/HANDOFF-PHASE-2.md,
- * .claude/skills/schema-jsonld/SKILL.md) is zero errors AND zero warnings. A
- * half-populated LocalBusiness would fail that gate while also publishing an
- * unverified NAP — the exact "fabricated value" failure mode this project
- * forbids, just via omission-shaped fields instead of invented text.
+ * What stays deliberately absent, and why that is not a regression of the old
+ * gate: the showroom is **by appointment only**, so there is no honest
+ * `openingHours` day/time string and none is emitted — the policy is stated in
+ * page copy instead. PO Box and street line were not supplied and are omitted,
+ * not guessed. Geo comes from OpenStreetMap (one unambiguous match for the
+ * tower in Business Bay — see nap.ts).
  *
- * To unlock in Phase 6: flip `NAP_CONFIRMED` to `true`, source a real
- * `DubaiNap` value from the (to-be-created) NAP constants file — never retype
- * it inline — and call `buildLocalBusiness()` from the `/locations/dubai/`
- * page and from `Organization.location` / breadcrumb wiring on other pages
- * that reference the showroom.
- *
- * Dubai only. No Pakistan place, address or geo — ever, gated or not.
+ * Dubai only. No Pakistan place, address or geo — ever.
  */
-export const NAP_CONFIRMED = false;
+export const NAP_CONFIRMED = true;
 
 export type DubaiNap = {
   streetAddress: string;
@@ -46,6 +40,7 @@ export function buildLocalBusiness(nap: DubaiNap): JsonLdNode | null {
     '@type': 'LocalBusiness',
     '@id': SHOWROOM_DUBAI_ID,
     name: 'Leading IT — Dubai Showroom',
+    url: pageUrl('/locations/dubai'),
     parentOrganization: { '@id': ORG_ID },
     address: {
       '@type': 'PostalAddress',
