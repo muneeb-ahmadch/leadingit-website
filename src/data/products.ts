@@ -1618,7 +1618,7 @@ export const PRODUCTS: Product[] = [
     description:
       'ALBA is Black Nova’s push-button keypad, built from a glass or anodised-aluminium frame with a glass faceplate specified separately. Large buttons answer every press with a subtle confirming click, engraved icons stay legible in the dark, and each backlight takes its own colour and brightness. Layouts run from the two-key ALBA 2 to the ALBA M1, whose monochrome OLED turns the keypad into a temperature control interface.',
     metaDescription:
-      'Black Nova ALBA push-button keypad — ALBA 2, 4, 6, 8 and M1 layouts, six frame colours in glass or metal. Supplied and installed by Leading IT for the UAE and Pakistan.',
+      'Black Nova ALBA push-button keypad — ALBA 2, 4, 6, 8 and M1 layouts, six frame colours in glass or metal. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Black Nova ALBA', 'ALBA keypad', 'ALBA 8', 'ALBA M1', 'Black Nova keypad UAE', 'Black Nova Pakistan', 'luxury keypad Dubai'],
     hero: bn('alba-on.png'),
     finishes: [
@@ -2395,7 +2395,7 @@ export const PRODUCTS: Product[] = [
     description:
       'The optional tripod raises Horizon to seated listening height on solid American walnut legs over a satin-black cast-iron core. Marantz states the walnut finish is a reference to the finishes used on its earlier amplifiers.',
     metaDescription:
-      'Marantz Horizon Tripod in American walnut and cast iron — the optional stand for the Horizon wireless speaker. Available in the UAE and Pakistan via Leading IT.',
+      'Marantz Horizon Tripod in American walnut and cast iron — the optional stand for the Horizon wireless speaker. Supplied and supported across the UAE and Pakistan by Leading IT.',
     keywords: ['Marantz Horizon Tripod', 'Horizon speaker stand', 'Marantz Horizon Tripod UAE', 'Marantz Horizon Tripod Pakistan'],
     hero: '/products/marantz/horizon-tripod.png',
     finishes: [

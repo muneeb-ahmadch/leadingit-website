@@ -23,9 +23,14 @@ import type { DubaiNap } from '@/seo/jsonld/localBusiness';
  *   honest `openingHours` day/time string for that policy, so none is emitted
  *   in schema; the policy is stated in page copy instead.
  */
+// Field split (QA OBS-2, decided 2026-08-05): Google Business Profile and UAE
+// citation aggregators use city = "Dubai", so `addressLocality` is Dubai and
+// Business Bay (the district) rides in `streetAddress` — this is what keeps
+// the schema string-matching the future GBP record. The display line below is
+// unaffected.
 export const DUBAI_NAP: DubaiNap = {
-  streetAddress: 'Shop 6, International Business Tower',
-  addressLocality: 'Business Bay',
+  streetAddress: 'Shop 6, International Business Tower, Business Bay',
+  addressLocality: 'Dubai',
   addressRegion: 'Dubai',
   addressCountry: 'AE',
   latitude: 25.17817,
@@ -40,8 +45,7 @@ export const NAP_ADDRESS_LINE =
 /** Display phone, matching the WhatsApp number everywhere else on the site. */
 export const NAP_PHONE_DISPLAY = '+971 58 586 5222';
 
-/** Stated wherever a visitor might plan a visit. Instagram and LinkedIn
- * profiles exist per Muneeb but no URLs were supplied — `sameAs` therefore
- * stays absent from schema until verified links exist (absent is safe,
- * guessed is a liability). */
+/** Stated wherever a visitor might plan a visit ("by appointment only",
+ * Muneeb 2026-08-05). Social profiles were verified the same day and live in
+ * `ORG_SOCIAL_PROFILES` (`@/lib/site`), emitted as `sameAs`. */
 export const SHOWROOM_VISIT_POLICY = 'By appointment only';

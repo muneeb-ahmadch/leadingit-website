@@ -159,15 +159,12 @@ export type SolutionsIndexContent = {
  * name and the GRMS platform name, and neither child page claims either.
  *
  * So the claim below names the **five categories that have a page emitting HTML
- * today**, and the routing table has five rows for the same reason. Industrial
- * and building automation stays in the prose — `docs/00-CONTEXT.md` §1 confirms
- * it as scope — but has **no row and no link**: there is no industrial product
- * in the catalogue, no named platform and no describable reference work, so
- * `/solutions/industrial-automation/` is not built (OQ #23). A row pointing at
- * nothing is the shading failure with a different noun.
- *
- * When #23 clears, this record, `solutionsIndexMeta()` and `SOLUTIONS` are the
- * three places the sixth row lands; nothing else depends on it.
+ * today**, and the routing table has five rows for the same reason — and five
+ * is now the permanent number: industrial automation was RETIRED as a line of
+ * business on 2026-08-05 (Muneeb: "not doing this anymore"; OQ #23 closed as
+ * dropped, never "cleared"). It was scrubbed from the prose the same day and
+ * must not be reintroduced. Security supply took its place in the prose —
+ * generic wording, no brand named (OQ #25 still parked).
  */
 export const SOLUTIONS_INDEX: SolutionsIndexContent = {
   h1: 'Automation design and installation in Dubai — what Leading IT builds',

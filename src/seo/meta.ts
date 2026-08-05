@@ -186,9 +186,8 @@ export function solutionsIndexMeta(): PageMeta {
     // 150 chars. Names the five categories that have a page emitting HTML today.
     // It widened from three on 2026-08-01 with `docs/00-CONTEXT.md` §4's Muneeb
     // confirmations (`docs/OPEN-QUESTIONS.md` #25/#26/#27), not on style grounds.
-    // Industrial automation is confirmed scope (§1) but has no page and is not
-    // buildable on today's evidence (OQ #23), so it is not named in a snippet
-    // that would rank for a URL that does not exist.
+    // Industrial automation is deliberately absent: retired as a line of
+    // business 2026-08-05 (OQ #23 closed as dropped) — never name it here.
     description: `${SITE_NAME} designs, supplies and installs home cinema, whole-home control, lighting, multi-room audio and hospitality automation in Dubai and the UAE.`,
     path: '/solutions',
     ogImage: DEFAULT_OG_IMAGE,
