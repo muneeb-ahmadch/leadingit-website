@@ -59,10 +59,12 @@ final class RateLimiter
      * file, deleting an expired one can never let anyone exceed the limit.
      *
      * The 1-in-50 gate keeps the directory scan off the critical path of a
-     * normal submission. It lives in this wrapper and NOT in collectGarbage()
-     * so the sweep itself can be exercised deterministically — folding the two
-     * together makes the only interesting logic here untestable, and a sweep
-     * nobody can test is how an inode leak gets "fixed" twice.
+     * normal submission. It lives in this wrapper and NOT in collectGarbage() so
+     * the sweep can be exercised deterministically instead of one run in fifty.
+     *
+     * Both methods stay private, so `scripts/test-endpoint.php` still reaches the
+     * sweep by reflection — the split makes the test deterministic, not
+     * reflection-free, and an earlier version of this comment overclaimed that.
      */
     private function maybeCollectGarbage(string $dir, int $now): void
     {

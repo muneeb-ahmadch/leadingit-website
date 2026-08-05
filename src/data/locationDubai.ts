@@ -42,7 +42,7 @@
  * places below (`docs/05-URL-TAXONOMY.md` §5a).
  */
 import type { SolutionFaq, SolutionSection } from '@/data/solutions';
-import { NAP_ADDRESS_LINE, SHOWROOM_VISIT_POLICY } from '@/data/nap';
+import { NAP_ADDRESS_LINE, NAP_PHONE_DISPLAY, SHOWROOM_VISIT_POLICY } from '@/data/nap';
 
 export type LocationContent = {
   /** The one `<h1>` on the page. */
@@ -183,7 +183,7 @@ export const DUBAI_LOCATION: LocationContent = {
       id: 'how-to-reach-leading-it',
       question: 'How do I get in touch with Leading IT in Dubai?',
       answer:
-        'Leading IT can be reached on WhatsApp at +971 58 586 5222 or by email at ' +
+        `Leading IT can be reached on WhatsApp at ${NAP_PHONE_DISPLAY} or by email at ` +
         'services@leadingit.me. Both reach the same team in Dubai.',
       body: [
         'The enquiry form on this site sends to that same address, so nothing is lost by choosing ' +
@@ -195,9 +195,15 @@ export const DUBAI_LOCATION: LocationContent = {
   faq: [
     {
       question: 'Is the Leading IT showroom open by appointment only?',
+      // The address and phone render from src/data/nap.ts. They were typed out
+      // here by hand, which is exactly what nap.ts's own header forbids: "Never
+      // retype the address at a call site — 'Shop 6' vs 'Shop No. 6' reads as two
+      // businesses to a citation aggregator." An FAQ answer is a particularly bad
+      // place to drift, because it is the text an answer engine is most likely to
+      // quote back as the business's address.
       answer:
-        'Yes. The Dubai showroom at Shop 6, International Business Tower, Business Bay receives ' +
-        'visitors by appointment only. Message +971 58 586 5222 on WhatsApp or email ' +
+        `Yes. The Leading IT showroom at ${NAP_ADDRESS_LINE} receives visitors by ` +
+        `appointment only. Message ${NAP_PHONE_DISPLAY} on WhatsApp or email ` +
         'services@leadingit.me and the team confirms a time and sends directions.',
     },
     {

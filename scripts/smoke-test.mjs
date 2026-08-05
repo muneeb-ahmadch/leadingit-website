@@ -149,16 +149,48 @@ await run('a retired route still 301s', async () => {
   return [r.status === 301, `${r.status} -> ${r.headers.get('location') || '(none)'}`];
 }, { skip: localMode, skipReason: 'needs Apache' });
 
-await run('dotfiles blocked but /.well-known/ reachable', async () => {
+await run('dotfiles blocked', async () => {
   const blocked = await req('/.env');
-  const wellKnown = await req('/.well-known/');
-  const okBlocked = [403, 404].includes(blocked.status);
-  // 403/404 on .well-known is fine (nothing there yet); a 403 from the dotfile
-  // RULE is not distinguishable by status alone, so this only asserts the
-  // dotfile block itself and that AutoSSL's path is not hard-blocked to 403
-  // while .env is — checked properly at cert-renewal time.
-  return [okBlocked, `/.env ${blocked.status}, /.well-known/ ${wellKnown.status}`];
+  return [[403, 404].includes(blocked.status), `/.env -> ${blocked.status}`];
 }, { skip: localMode, skipReason: 'needs Apache' });
+
+// Previously folded into the check above, where /.well-known/ was fetched and
+// then used only in the message — so the AutoSSL half could not fail. It asserts
+// something now: the dotfile rule denies with 403, so a 403 here means the
+// exemption is broken and AutoSSL cannot renew the certificate. 404 is the
+// healthy answer when no challenge is in flight.
+await run('/.well-known/ NOT caught by the dotfile deny (AutoSSL)', async () => {
+  const r = await req('/.well-known/');
+  return [r.status !== 403, `${r.status}${r.status === 403 ? ' — exemption broken, certs will fail to renew' : ''}`];
+}, { skip: localMode, skipReason: 'needs Apache' });
+
+// --------------------------------------------------------- indexability
+// A staging robots.txt or a stray noindex reaching production is the most
+// expensive silent launch failure there is, and every other check here passes
+// happily while it happens. Nothing in the pipeline asserted this before.
+await run('robots.txt does not blanket-disallow crawling', async () => {
+  const r = await req('/robots.txt');
+  const blanket = r.body
+    .split(/\n\s*\n/)
+    .some((b) => /user-agent:\s*\*/i.test(b) && /^\s*disallow:\s*\/\s*$/im.test(b));
+  return [r.status === 200 && !blanket, blanket ? 'User-agent: * has Disallow: / — SITE WOULD BE DEINDEXED' : 'no blanket disallow'];
+});
+
+await run('homepage is indexable (no noindex meta or header)', async () => {
+  const r = await req('/');
+  const header = r.headers.get('x-robots-tag') || '';
+  const meta = r.body.match(/<meta[^>]*name=["']robots["'][^>]*content=["']([^"']*)["']/i);
+  const metaVal = meta ? meta[1] : '';
+  const bad = /noindex/i.test(header) || /noindex/i.test(metaVal);
+  return [!bad, `meta="${metaVal || '(none)'}" X-Robots-Tag="${header || '(none)'}"`];
+});
+
+await run('homepage canonical points at the live apex', async () => {
+  const r = await req('/');
+  const m = r.body.match(/<link[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)["']/i);
+  const href = m ? m[1] : '';
+  return [href === 'https://leadingit.me/', `canonical="${href || '(none)'}"`];
+});
 
 // The single best proof that PHP executes at all AND that the endpoint is
 // reachable: it is POST-only, so a GET must answer 405 with Allow: POST. It
@@ -242,5 +274,14 @@ console.log(
   `\n${checks.length} checks — ${hard.length} failure(s), ${soft.length} warning(s), ` +
   `${checks.filter((c) => c.skipped).length} skipped`
 );
+// A green --local run skips half the suite, including every check that only the
+// real server can answer. Saying so prevents it being quoted as deploy evidence.
+if (localMode) {
+  console.log(
+    `\n--local skipped ${checks.filter((c) => c.skipped).length} of ${checks.length} checks, ` +
+    'including every Apache, PHP and Cloudflare assertion.\n' +
+    'A green run here is NOT deploy verification — only a run against the live origin is.'
+  );
+}
 if (hard.length) console.log('\nDEPLOY IS NOT HEALTHY — roll back or fix before announcing.\n');
 process.exit(hard.length ? 1 : 0);

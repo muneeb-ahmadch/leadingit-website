@@ -9,19 +9,32 @@ name: Deploy
 # the runner's own package repo, does exactly what is written here, and every
 # flag is auditable in this file.
 
+# MANUAL ONLY, deliberately. This had `push: branches: [main]` and that was a
+# latent disaster: on a push event the `inputs` context is EMPTY, so `dry_run`
+# was '' — the shell test `[ "$DRY_RUN" = "true" ]` was false and
+# `if: inputs.dry_run != true` was true. Every merge to main would have run a
+# real `--delete` mirror and a cache purge, against a docroot nobody has
+# confirmed yet (OQ #10). Merging the branch that adds this file would have been
+# the triggering event.
+#
+# Re-enable push-to-main only after a manual deploy has succeeded and
+# FTP_REMOTE_DIR is proven correct — and when you do, give the push path an
+# explicit `dry_run: false` default rather than relying on an absent input.
 on:
   workflow_dispatch:
     inputs:
       dry_run:
-        description: 'List what would change, upload nothing'
+        description: 'List what would change, upload nothing (default: yes)'
         type: boolean
         default: true
+      prune:
+        description: 'DANGEROUS: delete remote files absent from dist/. Leave off until the docroot is confirmed.'
+        type: boolean
+        default: false
       ref:
         description: 'Commit SHA or tag to deploy (blank = this branch). ROLLBACK: put the last-good SHA here.'
         type: string
         default: ''
-  push:
-    branches: [main]
 
 concurrency:
   # Two overlapping uploads to one docroot interleave files and leave a site
@@ -33,9 +46,10 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # Requires the `production` environment. Add required reviewers there to make
-    # every push-to-main deploy wait for a human — recommended until launch has
-    # settled. Secrets live on the environment, not the repo.
+    # Requires the `production` environment. Add required reviewers there so a
+    # live run needs a second pair of eyes — and keep them until push-to-main is
+    # re-enabled, at which point they stop being optional. Secrets live on the
+    # environment, not the repo.
     environment: production
 
     steps:
@@ -83,6 +97,9 @@ jobs:
       # inside public_html or beside it is OPEN-QUESTIONS #10, answered by looking
       # at cPanel at first access. Failing loudly here beats mirroring the whole
       # site into the wrong directory on a shared host.
+      # This account also serves missmaisa.com. A mirror aimed one directory too
+      # high, with --delete, removes that site. Non-emptiness is not enough of a
+      # check, so the obvious catastrophic values are rejected outright.
       - name: Check deploy target is configured
         env:
           FTP_REMOTE_DIR: ${{ vars.FTP_REMOTE_DIR }}
@@ -91,12 +108,30 @@ jobs:
             echo "::error::vars.FTP_REMOTE_DIR is not set — see docs/07-DEPLOYMENT-HOSTGATOR.md (OQ #10)."
             exit 1
           fi
+          case "${FTP_REMOTE_DIR%/}" in
+            ''|'/'|'.'|'~'|'/home'|'/public_html'|'public_html'|'/home/'*/|'/www'|'/htdocs')
+              echo "::error::FTP_REMOTE_DIR='$FTP_REMOTE_DIR' is an account-level or root path."
+              echo "::error::Mirroring there would overwrite or delete the other site on this account."
+              exit 1
+              ;;
+          esac
           echo "Deploy target: $FTP_REMOTE_DIR"
 
-      # `mirror -R` uploads dist/ and mirrors deletions so a removed route does
-      # not linger and stay indexable. ssl-force + verify-certificate make a
-      # server that cannot do FTPS a hard failure rather than a silent
-      # plaintext login. --dry-run is the default for manual runs.
+      # ssl-force + verify-certificate make a host that cannot do FTPS a hard
+      # failure rather than a silent plaintext login.
+      #
+      # Two safety inversions versus the obvious implementation:
+      #   * dry run is the DEFAULT, and only the literal string "false" turns it
+      #     off. An absent or malformed input therefore uploads nothing, instead
+      #     of silently becoming a real deploy.
+      #   * --delete is OPT-IN via `prune`. Without it a removed route lingers
+      #     server-side, which is a real but recoverable SEO cost; with it aimed
+      #     at the wrong directory the other site on this shared account is gone,
+      #     which is not recoverable by us at all.
+      #
+      # /.well-known/ and cgi-bin are excluded unconditionally: they are server-
+      # managed, they are not in dist/, and a --delete mirror would remove them —
+      # taking AutoSSL renewal with it.
       - name: Upload over FTPS
         env:
           FTP_HOST: ${{ secrets.FTP_HOST }}
@@ -104,12 +139,22 @@ jobs:
           FTP_AUTH_TOKEN: ${{ secrets.FTP_AUTH_TOKEN }}
           FTP_REMOTE_DIR: ${{ vars.FTP_REMOTE_DIR }}
           DRY_RUN: ${{ inputs.dry_run }}
+          PRUNE: ${{ inputs.prune }}
         run: |
-          MIRROR_FLAGS="-R --delete --parallel=4 --verbose"
-          if [ "$DRY_RUN" = "true" ]; then
+          MIRROR_FLAGS="-R --parallel=4 --verbose --exclude-glob .well-known/ --exclude-glob cgi-bin/"
+
+          if [ "$DRY_RUN" = "false" ]; then
+            echo "::warning::LIVE DEPLOY — writing to $FTP_REMOTE_DIR"
+          else
             MIRROR_FLAGS="$MIRROR_FLAGS --dry-run"
             echo "::notice::DRY RUN — nothing will be written to the server."
           fi
+
+          if [ "$PRUNE" = "true" ]; then
+            MIRROR_FLAGS="$MIRROR_FLAGS --delete"
+            echo "::warning::PRUNE enabled — remote files absent from dist/ will be DELETED."
+          fi
+
           lftp -c "
             set ftp:ssl-force true;
             set ftp:ssl-protect-data true;
@@ -124,7 +169,7 @@ jobs:
       # Cache purge is the LAST step before verification, every time. Skipped on a
       # dry run because there is nothing new to purge.
       - name: Purge Cloudflare cache
-        if: ${{ inputs.dry_run != true }}
+        if: ${{ inputs.dry_run == false }}
         env:
           CF_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
           CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -144,11 +189,11 @@ jobs:
       # The edge needs a moment to start refilling from the origin before the
       # smoke test asks it questions.
       - name: Settle
-        if: ${{ inputs.dry_run != true }}
+        if: ${{ inputs.dry_run == false }}
         run: sleep 20
 
       - name: Smoke-test the live site
-        if: ${{ inputs.dry_run != true }}
+        if: ${{ inputs.dry_run == false }}
         run: node scripts/smoke-test.mjs --base https://leadingit.me
 
       - name: Report
