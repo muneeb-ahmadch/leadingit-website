@@ -96,9 +96,11 @@ if ($usable === 0) {
     echo "RESULT: no outbound SMTP route to Google.\n";
     echo "The contact form CANNOT send from this host as designed. Do not generate the\n";
     echo "credential yet — ask HostGator to open outbound 587, and do NOT fall back to\n";
-    echo "PHP mail(): this domain's MX points at Google Workspace while cPanel Email Routing\n";
-    echo "is set to Local Mail Exchanger, so locally-injected mail to services@leadingit.me is\n";
-    echo "delivered into a stale local mailbox that nobody reads.\n\n";
+    echo "PHP mail(). Locally-injected mail is not covered by this domain's SPF record and is\n";
+    echo "never DKIM-signed, so it arrives unauthenticated or not at all. (Email Routing was\n";
+    echo "switched from Local to Remote Mail Exchanger on 2026-08-06, which stops such mail\n";
+    echo "disappearing into the stale local spool — but routing it correctly is not the same\n";
+    echo "as authenticating it, and mail() remains banned.)\n\n";
     exit(1);
 }
 

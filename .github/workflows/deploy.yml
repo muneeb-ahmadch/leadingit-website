@@ -157,9 +157,19 @@ jobs:
       #     at the wrong directory the other site on this shared account is gone,
       #     which is not recoverable by us at all.
       #
-      # /.well-known/ and cgi-bin are excluded unconditionally: they are server-
-      # managed, they are not in dist/, and a --delete mirror would remove them —
-      # taking AutoSSL renewal with it.
+      # /.well-known/, cgi-bin, php.ini and .user.ini are excluded unconditionally:
+      # they are server-managed, none of them is in dist/, and a --delete mirror
+      # would remove them.
+      #   * .well-known/ — removing it takes AutoSSL renewal with it.
+      #   * php.ini — CONFIRMED PRESENT at /home4/maisa/leadingit.me/php.ini on
+      #     2026-08-06. It is the file cPanel's MultiPHP INI Editor writes, so it
+      #     is where the domain's `display_errors = Off` reading actually lives.
+      #     A prune would delete it and silently revert PHP config for the domain
+      #     to the server default. (The endpoint does not depend on this — it sets
+      #     display_errors itself at contact.php:50 — but the file is not ours to
+      #     destroy, and the failure would be invisible.)
+      #   * .user.ini — the PHP-FPM equivalent, excluded for the same reason in
+      #     case the handler ever changes.
       - name: Upload over FTPS
         env:
           FTP_HOST: ${{ secrets.FTP_HOST }}
@@ -169,7 +179,7 @@ jobs:
           DRY_RUN: ${{ inputs.dry_run }}
           PRUNE: ${{ inputs.prune }}
         run: |
-          MIRROR_FLAGS="-R --parallel=4 --verbose --exclude-glob .well-known/ --exclude-glob cgi-bin/"
+          MIRROR_FLAGS="-R --parallel=4 --verbose --exclude-glob .well-known/ --exclude-glob cgi-bin/ --exclude-glob php.ini --exclude-glob .user.ini"
 
           if [ "$DRY_RUN" = "false" ]; then
             echo "::warning::LIVE DEPLOY — writing to $FTP_REMOTE_DIR"
