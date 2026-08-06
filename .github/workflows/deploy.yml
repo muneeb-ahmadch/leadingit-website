@@ -108,14 +108,42 @@ jobs:
             echo "::error::vars.FTP_REMOTE_DIR is not set — see docs/07-DEPLOYMENT-HOSTGATOR.md (OQ #10)."
             exit 1
           fi
-          case "${FTP_REMOTE_DIR%/}" in
-            ''|'/'|'.'|'~'|'/home'|'/public_html'|'public_html'|'/home/'*/|'/www'|'/htdocs')
-              echo "::error::FTP_REMOTE_DIR='$FTP_REMOTE_DIR' is an account-level or root path."
-              echo "::error::Mirroring there would overwrite or delete the other site on this account."
-              exit 1
-              ;;
+          TARGET="${FTP_REMOTE_DIR%/}"
+
+          # Confirmed 2026-08-06 by reading the account: cPanel user `maisa`,
+          # home /home4/maisa, and THREE sites share it — smartlit.me,
+          # missmaisa.com (docroot /home4/maisa/public_html) and leadingit.me
+          # (docroot /home4/maisa/leadingit.me). An earlier version of this guard
+          # rejected only the literal '/home' and '/public_html', so it happily
+          # accepted BOTH '/home4/maisa' and '/home4/maisa/public_html' — the
+          # account root and another live site.
+          case "$TARGET" in
+            ''|'/'|'.'|'~'|'/www'|'/htdocs')
+              echo "::error::FTP_REMOTE_DIR='$FTP_REMOTE_DIR' is a filesystem root."; exit 1 ;;
           esac
-          echo "Deploy target: $FTP_REMOTE_DIR"
+          # A bare home directory: /home, /home4/maisa, /home/anyuser
+          if printf '%s' "$TARGET" | grep -Eq '^/home[0-9]*(/[^/]+)?$'; then
+            echo "::error::FTP_REMOTE_DIR='$FTP_REMOTE_DIR' is an account home directory."
+            echo "::error::Deploying there would scatter the site across the account; a prune would erase it."
+            exit 1
+          fi
+          # public_html at any depth is another site's docroot on this account.
+          case "$TARGET" in
+            */public_html|*/public_html/*|public_html)
+              echo "::error::FTP_REMOTE_DIR='$FTP_REMOTE_DIR' is inside public_html — that is missmaisa.com."
+              echo "::error::leadingit.me's docroot sits BESIDE public_html (see docs/07)."
+              exit 1 ;;
+          esac
+          # Positive assertion, not just a blocklist: this workflow deploys one
+          # site, so the target must actually name it.
+          case "$TARGET" in
+            *leadingit.me) ;;
+            *)
+              echo "::error::FTP_REMOTE_DIR='$FTP_REMOTE_DIR' does not end in 'leadingit.me'."
+              echo "::error::Expected /home4/maisa/leadingit.me. Refusing to deploy to an unexpected path."
+              exit 1 ;;
+          esac
+          echo "Deploy target: $TARGET"
 
       # ssl-force + verify-certificate make a host that cannot do FTPS a hard
       # failure rather than a silent plaintext login.

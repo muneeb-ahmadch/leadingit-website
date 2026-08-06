@@ -136,12 +136,23 @@ await run('www redirects to apex (301, single hop)', async () => {
   return [r.status === 301 && /^https:\/\/leadingit\.me\//.test(loc), `${r.status} -> ${loc}`];
 }, { skip: localMode, skipReason: 'needs Apache' });
 
-// The addon-domain duplicate-content mitigation. If this serves 200 the whole
-// site is reachable at a second hostname and competes with itself.
-await run('addon-domain path 301s away (duplicate-content guard)', async () => {
+// The addon-domain duplicate-content guard. What matters is that the site is not
+// SERVED at a second hostname; how that is achieved is not the assertion.
+//
+// Confirmed 2026-08-06: leadingit.me's docroot is /home4/maisa/leadingit.me,
+// BESIDE public_html rather than inside it, so this path should simply 404 —
+// the duplicate never existed. An earlier version of this check demanded a 301
+// and would have failed the deploy on the healthiest possible answer. 301 is
+// also fine (the .htaccess host rule catches it if the layout ever changes).
+// Only a 200 is a failure, and only then does it warrant investigation.
+await run('site is NOT served at the addon-domain path', async () => {
   const r = await req('https://missmaisa.com/leadingit.me/');
   const loc = r.headers.get('location') || '';
-  return [r.status === 301 && loc.includes('leadingit.me'), `${r.status} -> ${loc || '(none)'}`];
+  const verdict = r.status === 200
+    ? 'SERVING A DUPLICATE — the whole site is reachable at a second hostname'
+    : r.status === 404 ? '404 — docroot sits beside public_html, no duplicate exists'
+    : `${r.status}${loc ? ' -> ' + loc : ''}`;
+  return [r.status !== 200, verdict];
 }, { skip: localMode, skipReason: 'needs Apache' });
 
 await run('a retired route still 301s', async () => {
