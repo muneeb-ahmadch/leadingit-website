@@ -160,6 +160,20 @@ await run('a retired route still 301s', async () => {
   return [r.status === 301, `${r.status} -> ${r.headers.get('location') || '(none)'}`];
 }, { skip: localMode, skipReason: 'needs Apache' });
 
+// The legacy WordPress URLs break the instant this build's .htaccess replaces
+// WordPress's own, so the cutover deploy is the one that has to prove them.
+for (const [from, to] of [
+  ['/products/', 'https://leadingit.me/brands/'],
+  ['/locations-2/', 'https://leadingit.me/locations/dubai/'],
+  ['/main-under-upgrade/', 'https://leadingit.me/'],
+]) {
+  await run(`legacy WordPress URL 301s (${from})`, async () => {
+    const r = await req(from);
+    const loc = r.headers.get('location') || '';
+    return [r.status === 301 && loc === to, `${r.status} -> ${loc || '(none)'} (want ${to})`];
+  }, { skip: localMode, skipReason: 'needs Apache' });
+}
+
 await run('dotfiles blocked', async () => {
   const blocked = await req('/.env');
   return [[403, 404].includes(blocked.status), `/.env -> ${blocked.status}`];
