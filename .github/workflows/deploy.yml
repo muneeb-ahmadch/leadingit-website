@@ -202,6 +202,18 @@ jobs:
           CF_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
           CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
+          # leadingit.me's nameservers are still NS4011/NS4012.HOSTGATOR.COM as of
+          # 2026-08-06 — the zone has NOT been migrated to Cloudflare yet, so there
+          # is no cache in front of the origin and nothing to purge. Failing the
+          # deploy on that would block every pre-migration deploy for a step that
+          # cannot succeed. Once the nameservers move, set the two secrets and this
+          # becomes mandatory again automatically.
+          if [ -z "$CF_ZONE_ID" ] || [ -z "$CF_API_TOKEN" ]; then
+            echo "::warning::Cloudflare secrets not set — skipping purge."
+            echo "::warning::Correct ONLY while DNS is still on HostGator nameservers."
+            echo "::warning::After the Cloudflare migration, set CLOUDFLARE_ZONE_ID and CLOUDFLARE_API_TOKEN or every deploy will serve a stale edge cache."
+            exit 0
+          fi
           response=$(curl -sS -X POST \
             "https://api.cloudflare.com/client/v4/zones/$CF_ZONE_ID/purge_cache" \
             -H "Authorization: Bearer $CF_API_TOKEN" \
