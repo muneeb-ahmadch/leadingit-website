@@ -110,6 +110,30 @@ jobs:
           fi
           TARGET="${FTP_REMOTE_DIR%/}"
 
+          # THE CHROOT CASE, HANDLED FIRST AND DELIBERATELY.
+          #
+          # The deploy@ account is chrooted to the docroot, so its "/" already IS
+          # /home4/maisa/leadingit.me — proven 2026-08-07: logging in reports pwd
+          # '/' over a directory containing wp-config.php. So '/' is the correct
+          # value here, not a mistake.
+          #
+          # It has to be matched BEFORE the blocklist below, and this is exactly
+          # what the previous attempt got wrong: `${FTP_REMOTE_DIR%/}` reduces "/"
+          # to the empty string, which the '' branch of the filesystem-root case
+          # then rejected — so the '/'-accepting branch added further down was
+          # unreachable and every run died at this step.
+          #
+          # None of the path-shape checks below can vouch for '/': a chroot root
+          # and the real filesystem root are identical by string inspection. The
+          # runtime probe in the next step is what actually proves the target, by
+          # listing it and refusing if it looks like the cPanel account home.
+          # That probe is NOT optional, and skipping this blocklist for '/' is
+          # only safe because the probe runs unconditionally.
+          if [ "$FTP_REMOTE_DIR" = "/" ]; then
+            echo "Deploy target: / (chroot root of the deploy account — verified by the next step)"
+            exit 0
+          fi
+
           # Confirmed 2026-08-06 by reading the account: cPanel user `maisa`,
           # home /home4/maisa, and THREE sites share it — smartlit.me,
           # missmaisa.com (docroot /home4/maisa/public_html) and leadingit.me
@@ -134,28 +158,18 @@ jobs:
               echo "::error::leadingit.me's docroot sits BESIDE public_html (see docs/07)."
               exit 1 ;;
           esac
-          # The FTP account is CHROOTED to the docroot, so its "/" already IS
-          # /home4/maisa/leadingit.me — proven 2026-08-07: logging in as deploy@
-          # reports pwd '/' and that directory contains wp-config.php.
+          # Positive assertion, not just a blocklist: this workflow deploys one
+          # site, so a non-chroot target must actually name it. (The '/' chroot
+          # case returned above and never reaches here.)
           #
-          # This is why the first dry run mattered. FTP_REMOTE_DIR was set to the
-          # absolute server path, which under a chroot resolves to
-          # <docroot>/home4/maisa/leadingit.me — so lftp planned `mkdir -p` for
-          # the whole path and listed every file as new. A live run would have
-          # uploaded the entire site one level too deep, reported success, and
-          # left leadingit.me still serving WordPress.
-          #
-          # '/' is therefore the correct value, and the path-shape blocklist above
-          # cannot vouch for it — a chroot root is indistinguishable from the real
-          # filesystem root by string inspection alone. That assurance comes from
-          # the runtime probe in the next step, which is why this accepts '/' but
-          # the probe is NOT optional.
+          # Kept for the case where the credential is ever swapped for a
+          # non-chrooted account — then the absolute docroot path becomes correct
+          # again, and this is what stops it being anything else.
           case "$TARGET" in
-            ''|'/') echo "Deploy target: / (chroot root of the deploy account)" ;;
             *leadingit.me) echo "Deploy target: $TARGET" ;;
             *)
-              echo "::error::FTP_REMOTE_DIR='$FTP_REMOTE_DIR' is neither '/' nor a path ending in 'leadingit.me'."
-              echo "::error::Refusing to deploy to an unexpected path."
+              echo "::error::FTP_REMOTE_DIR='$FTP_REMOTE_DIR' does not end in 'leadingit.me'."
+              echo "::error::Expected '/' (chrooted account) or /home4/maisa/leadingit.me."
               exit 1 ;;
           esac
 
