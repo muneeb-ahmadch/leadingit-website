@@ -86,6 +86,29 @@ RewriteRule ^brands/uandksound/s-series/?$ https://leadingit.me/brands/uandksoun
 RewriteRule ^solutions/shading/?$ https://leadingit.me/solutions/ [R=301,L,QSA]
 
 # ─────────────────────────────────────────────────────────────
+# Legacy WordPress URLs → 301  (added 2026-08-06)
+# ─────────────────────────────────────────────────────────────
+# leadingit.me served a WordPress site until this build replaced it. Enumerated from its own
+# live wp-sitemap.xml on 2026-08-06: 35 indexable URLs, no noindex, self-referential canonicals
+# — so they are crawlable and may be indexed and linked.
+#
+# TIMING, and it is not the obvious one: these break on the FIRST deploy, not at prune. This
+# file replaces WordPress's own .htaccess, and WP pretty permalinks exist only because of the
+# `RewriteRule . /index.php [L]` in that file. The moment ours lands, every WP URL 404s even
+# though the PHP files are still sitting there. So these rules ship WITH the cutover deploy.
+#
+# Only the three URLs with a genuine equivalent are redirected. The other 32 — six 2017-2019
+# posts, a portfolio item, /blog/, a category, an author archive and 20 tag archives — are
+# commercial-AV content (auditoriums, classrooms, Skype-for-Business rooms) for a line of
+# business this site does not serve. Sending them to a residential solutions page would be a
+# mismatch dressed as a redirect, which is the soft-404 pattern Google devalues and the
+# doorway-adjacent behaviour CLAUDE.md rule 6 forbids. They are left to ErrorDocument 404
+# deliberately. See docs/07-DEPLOYMENT-HOSTGATOR.md §1a for the full inventory and the reasoning.
+RewriteRule ^products/?$ https://leadingit.me/brands/ [R=301,L,QSA]
+RewriteRule ^locations-2/?$ https://leadingit.me/locations/dubai/ [R=301,L,QSA]
+RewriteRule ^main-under-upgrade/?$ https://leadingit.me/ [R=301,L,QSA]
+
+# ─────────────────────────────────────────────────────────────
 # Parent paths that are not pages → 301
 # ─────────────────────────────────────────────────────────────
 # Not a retirement — /locations/ never existed and never will. docs/05-URL-TAXONOMY.md §2a is

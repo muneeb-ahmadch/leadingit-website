@@ -50,7 +50,11 @@ secrets/
 /public/robots.txt
 
 # Build-generated (emitted by scripts/build-images.mjs; content-hash cache,
-# not an asset — regenerated locally, never needed by CI or the deployed site)
+# not an asset — regenerated locally, never needed by CI or the deployed site).
+# Moved out of public/ on 2026-08-06: anything under public/ is copied verbatim
+# into dist/ and uploaded, so this was shipping build state to the production web
+# root. The old path stays ignored in case a stale copy reappears there.
+/.image-pipeline-cache.json
 /public/.image-pipeline-cache.json
 
 # Vendored third-party PHP fetched at build time by scripts/fetch-phpmailer.mjs,

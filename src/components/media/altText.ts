@@ -8,6 +8,18 @@
  * product page happened to be rendering, so a single shared cinema photograph
  * shipped five mutually exclusive series claims.
  *
+ * ONE DOCUMENTED EXCEPTION, so the invariant above is not read as stronger than
+ * it is: `src/pages/BrandsIndex.tsx` hardcodes `alt=""` on the nine brand tiles
+ * instead of calling `altFor()`. Nine files therefore carry two different alt
+ * strings — a curated caption everywhere else, empty on `/brands/`. That is
+ * accessibility-correct rather than a bug: each tile image sits at 40% opacity
+ * behind text inside a link whose accessible name is already the brand name, and
+ * captioning a decorative background would just repeat it to a screen reader.
+ * It is recorded here because QA found the two files each documenting the
+ * opposite rule with no pointer between them (Phase 7 pre-launch crawl,
+ * FINDING 8-2). If a "decorative context" override is ever added to this module,
+ * that exception collapses back into the invariant.
+ *
  * The governing rule is `docs/12-PROVENANCE/image-url-map.md:86` and `:375-378`:
  * **an image must not carry alt text implying a product is shown unless we have
  * verified that it is.** Resolution order, most specific first:

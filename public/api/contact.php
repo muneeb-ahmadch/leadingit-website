@@ -37,6 +37,63 @@ declare(strict_types=1);
  * docs/12-PROVENANCE/phase5-endpoint.md.
  */
 
+/**
+ * This endpoint answers JSON and nothing else, so no PHP diagnostic may ever
+ * reach the response body. On the first real execution (Phase 7, PHP 8.5.9) a
+ * single Deprecated notice from curl_close() in Turnstile.php was printed ahead
+ * of the JSON: every response became unparseable by the front end AND the
+ * client was handed the absolute server path. The notice is fixed at source;
+ * these two lines make the CLASS of failure impossible on any host config,
+ * because the shared-hosting PHP settings are not ours to rely on. Diagnostics
+ * still reach error_log, and the endpoint reports its own faults as JSON.
+ */
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
+ob_start();
+
+/**
+ * Tracks whether a JSON reply has already been written, so the shutdown handler
+ * below can tell "finished normally" from "died before answering".
+ */
+$GLOBALS['contact_responded'] = false;
+
+/**
+ * Last-resort JSON reply for a fatal that kills the request before
+ * contact_respond() can run — a missing require, a parse error in a dependency
+ * on an older PHP, an allocation failure mid-send. Without this the buffer is
+ * flushed at shutdown with no Content-Type and no status, and the browser gets
+ * an unparseable body: the same visitor-facing symptom the display_errors fix
+ * was added to remove. Registered BEFORE the requires, because those are
+ * exactly what it has to survive.
+ */
+register_shutdown_function(static function (): void {
+    if (($GLOBALS['contact_responded'] ?? false) === true) {
+        return;
+    }
+    $fatal = error_get_last();
+    if ($fatal === null || !in_array($fatal['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
+        return;
+    }
+    error_log('contact.php fatal: ' . $fatal['message'] . ' in ' . $fatal['file'] . ':' . $fatal['line']);
+    while (ob_get_level() > 0 && @ob_end_clean()) {
+        // discard
+    }
+    if (ob_get_level() > 0) {
+        @ob_clean();
+    }
+    if (!headers_sent()) {
+        http_response_code(500);
+        header('Content-Type: application/json; charset=utf-8', true);
+        header('Cache-Control: no-store', true);
+        header('X-Robots-Tag: noindex, nofollow', true);
+    }
+    // Deliberately says nothing about the fault: the detail is in error_log.
+    echo json_encode([
+        'status' => 'server_error',
+        'message' => 'The contact endpoint is unavailable. Please email services@leadingit.me or message us on WhatsApp.',
+    ], JSON_UNESCAPED_SLASHES);
+});
+
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/lib/Storage.php';
 require_once __DIR__ . '/lib/Spam.php';
@@ -57,6 +114,29 @@ header('Cache-Control: no-store', true);
  */
 function contact_respond(int $httpStatus, string $status, string $message, array $extra = []): never
 {
+    // Discard anything that reached an output buffer before us. Nothing in this
+    // endpoint prints, but a notice or warning raised inside PHPMailer or any
+    // future dependency would otherwise be prepended to the body and break
+    // JSON.parse() in the browser — the exact failure observed on first
+    // execution. The buffer is opened at the top of this file.
+    //
+    // The return value of ob_end_clean() is the loop's terminating condition and
+    // MUST be tested. It returns false WITHOUT decrementing the level when the
+    // topmost buffer is not removable — one installed by a host output_handler,
+    // an auto_prepend_file or an APM agent. `while (ob_get_level() > 0)` alone
+    // therefore spins until max_execution_time on such a host, writing one
+    // Notice per iteration into error_log: a disk-fill on shared hosting, on a
+    // path where the enquiry mail has ALREADY been sent. QA reproduced it.
+    while (ob_get_level() > 0 && @ob_end_clean()) {
+        // discard and continue
+    }
+    // A buffer that refused to close still gets its contents cleared, so stray
+    // output is dropped even where the buffer itself cannot be removed.
+    if (ob_get_level() > 0) {
+        @ob_clean();
+    }
+
+    $GLOBALS['contact_responded'] = true;
     http_response_code($httpStatus);
     echo json_encode(['status' => $status, 'message' => $message] + $extra, JSON_UNESCAPED_SLASHES);
     exit;

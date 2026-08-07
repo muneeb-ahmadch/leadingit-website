@@ -1,0 +1,262 @@
+name: Deploy
+
+# The repo is PUBLIC. Nothing in this file may ever contain a credential — only
+# the NAMES of repository secrets. Every value below that looks like config is
+# either public (the site URL) or read from `secrets`/`vars` at run time.
+#
+# Deliberately NOT a third-party FTP action. Deploying over a pinned action would
+# mean trusting a supply chain with write access to the live site; `lftp` is in
+# the runner's own package repo, does exactly what is written here, and every
+# flag is auditable in this file.
+
+# MANUAL ONLY, deliberately. This had `push: branches: [main]` and that was a
+# latent disaster: on a push event the `inputs` context is EMPTY, so `dry_run`
+# was '' — the shell test `[ "$DRY_RUN" = "true" ]` was false and
+# `if: inputs.dry_run != true` was true. Every merge to main would have run a
+# real `--delete` mirror and a cache purge, against a docroot nobody has
+# confirmed yet (OQ #10). Merging the branch that adds this file would have been
+# the triggering event.
+#
+# Re-enable push-to-main only after a manual deploy has succeeded and
+# FTP_REMOTE_DIR is proven correct — and when you do, give the push path an
+# explicit `dry_run: false` default rather than relying on an absent input.
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'List what would change, upload nothing (default: yes)'
+        type: boolean
+        default: true
+      prune:
+        description: 'DANGEROUS: delete remote files absent from dist/. Leave off until the docroot is confirmed.'
+        type: boolean
+        default: false
+      ref:
+        description: 'Commit SHA or tag to deploy (blank = this branch). ROLLBACK: put the last-good SHA here.'
+        type: string
+        default: ''
+
+concurrency:
+  # Two overlapping uploads to one docroot interleave files and leave a site
+  # that matches no commit. Never cancel in progress: a half-finished mirror is
+  # worse than a slow queue.
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Requires the `production` environment. Add required reviewers there so a
+    # live run needs a second pair of eyes — and keep them until push-to-main is
+    # re-enabled, at which point they stop being optional. Secrets live on the
+    # environment, not the repo.
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint (typecheck + eslint)
+        run: npm run lint
+
+      # `prebuild` fetches PHPMailer (pinned to v6.9.3, SHA-256 verified per file)
+      # into public/api/vendor/, which is gitignored and therefore absent from a
+      # fresh clone. Without this the deployed endpoint 500s on the first enquiry.
+      - name: Build (prerender all routes + fetch PHPMailer)
+        run: npm run build
+
+      - name: 'Gate: SEO + structured data'
+        run: npm run validate:seo
+
+      - name: 'Gate: deployable artefact'
+        run: node scripts/predeploy-verify.mjs
+
+      # Kept for 30 days so a rollback never depends on rebuilding an old commit
+      # successfully — the exact bytes that were live can be re-uploaded by hand
+      # through cPanel File Manager if the pipeline itself is the thing that broke.
+      - name: Retain this release for rollback
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ github.sha }}
+          path: dist
+          retention-days: 30
+
+      - name: Install lftp
+        run: sudo apt-get update && sudo apt-get install -y lftp
+
+      # FTP_REMOTE_DIR is the addon docroot and is NOT hardcoded: whether it sits
+      # inside public_html or beside it is OPEN-QUESTIONS #10, answered by looking
+      # at cPanel at first access. Failing loudly here beats mirroring the whole
+      # site into the wrong directory on a shared host.
+      # This account also serves missmaisa.com. A mirror aimed one directory too
+      # high, with --delete, removes that site. Non-emptiness is not enough of a
+      # check, so the obvious catastrophic values are rejected outright.
+      - name: Check deploy target is configured
+        env:
+          FTP_REMOTE_DIR: ${{ vars.FTP_REMOTE_DIR }}
+        run: |
+          if [ -z "$FTP_REMOTE_DIR" ]; then
+            echo "::error::vars.FTP_REMOTE_DIR is not set — see docs/07-DEPLOYMENT-HOSTGATOR.md (OQ #10)."
+            exit 1
+          fi
+          TARGET="${FTP_REMOTE_DIR%/}"
+
+          # Confirmed 2026-08-06 by reading the account: cPanel user `maisa`,
+          # home /home4/maisa, and THREE sites share it — smartlit.me,
+          # missmaisa.com (docroot /home4/maisa/public_html) and leadingit.me
+          # (docroot /home4/maisa/leadingit.me). An earlier version of this guard
+          # rejected only the literal '/home' and '/public_html', so it happily
+          # accepted BOTH '/home4/maisa' and '/home4/maisa/public_html' — the
+          # account root and another live site.
+          case "$TARGET" in
+            ''|'/'|'.'|'~'|'/www'|'/htdocs')
+              echo "::error::FTP_REMOTE_DIR='$FTP_REMOTE_DIR' is a filesystem root."; exit 1 ;;
+          esac
+          # A bare home directory: /home, /home4/maisa, /home/anyuser
+          if printf '%s' "$TARGET" | grep -Eq '^/home[0-9]*(/[^/]+)?$'; then
+            echo "::error::FTP_REMOTE_DIR='$FTP_REMOTE_DIR' is an account home directory."
+            echo "::error::Deploying there would scatter the site across the account; a prune would erase it."
+            exit 1
+          fi
+          # public_html at any depth is another site's docroot on this account.
+          case "$TARGET" in
+            */public_html|*/public_html/*|public_html)
+              echo "::error::FTP_REMOTE_DIR='$FTP_REMOTE_DIR' is inside public_html — that is missmaisa.com."
+              echo "::error::leadingit.me's docroot sits BESIDE public_html (see docs/07)."
+              exit 1 ;;
+          esac
+          # Positive assertion, not just a blocklist: this workflow deploys one
+          # site, so the target must actually name it.
+          case "$TARGET" in
+            *leadingit.me) ;;
+            *)
+              echo "::error::FTP_REMOTE_DIR='$FTP_REMOTE_DIR' does not end in 'leadingit.me'."
+              echo "::error::Expected /home4/maisa/leadingit.me. Refusing to deploy to an unexpected path."
+              exit 1 ;;
+          esac
+          echo "Deploy target: $TARGET"
+
+      # ssl-force + verify-certificate make a host that cannot do FTPS a hard
+      # failure rather than a silent plaintext login.
+      #
+      # Two safety inversions versus the obvious implementation:
+      #   * dry run is the DEFAULT, and only the literal string "false" turns it
+      #     off. An absent or malformed input therefore uploads nothing, instead
+      #     of silently becoming a real deploy.
+      #   * --delete is OPT-IN via `prune`. Without it a removed route lingers
+      #     server-side, which is a real but recoverable SEO cost; with it aimed
+      #     at the wrong directory the other site on this shared account is gone,
+      #     which is not recoverable by us at all.
+      #
+      # /.well-known/, cgi-bin, php.ini and .user.ini are excluded unconditionally:
+      # they are server-managed, none of them is in dist/, and a --delete mirror
+      # would remove them.
+      #   * .well-known/ — removing it takes AutoSSL renewal with it.
+      #   * php.ini — CONFIRMED PRESENT at /home4/maisa/leadingit.me/php.ini on
+      #     2026-08-06. It is the file cPanel's MultiPHP INI Editor writes, so it
+      #     is where the domain's `display_errors = Off` reading actually lives.
+      #     A prune would delete it and silently revert PHP config for the domain
+      #     to the server default. (The endpoint does not depend on this — it sets
+      #     display_errors itself at contact.php:50 — but the file is not ours to
+      #     destroy, and the failure would be invisible.)
+      #   * .user.ini — the PHP-FPM equivalent, excluded for the same reason in
+      #     case the handler ever changes.
+      - name: Upload over FTPS
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_AUTH_TOKEN: ${{ secrets.FTP_AUTH_TOKEN }}
+          FTP_REMOTE_DIR: ${{ vars.FTP_REMOTE_DIR }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          PRUNE: ${{ inputs.prune }}
+        run: |
+          MIRROR_FLAGS="-R --parallel=4 --verbose --exclude-glob .well-known/ --exclude-glob cgi-bin/ --exclude-glob php.ini --exclude-glob .user.ini"
+
+          if [ "$DRY_RUN" = "false" ]; then
+            echo "::warning::LIVE DEPLOY — writing to $FTP_REMOTE_DIR"
+          else
+            MIRROR_FLAGS="$MIRROR_FLAGS --dry-run"
+            echo "::notice::DRY RUN — nothing will be written to the server."
+          fi
+
+          if [ "$PRUNE" = "true" ]; then
+            MIRROR_FLAGS="$MIRROR_FLAGS --delete"
+            echo "::warning::PRUNE enabled — remote files absent from dist/ will be DELETED."
+          fi
+
+          lftp -c "
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set ssl:verify-certificate true;
+            set net:max-retries 3;
+            set net:timeout 20;
+            open -u \"$FTP_USERNAME\",\"$FTP_AUTH_TOKEN\" \"$FTP_HOST\";
+            mirror $MIRROR_FLAGS dist/ \"$FTP_REMOTE_DIR\";
+            bye
+          "
+
+      # Cache purge is the LAST step before verification, every time. Skipped on a
+      # dry run because there is nothing new to purge.
+      - name: Purge Cloudflare cache
+        if: ${{ inputs.dry_run == false }}
+        env:
+          CF_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          # leadingit.me's nameservers are still NS4011/NS4012.HOSTGATOR.COM as of
+          # 2026-08-06 — the zone has NOT been migrated to Cloudflare yet, so there
+          # is no cache in front of the origin and nothing to purge. Failing the
+          # deploy on that would block every pre-migration deploy for a step that
+          # cannot succeed. Once the nameservers move, set the two secrets and this
+          # becomes mandatory again automatically.
+          if [ -z "$CF_ZONE_ID" ] || [ -z "$CF_API_TOKEN" ]; then
+            echo "::warning::Cloudflare secrets not set — skipping purge."
+            echo "::warning::Correct ONLY while DNS is still on HostGator nameservers."
+            echo "::warning::After the Cloudflare migration, set CLOUDFLARE_ZONE_ID and CLOUDFLARE_API_TOKEN or every deploy will serve a stale edge cache."
+            exit 0
+          fi
+          response=$(curl -sS -X POST \
+            "https://api.cloudflare.com/client/v4/zones/$CF_ZONE_ID/purge_cache" \
+            -H "Authorization: Bearer $CF_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            --data '{"purge_everything":true}')
+          echo "$response" | grep -q '"success":true' || {
+            echo "::error::Cloudflare purge failed — visitors may be served the previous build."
+            echo "$response" | sed 's/[A-Za-z0-9_-]\{30,\}/[redacted]/g'
+            exit 1
+          }
+          echo "Cache purged."
+
+      # The edge needs a moment to start refilling from the origin before the
+      # smoke test asks it questions.
+      - name: Settle
+        if: ${{ inputs.dry_run == false }}
+        run: sleep 20
+
+      - name: Smoke-test the live site
+        if: ${{ inputs.dry_run == false }}
+        run: node scripts/smoke-test.mjs --base https://leadingit.me
+
+      - name: Report
+        if: ${{ !cancelled() }}
+        run: |
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "### Deploy OK — https://leadingit.me" >> "$GITHUB_STEP_SUMMARY"
+          else
+            {
+              echo "### Deploy FAILED"
+              echo "Roll back: re-run this workflow with \`ref\` = the last-good SHA,"
+              echo "or upload the retained \`dist-<sha>\` artifact via cPanel File Manager."
+              echo "See docs/07-DEPLOYMENT-HOSTGATOR.md §Rollback."
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "Deployed ref: ${{ inputs.ref || github.sha }}" >> "$GITHUB_STEP_SUMMARY"

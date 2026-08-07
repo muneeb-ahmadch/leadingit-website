@@ -41,7 +41,13 @@ const TARGETS = [
   { src: path.join(ROOT, 'raw/brands'), dest: path.join(ROOT, 'public/brands') },
 ];
 
-const CACHE_PATH = path.join(ROOT, 'public/.image-pipeline-cache.json');
+// Deliberately NOT inside public/. Everything under public/ is copied verbatim
+// into dist/ and uploaded, so this build cache was shipping 63 KB of local build
+// state to the production web root on every deploy. It was never exposed — the
+// `.htaccess` dotfile deny catches it by basename — but a build cache has no
+// business in a web root at all. Kept at the repo root (gitignored) rather than
+// under node_modules/ so it survives `npm ci` and the pipeline stays incremental.
+const CACHE_PATH = path.join(ROOT, '.image-pipeline-cache.json');
 // Committed dimensions manifest — the single source of truth
 // `src/components/media/ResponsiveImage.tsx` reads at render time (both SSG
 // build and hydration) for intrinsic `width`/`height` and the srcset `widths`

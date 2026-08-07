@@ -24,10 +24,13 @@ jobs:
       - name: Build (prerender all routes)
         run: npm run build
 
-      # NOTE: CI validates MARKUP only. Product/brand imagery is deliberately absent
-      # from the repo (originals live outside version control until the Phase 3
-      # pipeline commits optimised derivatives), so image references in this build
-      # would 404 — a green run is NOT a deployable artefact until Phase 3.
+      # HISTORICAL NOTE, corrected 2026-08-06: this step used to warn that a green
+      # run was NOT a deployable artefact because product/brand imagery lived
+      # outside version control. That stopped being true when Phase 3 committed the
+      # optimised derivatives — public/products, public/brands and public/lithome
+      # are all tracked now, so a green CI build IS deployable. `deploy.yml` builds
+      # from a clean clone on this basis; leaving the old warning here would have
+      # read as a reason not to trust it.
       #
       # This is the Phase 2 SEO/structured-data gate: title/description/canonical/
       # hreflang/h1 shape on every emitted page (the old standalone "every page has
