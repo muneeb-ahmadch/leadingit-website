@@ -36,23 +36,52 @@ const checks = [];
  * than silently resolving to its destination — the single most common way a
  * redirect test passes while the redirect is broken.
  */
+// HostGator fronts this account with a bot check that answers cookie-less
+// clients with `409` and a body of
+//   <script>document.cookie = "humans_NNNNN=1"; document.location.reload(true)</script>
+// instead of passing the request to PHP. A browser runs that script, sets the
+// cookie and reloads, so real visitors never see it — but `fetch` does not, so
+// the first live deploy reported the contact endpoint as broken when it was
+// fine. Confirmed by hand: replaying with the cookie gives 405 on GET and a
+// correct JSON body on POST.
+//
+// The cookie name carries an account-specific number, so it is parsed out of the
+// challenge rather than hardcoded, and the request is replayed once. Anything
+// still failing after that is a real failure.
+let humansCookie = null;
+
 async function req(path, { method = 'GET', headers = {}, follow = false, body } = {}) {
   const url = path.startsWith('http') ? path : base + path;
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    const res = await fetch(url, {
-      method,
-      headers: { 'User-Agent': 'leadingit-smoke-test', ...headers },
-      redirect: follow ? 'follow' : 'manual',
-      signal: controller.signal,
-      body,
-    });
-    const text = await res.text().catch(() => '');
-    return { status: res.status, headers: res.headers, body: text, url };
-  } finally {
-    clearTimeout(timer);
+
+  const send = async () => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: {
+          'User-Agent': 'leadingit-smoke-test',
+          ...(humansCookie ? { Cookie: humansCookie } : {}),
+          ...headers,
+        },
+        redirect: follow ? 'follow' : 'manual',
+        signal: controller.signal,
+        body,
+      });
+      const text = await res.text().catch(() => '');
+      return { status: res.status, headers: res.headers, body: text, url };
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+
+  let res = await send();
+  const challenge = res.body.match(/document\.cookie\s*=\s*"(humans_\d+=[^"]*)"/i);
+  if (challenge && !humansCookie) {
+    humansCookie = challenge[1];
+    res = await send();
   }
+  return res;
 }
 
 function record(name, ok, detail, { required = true, skipped = false } = {}) {
@@ -179,14 +208,22 @@ await run('dotfiles blocked', async () => {
   return [[403, 404].includes(blocked.status), `/.env -> ${blocked.status}`];
 }, { skip: localMode, skipReason: 'needs Apache' });
 
-// Previously folded into the check above, where /.well-known/ was fetched and
-// then used only in the message — so the AutoSSL half could not fail. It asserts
-// something now: the dotfile rule denies with 403, so a 403 here means the
-// exemption is broken and AutoSSL cannot renew the certificate. 404 is the
-// healthy answer when no challenge is in flight.
-await run('/.well-known/ NOT caught by the dotfile deny (AutoSSL)', async () => {
-  const r = await req('/.well-known/');
-  return [r.status !== 403, `${r.status}${r.status === 403 ? ' — exemption broken, certs will fail to renew' : ''}`];
+// Probes a FILE path, never the directory. The first live deploy failed this
+// check against a server that was in fact healthy: `/.well-known/` returns 403
+// from `Options -Indexes` — directory listing is off sitewide — which is
+// indistinguishable from the dotfile deny by status code alone. Only the
+// directory ever 403s; paths inside it answered 404, meaning they are reachable.
+//
+// AutoSSL writes a file to /.well-known/acme-challenge/<token> and fetches it,
+// so a file path is what actually has to be reachable. 404 (absent) is the
+// healthy answer when no challenge is in flight; 403 means the exemption really
+// is broken and the certificate will fail to renew.
+await run('/.well-known/ file path reachable, not dotfile-denied (AutoSSL)', async () => {
+  const r = await req('/.well-known/acme-challenge/smoke-test-probe');
+  return [
+    r.status !== 403,
+    `${r.status}${r.status === 403 ? ' — exemption broken, certs will fail to renew' : ' (404 = reachable, no challenge in flight)'}`,
+  ];
 }, { skip: localMode, skipReason: 'needs Apache' });
 
 // --------------------------------------------------------- indexability
