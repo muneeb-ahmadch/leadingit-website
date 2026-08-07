@@ -134,16 +134,77 @@ jobs:
               echo "::error::leadingit.me's docroot sits BESIDE public_html (see docs/07)."
               exit 1 ;;
           esac
-          # Positive assertion, not just a blocklist: this workflow deploys one
-          # site, so the target must actually name it.
+          # The FTP account is CHROOTED to the docroot, so its "/" already IS
+          # /home4/maisa/leadingit.me — proven 2026-08-07: logging in as deploy@
+          # reports pwd '/' and that directory contains wp-config.php.
+          #
+          # This is why the first dry run mattered. FTP_REMOTE_DIR was set to the
+          # absolute server path, which under a chroot resolves to
+          # <docroot>/home4/maisa/leadingit.me — so lftp planned `mkdir -p` for
+          # the whole path and listed every file as new. A live run would have
+          # uploaded the entire site one level too deep, reported success, and
+          # left leadingit.me still serving WordPress.
+          #
+          # '/' is therefore the correct value, and the path-shape blocklist above
+          # cannot vouch for it — a chroot root is indistinguishable from the real
+          # filesystem root by string inspection alone. That assurance comes from
+          # the runtime probe in the next step, which is why this accepts '/' but
+          # the probe is NOT optional.
           case "$TARGET" in
-            *leadingit.me) ;;
+            ''|'/') echo "Deploy target: / (chroot root of the deploy account)" ;;
+            *leadingit.me) echo "Deploy target: $TARGET" ;;
             *)
-              echo "::error::FTP_REMOTE_DIR='$FTP_REMOTE_DIR' does not end in 'leadingit.me'."
-              echo "::error::Expected /home4/maisa/leadingit.me. Refusing to deploy to an unexpected path."
+              echo "::error::FTP_REMOTE_DIR='$FTP_REMOTE_DIR' is neither '/' nor a path ending in 'leadingit.me'."
+              echo "::error::Refusing to deploy to an unexpected path."
               exit 1 ;;
           esac
-          echo "Deploy target: $TARGET"
+
+      # Proves the things `mirror --dry-run` does NOT: that the credentials work,
+      # that the host is reachable over verified FTPS, and that FTP_REMOTE_DIR
+      # actually resolves to the docroot. lftp's --dry-run plans locally without
+      # opening a connection — the first one completed in 106ms, which is less
+      # than a single round trip to Phoenix, so it validated nothing about the
+      # server. Every run does this, dry or not.
+      - name: Verify FTPS login and deploy target
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_AUTH_TOKEN: ${{ secrets.FTP_AUTH_TOKEN }}
+          FTP_REMOTE_DIR: ${{ vars.FTP_REMOTE_DIR }}
+        run: |
+          set -o pipefail
+          listing=$(lftp -c "
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set ssl:verify-certificate true;
+            set net:max-retries 2;
+            set net:timeout 20;
+            open -u \"$FTP_USERNAME\",\"$FTP_AUTH_TOKEN\" \"$FTP_HOST\";
+            cd \"$FTP_REMOTE_DIR\";
+            pwd;
+            cls -1;
+            bye
+          ") || { echo "::error::Could not log in or cd to '$FTP_REMOTE_DIR'."; exit 1; }
+
+          echo "$listing"
+
+          if [ -z "$(printf '%s' "$listing" | tr -d '[:space:]')" ]; then
+            echo "::error::The deploy target listed EMPTY. That is not the docroot — refusing."
+            exit 1
+          fi
+
+          # Landing at the cPanel account home instead of the docroot is the
+          # catastrophic mistake available here: a prune from there would take
+          # missmaisa.com, smartlit.me and 13 GB of mail with it. These names
+          # exist at the account home and never inside the docroot.
+          for forbidden in public_html mail etc .cpanel logs; do
+            if printf '%s\n' "$listing" | grep -qx "$forbidden"; then
+              echo "::error::Target contains '$forbidden' — this is the ACCOUNT HOME, not the docroot."
+              echo "::error::A prune here would destroy other live sites. Refusing to continue."
+              exit 1
+            fi
+          done
+          echo "Deploy target verified."
 
       # ssl-force + verify-certificate make a host that cannot do FTPS a hard
       # failure rather than a silent plaintext login.
