@@ -6,6 +6,8 @@ import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { InternalLinks, type InternalLink } from '@/components/InternalLinks';
 import { AnswerSections, FaqBlock } from '@/components/AnswerBlocks';
 import { EnquiryCta } from '@/components/EnquiryCta';
+import { PageHero, PAGE_HERO_SIZES } from '@/components/PageHero';
+import { buildLcpImagePreload } from '@/components/media/imageSrcSet';
 import { Seo } from '@/seo/Seo';
 import { solutionsIndexMeta } from '@/seo/meta';
 import { simplePageCrumbs } from '@/seo/breadcrumbs';
@@ -13,6 +15,24 @@ import { buildBreadcrumbList } from '@/seo/jsonld/breadcrumbList';
 import { buildCollectionPage, buildSolutionsItemList } from '@/seo/jsonld/itemList';
 import { buildFaqPage } from '@/seo/jsonld/faqPage';
 import { breadcrumbNodeId, pageUrl } from '@/seo/jsonld/ids';
+
+/**
+ * Hero photograph: a person reaching for a backlit Basalte wall keypad in a
+ * dark interior — real manufacturer photography
+ * (`docs/12-PROVENANCE/image-url-map.md`), decorative here (`alt=""`, no
+ * product named or claimed; `altFor()` resolves it to `''` on its own).
+ *
+ * This band replaces a deliberately text-only hero, so the reversal is recorded
+ * rather than quietly made. The old comment's objection was that "no photograph
+ * on this site depicts automation in general, and an unrelated interior would
+ * be decoration claiming to be evidence." The objection stands and this image
+ * answers it: a hand on a lit wall control is not an unrelated interior — it is
+ * the literal subject of every child page under `/solutions/`. What is still
+ * forbidden is the thing that was actually being guarded against — a stock
+ * villa shot implying a project we did not do, or any Leading IT installation
+ * claim resting on a manufacturer's photograph.
+ */
+const HERO_IMAGE = '/products/basalte/fibonacci-personal.jpg';
 
 /**
  * `/solutions/` — the category axis's hub.
@@ -88,24 +108,29 @@ export function SolutionsIndex() {
           buildBreadcrumbList(crumbs, meta.path),
           buildFaqPage(SOLUTIONS_INDEX.faq, meta.path),
         ]}
+        // Matches the `PageHero` band below (`src`, `sizes`) — the only image
+        // above the fold on this route.
+        lcpImage={buildLcpImagePreload(HERO_IMAGE, PAGE_HERO_SIZES)}
       />
 
-      {/* hero — text only, like /brands/: no photograph on this site depicts
-          "automation in general", and an unrelated interior would be decoration
-          claiming to be evidence. */}
-      <section className="relative pt-44 pb-16 container-luxe">
+      {/* hero */}
+      <PageHero image={HERO_IMAGE}>
         <Reveal>
           <Breadcrumbs crumbs={crumbs} className="mb-8" />
           <Eyebrow>{t('solutions.indexEyebrow')}</Eyebrow>
           <h1 className="mt-5 font-serif text-display max-w-4xl">{SOLUTIONS_INDEX.h1}</h1>
         </Reveal>
-        <Reveal delay={0.15}>
-          <p className="mt-8 text-lg leading-relaxed text-bone-300 max-w-2xl">
+      </PageHero>
+
+      {/* Intro and the first-viewport conversion path (`_CONVENTIONS.md` §7),
+          on solid ink directly under the band — never over the photograph. */}
+      <section className="container-luxe pt-14 pb-16">
+        <Reveal>
+          <p className="text-lg leading-relaxed text-bone-300 max-w-2xl">
             {SOLUTIONS_INDEX.intro}
           </p>
         </Reveal>
-        {/* First-viewport conversion path (`_CONVENTIONS.md` §7). */}
-        <Reveal delay={0.25}>
+        <Reveal delay={0.1}>
           <EnquiryCta
             title={t('solutions.indexCtaTitle')}
             prefill={SOLUTIONS_INDEX.whatsappPrefill}
