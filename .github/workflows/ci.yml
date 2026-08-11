@@ -45,10 +45,23 @@ jobs:
       - name: "Gate: SEO + structured data (scripts/validate-seo.mjs)"
         run: npm run validate:seo
 
+      # Guards the `blacknova` -> `black-nova` URL migration. URL churn is the most
+      # expensive mistake available (docs/05-URL-TAXONOMY.md), so a stale slug reaching
+      # dist/ must fail the build.
+      #
+      # Matches the slug in PATH form only. The original bare `grep -ri 'blacknova'`
+      # also matched prose, and that is not hypothetical: the Black Nova hub carries an
+      # AEO FAQ answering the real search variant ("Is it Black Nova or BlackNova?")
+      # whose answer necessarily cites the manufacturer's actual domain, blacknova.co.
+      # Correct, deliberate content cannot be what turns CI red — a gate that fires on
+      # good copy teaches everyone to ignore it.
+      #
+      # `([^.]|$)` is what excludes the domain: `//blacknova.co` is followed by a dot,
+      # `/brands/blacknova/` is followed by a slash and still fails the build.
       - name: "Gate: no stale blacknova slug in output"
         run: |
-          if grep -rli 'blacknova' dist; then
-            echo "Stale 'blacknova' references found in dist" && exit 1
+          if grep -rEli '/blacknova([^.]|$)' dist; then
+            echo "Stale '/blacknova' URL slug found in dist — routes are /brands/black-nova/" && exit 1
           fi
           echo "OK: no stale slug references"
 
