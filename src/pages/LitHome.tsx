@@ -3,6 +3,8 @@ import { Reveal } from '@/components/primitives/Reveal';
 import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { Parallax } from '@/components/primitives/Parallax';
 import { ResponsiveImage } from '@/components/media/ResponsiveImage';
+import { PageHero, PAGE_HERO_SIZES } from '@/components/PageHero';
+import { buildLcpImagePreload } from '@/components/media/imageSrcSet';
 import { DeviceFrame } from '@/features/litHome/DeviceFrame';
 import { LitHomeDemo } from '@/features/litHome/LitHomeDemo';
 import { BRANDS } from '@/data/brands';
@@ -40,9 +42,17 @@ const FEATURES = [
   },
 ];
 
-// Real Basalte lifestyle photography (raw/products/basalte/deseo-sfeer.jpg,
+// Real Basalte lifestyle photography (raw/products/basalte/**,
 // manufacturer/dealer-sourced — docs/12-PROVENANCE/image-url-map.md), reused
-// as a decorative full-bleed band (`alt=""`, no product named/claimed here).
+// here as decorative full-bleed bands (`alt=""`, no product named/claimed).
+// Both resolve to `''` through `altFor()` independently, so the empty alt
+// agrees with the canonical resolution rather than overriding it.
+//
+// The hero is an evening living room under warm light — the *result* of one
+// interface running a residence, which is what this page sells, rather than a
+// screenshot of the interface itself (the `DeviceFrame` demo below does that
+// job, and does it interactively).
+const HERO_IMAGE = '/products/basalte/sentido-scene.jpg';
 const LIFESTYLE = '/products/basalte/deseo-sfeer.jpg';
 
 export function LitHomePage() {
@@ -69,22 +79,29 @@ export function LitHomePage() {
           }),
           buildBreadcrumbList(crumbs, meta.path),
         ]}
+        // Matches the `PageHero` band below (`src`, `sizes`). The second band
+        // (`LIFESTYLE`) is far below the fold and stays lazy.
+        lcpImage={buildLcpImagePreload(HERO_IMAGE, PAGE_HERO_SIZES)}
       />
 
       {/* hero */}
-      <section className="relative pt-44 pb-20 container-luxe">
+      <PageHero image={HERO_IMAGE}>
         <Reveal>
           <Breadcrumbs crumbs={crumbs} className="mb-8" />
           <Eyebrow>{t('litHome.eyebrow')}</Eyebrow>
           <h1 className="mt-5 font-serif text-display max-w-5xl">{t('litHome.title')}</h1>
         </Reveal>
-        <Reveal delay={0.2}>
-          <p className="mt-8 max-w-2xl text-lg leading-relaxed text-bone-300">
+      </PageHero>
+
+      {/* Intro and the first-viewport conversion path (`_CONVENTIONS.md` §7),
+          on solid ink directly under the band — never over the photograph. */}
+      <section className="container-luxe pt-14 pb-20">
+        <Reveal>
+          <p className="max-w-2xl text-lg leading-relaxed text-bone-300">
             {t('litHome.subtitle')}
           </p>
         </Reveal>
-        {/* First-viewport conversion path (`_CONVENTIONS.md` §7). */}
-        <Reveal delay={0.3}>
+        <Reveal delay={0.1}>
           <EnquiryCta
             title={t('litHome.ctaTitle')}
             prefill={SITE_PREFILLS.litHome}

@@ -3,6 +3,8 @@ import { Reveal } from '@/components/primitives/Reveal';
 import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { EnquiryCta } from '@/components/EnquiryCta';
+import { PageHero, PAGE_HERO_SIZES } from '@/components/PageHero';
+import { buildLcpImagePreload } from '@/components/media/imageSrcSet';
 import { SITE_PREFILLS } from '@/lib/prefill';
 import { Seo } from '@/seo/Seo';
 import { aboutMeta } from '@/seo/meta';
@@ -16,6 +18,23 @@ const TEAM = [
   { name: 'Mihajlo', roleKey: 'about.roleDirectorEngineering' },
   { name: 'Liaquat', roleKey: 'about.roleTerritoryDirector' },
 ];
+
+/**
+ * Hero photograph: a black-on-black macro of a U&K Sound in-wall driver — real
+ * manufacturer/dealer-sourced photography
+ * (`docs/12-PROVENANCE/image-url-map.md`), decorative here (`alt=""`;
+ * `altFor()` resolves it to `''` on its own, as an un-viewed single-owner
+ * lifestyle frame).
+ *
+ * Deliberately a component and not a room. **No photograph of Leading IT's
+ * premises, showroom, team or completed work exists** (`docs/OPEN-QUESTIONS.md`
+ * #11), and an About page is exactly where a stock interior would be read as
+ * "this is our office" or "this is our project". A hardware macro claims
+ * nothing about us; it is atmosphere, and it is honest atmosphere. Replace it
+ * with real first-party photography the day OQ #11 is resolved — that is an
+ * upgrade, not a rewrite: swap the constant.
+ */
+const HERO_IMAGE = '/products/uandksound/e-detail.jpg';
 
 export function About() {
   const { t } = useTranslation();
@@ -36,22 +55,29 @@ export function About() {
           }),
           buildBreadcrumbList(crumbs, meta.path),
         ]}
+        // Matches the `PageHero` band below (`src`, `sizes`) — the only image
+        // on this route.
+        lcpImage={buildLcpImagePreload(HERO_IMAGE, PAGE_HERO_SIZES)}
       />
 
       {/* hero */}
-      <section className="relative pt-44 pb-24 container-luxe">
+      <PageHero image={HERO_IMAGE}>
         <Reveal>
           <Breadcrumbs crumbs={crumbs} className="mb-8" />
           <Eyebrow>{t('about.eyebrow')}</Eyebrow>
           <h1 className="mt-5 font-serif text-display max-w-4xl">{t('about.title')}</h1>
         </Reveal>
-        <Reveal delay={0.2}>
-          <p className="mt-10 text-lg leading-relaxed text-bone-300 max-w-3xl">
+      </PageHero>
+
+      {/* Lead and the first-viewport conversion path (`_CONVENTIONS.md` §7),
+          on solid ink directly under the band — never over the photograph. */}
+      <section className="container-luxe pt-14 pb-24">
+        <Reveal>
+          <p className="text-lg leading-relaxed text-bone-300 max-w-3xl">
             {t('about.lead')}
           </p>
         </Reveal>
-        {/* First-viewport conversion path (`_CONVENTIONS.md` §7). */}
-        <Reveal delay={0.3}>
+        <Reveal delay={0.1}>
           <EnquiryCta
             title={t('about.heroCtaTitle')}
             prefill={SITE_PREFILLS.about}

@@ -7,6 +7,7 @@ import { ArrowRight } from 'lucide-react';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { EnquiryCta } from '@/components/EnquiryCta';
 import { ResponsiveImage } from '@/components/media/ResponsiveImage';
+import { PageHero, PAGE_HERO_SIZES } from '@/components/PageHero';
 import { buildLcpImagePreload } from '@/components/media/imageSrcSet';
 import { SITE_PREFILLS } from '@/lib/prefill';
 import { Seo } from '@/seo/Seo';
@@ -22,6 +23,15 @@ const CATEGORIES: { id: BrandCategory; titleKey: string }[] = [
   { id: 'cinema', titleKey: 'brands.categoryCinema' },
 ];
 
+/**
+ * Hero photograph: a wall of U&K Sound cinema loudspeakers in raw microcement
+ * under warm slat lighting — real, manufacturer/dealer-sourced photography of a
+ * brand this page actually lists (`docs/12-PROVENANCE/image-url-map.md`).
+ * Decorative (`alt=""`, nothing named or claimed); `altFor()` independently
+ * resolves it to `''` because two product records share the file.
+ */
+const HERO_IMAGE = '/products/uandksound/cinema-wall.jpg';
+
 export function BrandsIndex() {
   const { t } = useTranslation();
   const meta = brandsIndexMeta();
@@ -30,14 +40,6 @@ export function BrandsIndex() {
   // `CollectionPage` has to point `mainEntity` at the same string, so it is
   // derived once here rather than retyped.
   const brandListId = `${pageUrl(meta.path)}#brand-list`;
-
-  // The first tile of the first non-empty category is this route's LCP
-  // candidate (see the comment inside the `CATEGORIES.map()` below, which
-  // reads this same derivation) — computed once here so the `<Seo lcpImage>`
-  // preload and the tile's own `priority` prop cannot name two different
-  // brands.
-  const lcpCategoryId = CATEGORIES.find((c) => BRANDS.some((b) => b.category === c.id))?.id;
-  const lcpBrand = lcpCategoryId ? BRANDS.find((b) => b.category === lcpCategoryId) : undefined;
 
   return (
     <>
@@ -56,30 +58,32 @@ export function BrandsIndex() {
           buildBrandsItemList(BRANDS),
           buildBreadcrumbList(crumbs, meta.path),
         ]}
-        lcpImage={
-          lcpBrand
-            ? buildLcpImagePreload(
-                lcpBrand.heroImage,
-                '(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw',
-              )
-            : undefined
-        }
+        // Matches the `PageHero` band below, which is the only image above the
+        // fold and therefore this route's sole LCP candidate. It used to be the
+        // first brand tile; that derivation is gone rather than kept alongside,
+        // because two `priority` images on one route is two `fetchpriority=high`
+        // fetches competing for the same first paint.
+        lcpImage={buildLcpImagePreload(HERO_IMAGE, PAGE_HERO_SIZES)}
       />
 
       {/* hero */}
-      <section className="relative pt-44 pb-24 container-luxe">
+      <PageHero image={HERO_IMAGE}>
         <Reveal>
           <Breadcrumbs crumbs={crumbs} className="mb-8" />
           <Eyebrow>{t('brands.indexEyebrow')}</Eyebrow>
           <h1 className="mt-5 font-serif text-display">{t('brands.indexTitle')}</h1>
         </Reveal>
-        <Reveal delay={0.2}>
-          <p className="mt-8 text-lg leading-relaxed text-bone-300 max-w-2xl">
+      </PageHero>
+
+      {/* Intro and the first-viewport conversion path (`_CONVENTIONS.md` §7),
+          on solid ink directly under the band — never over the photograph. */}
+      <section className="container-luxe pt-14 pb-24">
+        <Reveal>
+          <p className="text-lg leading-relaxed text-bone-300 max-w-2xl">
             {t('brands.indexSub')}
           </p>
         </Reveal>
-        {/* First-viewport conversion path (`_CONVENTIONS.md` §7). */}
-        <Reveal delay={0.3}>
+        <Reveal delay={0.1}>
           <EnquiryCta
             title={t('brands.indexCtaTitle')}
             prefill={SITE_PREFILLS.brands}
@@ -91,12 +95,6 @@ export function BrandsIndex() {
       {/* category groups */}
       {CATEGORIES.map((cat) => {
         const items = BRANDS.filter((b) => b.category === cat.id);
-        // The first tile of the first non-empty group is the only image above the
-        // fold, so it is this route's LCP candidate — and the only one on the page
-        // allowed to be eager + fetchpriority="high". Same derivation the
-        // `<Seo lcpImage>` preload above uses (`lcpCategoryId`), so the two can't
-        // name different brands.
-        const isLcpGroup = lcpCategoryId === cat.id;
         return (
           <section key={cat.id} className="container-luxe pb-24">
             <Reveal>
@@ -121,13 +119,16 @@ export function BrandsIndex() {
                     {/* Decorative: this sits at 40% opacity behind the tile's own
                         text, inside a link whose visible label is already the
                         brand name — captioning it would only repeat that name to
-                        a screen reader. */}
+                        a screen reader.
+
+                        No `priority` on any tile: the `PageHero` band above is
+                        this route's LCP image, and every tile now sits below the
+                        fold behind it, so lazy is both correct and cheaper. */}
                     <ResponsiveImage
                       src={b.heroImage}
                       alt=""
                       sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                       className="absolute inset-0 h-full w-full object-cover opacity-40 group-hover:opacity-60 group-hover:scale-105 transition-all duration-1000 ease-out-luxe"
-                      priority={isLcpGroup && i === 0}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/40 to-transparent" />
                     <div className="relative h-full p-8 flex flex-col justify-end">

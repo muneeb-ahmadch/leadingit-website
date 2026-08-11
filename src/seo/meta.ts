@@ -85,8 +85,18 @@ const PRODUCT_SUPPLY_SENTENCE = `Supplied and installed by ${SITE_NAME}, Dubai, 
  */
 const RANGE_SUPPLY_SENTENCE = `Supplied as a complete range by ${SITE_NAME}, Dubai, for the UAE and Pakistan.`;
 
-/** Same claim for a brand hub. 72 characters. */
-const BRAND_SUPPLY_SENTENCE = `Supplied and installed by ${SITE_NAME} in Dubai, for the UAE and Pakistan.`;
+/**
+ * Same claim for a brand hub. 82 characters.
+ *
+ * "Dubai distributor" describes **Leading IT** — the company descriptor already
+ * shipping in `homeMeta()` and `brandsIndexMeta()` and recorded in
+ * `docs/00-CONTEXT.md` §1. It is deliberately *not* "<brand> distributor": that
+ * is an authorisation claim and stays gated behind `docs/OPEN-QUESTIONS.md` #3.
+ * The brand+geo queries this hub targets are answered by the question H2s and
+ * the FAQ in `src/data/brandContent.ts`, in the audience's words, without the
+ * page ever claiming a channel status Leading IT has not confirmed in writing.
+ */
+const BRAND_SUPPLY_SENTENCE = `Supplied and installed by ${SITE_NAME} — Dubai distributor for the UAE and Pakistan.`;
 
 export function homeMeta(): PageMeta {
   return {
@@ -117,16 +127,22 @@ export function brandsIndexMeta(): PageMeta {
 }
 
 /**
- * Brand hub. Title formula: `<brand> in Dubai — Supplied & Installed by
- * Leading IT` — 46 chars of fixture plus the brand name; the longest of the
- * nine names is 10 chars ("Black Nova", "Polk Audio"), so the worst case is 56.
+ * Brand hub. Title formula: `<brand> Dubai & UAE — Supplied & Installed |
+ * Leading IT` — 48 chars of fixture plus the brand name; the longest of the
+ * nine names is 10 chars ("Black Nova", "Polk Audio", "UandKSound"), so the
+ * worst case is 58 against a 60-char budget.
+ *
+ * Both geographies are in the title on purpose. The B1–B9 query set
+ * (`docs/04-KEYWORD-MAP.md` §2) splits between city phrasings
+ * (`crestron dealer dubai`) and country phrasings (`blustream distributor uae`),
+ * and the previous formula carried only "Dubai".
  */
 export function brandMeta(brand: Brand): PageMeta {
   return {
-    title: `${brand.name} in Dubai — Supplied & Installed by ${SITE_NAME}`,
+    title: `${brand.name} Dubai & UAE — Supplied & Installed | ${SITE_NAME}`,
     // `<brand> — <tagline> <supply sentence>`. Every tagline in the catalog is a
     // complete sentence ending in a full stop, so this reads as prose. Worst
-    // case is Basalte at 136 chars; shortest is UandKSound at 105.
+    // case is Basalte at 145 chars; shortest is UandKSound at 115.
     description: `${brand.name} — ${brand.tagline} ${BRAND_SUPPLY_SENTENCE}`,
     path: `/brands/${brand.slug}`,
     ogImage: ownImage(brand.heroImage),

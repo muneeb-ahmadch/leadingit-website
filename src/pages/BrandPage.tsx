@@ -1,6 +1,7 @@
 import { Navigate, useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { BRANDS, BRAND_BY_SLUG } from '@/data/brands';
+import { BRAND_CONTENT_BY_SLUG } from '@/data/brandContent';
 import { BRAND_PAKISTAN_BY_SLUG } from '@/data/brandPakistan';
 import { SOLUTIONS } from '@/data/solutions';
 import { productsForBrand, CATEGORIES_BY_BRAND } from '@/data/products';
@@ -10,6 +11,7 @@ import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { ButtonLink } from '@/components/primitives/Button';
 import { ArrowRight } from 'lucide-react';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { AnswerSections, FaqBlock } from '@/components/AnswerBlocks';
 import { InternalLinks, type InternalLink } from '@/components/InternalLinks';
 import { EnquiryCta } from '@/components/EnquiryCta';
 import { ResponsiveImage } from '@/components/media/ResponsiveImage';
@@ -24,6 +26,7 @@ import { brandHubCrumbs } from '@/seo/breadcrumbs';
 import { buildBrand } from '@/seo/jsonld/brand';
 import { buildBreadcrumbList } from '@/seo/jsonld/breadcrumbList';
 import { buildBrandProductsItemList, buildCollectionPage } from '@/seo/jsonld/itemList';
+import { buildFaqPage } from '@/seo/jsonld/faqPage';
 import { breadcrumbNodeId, pageUrl } from '@/seo/jsonld/ids';
 
 /**
@@ -79,6 +82,13 @@ export function BrandPage() {
 
   const products = productsForBrand(brand.slug);
   const categories = CATEGORIES_BY_BRAND[brand.slug];
+  /**
+   * The AEO body of this hub — question H2s, their extractable answers and the
+   * FAQ (`src/data/brandContent.ts`). All nine hubs carry a record; the lookup
+   * is still optional so that adding a brand to `BRANDS` renders a valid page
+   * before its copy is written, rather than crashing the prerender.
+   */
+  const content = BRAND_CONTENT_BY_SLUG[brand.slug];
   const heroIsRender = brand.heroImage.startsWith('/products/');
 
   const meta = brandMeta(brand);
@@ -181,6 +191,12 @@ export function BrandPage() {
           buildBrand(brand),
           buildBrandProductsItemList(brand, products),
           buildBreadcrumbList(crumbs, meta.path),
+          // Every question and answer in this node is rendered visibly by
+          // `FaqBlock` below, from the same array — structured data a visitor
+          // cannot read on the page is a spam-policy violation, so the two are
+          // physically incapable of disagreeing. Returns null before a hub has
+          // FAQ copy, and `Seo` drops null nodes.
+          buildFaqPage(content?.faq ?? [], meta.path),
         ]}
         // Matches the hero `ResponsiveImage priority` below verbatim (`src`,
         // `sizes`) — that pairing is what keeps the preload and the picture
@@ -210,6 +226,19 @@ export function BrandPage() {
           <Reveal delay={0.3}>
             <p className="mt-6 max-w-2xl text-xl text-bone-300">{brand.tagline}</p>
           </Reveal>
+          {/*
+            The `<h1>` is the brand wordmark, which is a locked design decision
+            (`docs/02-DESIGN-SOURCE-OF-TRUTH.md`) — so this line is where the
+            entity, the service and the place appear in the first viewport. It
+            is visible copy at the existing type scale, not text hidden for
+            crawlers: the brand+geo queries this hub targets (`docs/04` §2) are
+            answered in words a visitor reads.
+          */}
+          {content && (
+            <Reveal delay={0.4}>
+              <p className="mt-4 max-w-2xl text-bone-500 leading-relaxed">{content.heroSupplyLine}</p>
+            </Reveal>
+          )}
         </div>
       </section>
 
@@ -240,6 +269,15 @@ export function BrandPage() {
           />
         </Reveal>
       </section>
+
+      {/*
+        The AEO body — question-shaped H2s, each answered in the paragraph
+        directly beneath it (`docs/10-CONTENT-BRIEFS/_CONVENTIONS.md` §6). This
+        is the block that competes for `<brand> distributor dubai` and its
+        siblings, and the block an answer engine quotes when asked who supplies
+        a brand in the UAE. Same component the solution pages use.
+      */}
+      {content && <AnswerSections sections={content.sections} />}
 
       {/* product range */}
       {products.length > 0 ? (
@@ -382,6 +420,10 @@ export function BrandPage() {
           </div>
         </Reveal>
       </section>
+
+      {/* The visible FAQ, rendered from the same array as the `FAQPage` node
+          above — see the comment on `buildFaqPage()` in the `Seo` block. */}
+      {content && <FaqBlock faq={content.faq} />}
 
       {/* Second placement, at the foot with the whole catalogue and the
           cross-links between it and the first one. It replaces a single-channel
