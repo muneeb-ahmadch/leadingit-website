@@ -10,7 +10,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception as PHPMailerException;
 
 /**
- * Both outbound mails for /api/contact.php, over authenticated Google Workspace
+ * Both outbound mails for /api/enquiry.php, over authenticated Google Workspace
  * SMTP.
  *
  * ## Why not mail()

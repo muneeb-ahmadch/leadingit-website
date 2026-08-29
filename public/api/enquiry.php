@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * POST /api/contact.php — the leadingit.me contact endpoint.
+ * POST /api/enquiry.php — the leadingit.me contact endpoint.
  *
  * Order of operations is deliberate and cheapest-first, so an obvious bot never
  * costs a Cloudflare API round trip or a rate-limit slot:
@@ -74,7 +74,7 @@ register_shutdown_function(static function (): void {
     if ($fatal === null || !in_array($fatal['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
         return;
     }
-    error_log('contact.php fatal: ' . $fatal['message'] . ' in ' . $fatal['file'] . ':' . $fatal['line']);
+    error_log('enquiry.php fatal: ' . $fatal['message'] . ' in ' . $fatal['file'] . ':' . $fatal['line']);
     while (ob_get_level() > 0 && @ob_end_clean()) {
         // discard
     }
@@ -191,7 +191,7 @@ try {
 } catch (Throwable $e) {
     // Misconfiguration must never leak the resolved path or any value to the
     // client; it is a server fault and is reported as one.
-    error_log('contact.php config error: ' . $e->getMessage());
+    error_log('enquiry.php config error: ' . $e->getMessage());
     contact_respond(500, 'server_error', 'The contact endpoint is not configured correctly.');
 }
 
@@ -242,7 +242,7 @@ $storageDir = $config['storage_dir'];
 try {
     Storage::ensureDir($storageDir);
 } catch (Throwable $e) {
-    error_log('contact.php storage error: ' . $e->getMessage());
+    error_log('enquiry.php storage error: ' . $e->getMessage());
     contact_respond(500, 'server_error', 'The contact endpoint could not open its storage.');
 }
 $logFile = $storageDir . '/submissions.log';
@@ -259,7 +259,7 @@ $logLine = static function (string $outcome, array $fields) use ($logFile, $ip, 
         Storage::appendLine($logFile, (string) json_encode($record, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
     } catch (Throwable $e) {
         // Logging must never take down a live submission.
-        error_log('contact.php log write failed: ' . $e->getMessage());
+        error_log('enquiry.php log write failed: ' . $e->getMessage());
     }
 };
 
@@ -355,7 +355,7 @@ $mailError = null;
 $notified = $mailer->sendNotification($submission, $mailError);
 
 if (!$notified) {
-    error_log('contact.php notification failed [' . $reference . ']: ' . (string) $mailError);
+    error_log('enquiry.php notification failed [' . $reference . ']: ' . (string) $mailError);
     $logLine('mail_failed', ['error' => (string) $mailError]);
     // Honest failure. The submission is on disk under $reference and is
     // recoverable, but nobody is watching that file, so this does NOT report
@@ -370,7 +370,7 @@ $ackError = null;
 if (!$mailer->sendAcknowledgement($submission, $ackError)) {
     // Best-effort by design: the enquiry reached Leading IT, which is what the
     // visitor actually needed. Recorded so a pattern of failures is visible.
-    error_log('contact.php acknowledgement failed [' . $reference . ']: ' . (string) $ackError);
+    error_log('enquiry.php acknowledgement failed [' . $reference . ']: ' . (string) $ackError);
     $logLine('ack_failed', ['error' => (string) $ackError]);
 }
 

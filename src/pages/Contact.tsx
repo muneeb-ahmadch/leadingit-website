@@ -31,7 +31,7 @@ import {
  */
 type FormStatus = 'idle' | 'submitting' | 'sent' | 'mailto' | 'error';
 
-/** Machine-readable failure kinds, mirroring /api/contact.php's `status` field. */
+/** Machine-readable failure kinds, mirroring /api/enquiry.php's `status` field. */
 type ErrorKind = 'error' | 'rate_limited' | 'stale' | 'captcha' | 'invalid';
 
 export function Contact() {
@@ -95,7 +95,7 @@ export function Contact() {
 
   /**
    * Composes a real email draft in the visitor's own mail client. This is the
-   * pre-Phase-5 behaviour and it is kept deliberately: `/api/contact.php`
+   * pre-Phase-5 behaviour and it is kept deliberately: `/api/enquiry.php`
    * REQUIRES a Turnstile token, so until a site key exists every POST would be
    * rejected. Shipping a form guaranteed to fail would be worse than shipping
    * one that works differently. It never claims the message was sent — the
@@ -132,7 +132,7 @@ export function Contact() {
     };
 
     try {
-      const res = await fetch('/api/contact.php', {
+      const res = await fetch('/api/enquiry.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -294,7 +294,7 @@ export function Contact() {
               // nothing sent: an enquiry lost silently, with no error shown.
               <form
                 onSubmit={handleSubmit}
-                action="/api/contact.php"
+                action="/api/enquiry.php"
                 method="post"
                 className="grid gap-10"
               >

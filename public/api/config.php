@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Resolves runtime configuration for /api/contact.php from a KEY=VALUE file
+ * Resolves runtime configuration for /api/enquiry.php from a KEY=VALUE file
  * that lives OUTSIDE the web root. This file only locates, parses and
  * validates that config — it holds no secret value itself, and nothing here
  * is ever safe to log verbatim (see contact_config(), which returns the
@@ -60,7 +60,7 @@ function contact_resolve_env_path(): string
     }
 
     throw new RuntimeException(
-        'contact.php: no env file found. Set the CONTACT_ENV_PATH server environment ' .
+        'enquiry.php: no env file found. Set the CONTACT_ENV_PATH server environment ' .
         'variable to an absolute path outside the web root, or place a populated copy of ' .
         '.env.example at leadingit-secrets/contact.env next to (Layout A) or beside ' .
         '(Layout B) public_html — see docs/12-PROVENANCE/phase5-endpoint.md.'
@@ -91,14 +91,14 @@ function contact_assert_outside_webroot(string $path, string $webRoot): void
 
     if ($realProbe === false || $realWebRoot === false) {
         throw new RuntimeException(
-            'contact.php: could not resolve a real path for "' . $path . '" or the web root ' .
+            'enquiry.php: could not resolve a real path for "' . $path . '" or the web root ' .
             'to verify it is outside it; refusing to use it for secrets/logs.'
         );
     }
 
     if ($realProbe === $realWebRoot || strpos($realProbe . '/', $realWebRoot . '/') === 0) {
         throw new RuntimeException(
-            'contact.php: storage path "' . $path . '" resolves inside the web root (' .
+            'enquiry.php: storage path "' . $path . '" resolves inside the web root (' .
             $realWebRoot . '); refusing to store secrets/logs where HTTP can reach them.'
         );
     }
@@ -128,7 +128,7 @@ function contact_config(): array
     ];
     foreach ($required as $key) {
         if (!isset($vars[$key]) || $vars[$key] === '') {
-            throw new RuntimeException("contact.php: required env var $key is missing or empty in $envPath");
+            throw new RuntimeException("enquiry.php: required env var $key is missing or empty in $envPath");
         }
     }
 

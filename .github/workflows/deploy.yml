@@ -241,7 +241,7 @@ jobs:
       #     is where the domain's `display_errors = Off` reading actually lives.
       #     A prune would delete it and silently revert PHP config for the domain
       #     to the server default. (The endpoint does not depend on this — it sets
-      #     display_errors itself at contact.php:50 — but the file is not ours to
+      #     display_errors itself at enquiry.php:50 — but the file is not ours to
       #     destroy, and the failure would be invisible.)
       #   * .user.ini — the PHP-FPM equivalent, excluded for the same reason in
       #     case the handler ever changes.

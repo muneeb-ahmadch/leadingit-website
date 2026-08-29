@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Dependency-free tests for the /api/contact.php support classes.
+ * Dependency-free tests for the /api/enquiry.php support classes.
  *
  * Run: php scripts/test-endpoint.php   (exits non-zero on failure)
  *

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Fetches the PHPMailer sources /api/contact.php needs into public/api/vendor/,
+ * Fetches the PHPMailer sources /api/enquiry.php needs into public/api/vendor/,
  * pinned to one version and verified by SHA-256.
  *
  * ## Why this exists instead of committing the library

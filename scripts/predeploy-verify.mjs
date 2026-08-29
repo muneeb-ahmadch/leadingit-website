@@ -83,7 +83,7 @@ check('artefacts', 'static-loader-data-manifest survives postbuild',
 // public/api/vendor/ is gitignored: prebuild fetches PHPMailer, SHA-verified.
 // A CI runner that skipped prebuild produces a dist that 500s on first enquiry.
 const requiredApi = [
-  'api/contact.php', 'api/config.php',
+  'api/enquiry.php', 'api/config.php',
   'api/lib/Env.php', 'api/lib/Mailer.php', 'api/lib/RateLimiter.php',
   'api/lib/Spam.php', 'api/lib/Storage.php', 'api/lib/Turnstile.php',
   'api/vendor/phpmailer/src/PHPMailer.php', 'api/vendor/phpmailer/src/SMTP.php',

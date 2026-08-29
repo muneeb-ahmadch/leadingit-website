@@ -257,8 +257,8 @@ await run('homepage canonical points at the live apex', async () => {
 // The single best proof that PHP executes at all AND that the endpoint is
 // reachable: it is POST-only, so a GET must answer 405 with Allow: POST. It
 // costs nothing, sends no mail, and consumes no rate-limit slot.
-await run('PHP alive: GET /api/contact.php -> 405 Allow: POST', async () => {
-  const r = await req('/api/contact.php');
+await run('PHP alive: GET /api/enquiry.php -> 405 Allow: POST', async () => {
+  const r = await req('/api/enquiry.php');
   let status = null;
   try { status = JSON.parse(r.body).status; } catch { /* body checked below */ }
   return [
@@ -271,7 +271,7 @@ await run('PHP alive: GET /api/contact.php -> 405 Allow: POST', async () => {
 // most likely first-deploy failure and it must be caught before anyone
 // announces the site, not by the first customer who tries to enquire.
 await run('endpoint config resolves (not 500 server_error)', async () => {
-  const r = await req('/api/contact.php', {
+  const r = await req('/api/enquiry.php', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({}),
