@@ -16,10 +16,10 @@
  * write-up in the local `docs/17-TURNSTILE-SETUP.md`).
  *
  * Because that constant is now non-empty, `isTurnstileConfigured()` returns
- * true, and `Contact.tsx` takes the **live POST path** to `/api/contact.php`
+ * true, and `Contact.tsx` takes the **live POST path** to `/api/enquiry.php`
  * instead of the `mailto:` fallback it used through Phases 0–5.
  *
- * `/api/contact.php` **requires** a valid Turnstile token and rejects any
+ * `/api/enquiry.php` **requires** a valid Turnstile token and rejects any
  * submission without one — verified against Cloudflare using the paired
  * server-side key, which lives ONLY in the server env file outside the web
  * root, under `TURNSTILE_VERIFY_TOKEN`, and never in this repo. **Therefore:
@@ -45,7 +45,7 @@ export const TURNSTILE_SITE_KEY: string = '0x4AAAAAAEHAKltFGPHTvMqV';
  * Turnstile's own script, loaded only when a key exists. Implicit rendering:
  * the script finds any `.cf-turnstile` element, renders the widget into it, and
  * writes the token into a hidden `cf-turnstile-response` input inside the form —
- * which `/api/contact.php` already accepts under that exact name.
+ * which `/api/enquiry.php` already accepts under that exact name.
  */
 export const TURNSTILE_SCRIPT_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
 

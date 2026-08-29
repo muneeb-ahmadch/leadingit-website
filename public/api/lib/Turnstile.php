@@ -50,7 +50,7 @@ final class Turnstile
             // on, that notice printed itself INTO this endpoint's JSON response
             // body — making every reply unparseable by the front end and leaking
             // the absolute server path to the client. Found on the endpoint's
-            // first-ever execution (Phase 7, PHP 8.5.9); contact.php now also
+            // first-ever execution (Phase 7, PHP 8.5.9); enquiry.php now also
             // buffers defensively, but the correct fix is not to call it.
         }
 

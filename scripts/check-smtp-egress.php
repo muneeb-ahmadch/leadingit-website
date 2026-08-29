@@ -10,7 +10,7 @@ declare(strict_types=1);
  *
  *     php ~/leadingit.me/../check-smtp-egress.php      (or wherever you scp it)
  *
- * Why it exists. The whole mail design for /api/contact.php is authenticated SMTP
+ * Why it exists. The whole mail design for /api/enquiry.php is authenticated SMTP
  * to smtp.gmail.com — PHP mail() and the cPanel local relay are banned, because
  * mail injected locally is not covered by the domain's SPF record and is never
  * DKIM-signed. Shared hosts routinely block outbound 587/465 to force customers

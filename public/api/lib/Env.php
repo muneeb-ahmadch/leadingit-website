@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Minimal KEY=VALUE file parser for /api/contact.php's runtime configuration.
+ * Minimal KEY=VALUE file parser for /api/enquiry.php's runtime configuration.
  *
  * Deliberately hand-rolled instead of pulling in vlucas/dotenv: the endpoint
  * has to run on stock HostGator shared PHP with no Composer install step
