@@ -227,14 +227,14 @@ $reference = strtoupper(bin2hex(random_bytes(4)));
 // claimed the trip was "recoverable from the log"; it was not. It is now.
 $name = contact_clean($input['name'] ?? '', 120);
 $email = contact_clean($input['email'] ?? '', 254);
-$company = contact_clean($input['company'] ?? '', 160);
+$whatsapp = contact_clean($input['whatsapp'] ?? '', 40);
 $message = contact_clean($input['message'] ?? '', 5000);
 
 /** The submitted content, for logging on any path including a rejection. */
 $submittedFields = [
     'name' => $name,
     'email' => $email,
-    'company' => $company,
+    'whatsapp' => $whatsapp,
     'message' => $message,
 ];
 
@@ -326,6 +326,19 @@ if ($name === '') {
 if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $errors['email'] = 'Please give us an email address we can reply to.';
 }
+// Required. The form's whole purpose is a reply inside thirty seconds, and
+// email is not the channel that happens on in this market. Validation stays
+// permissive on purpose — a strict national format rejects real numbers from
+// architects and suppliers abroad — so it only asserts "plausible phone
+// characters, at least seven digits" and leaves the rest to a human.
+if ($whatsapp === '') {
+    $errors['whatsapp'] = 'Please give us a WhatsApp number — it is where we reply first.';
+} elseif (
+    !preg_match('/^[0-9+\-().\s]{7,40}$/', $whatsapp)
+    || (int) preg_match_all('/\d/', $whatsapp) < 7
+) {
+    $errors['whatsapp'] = 'That does not look like a complete phone number.';
+}
 if ($message === '') {
     $errors['message'] = 'Please tell us what you need.';
 } elseif (mb_strlen($message) < 10) {
@@ -339,7 +352,7 @@ if ($errors !== []) {
 $submission = [
     'name' => $name,
     'email' => $email,
-    'company' => $company,
+    'whatsapp' => $whatsapp,
     'message' => $message,
     'ip' => $ip,
     'submitted_at' => $submittedAt,
