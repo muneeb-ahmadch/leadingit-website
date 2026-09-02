@@ -88,7 +88,11 @@ export function CampaignHero({ children }: Props) {
   const frames = enhanced ? SLIDES : SLIDES.slice(0, 1);
 
   return (
-    <section className="relative flex min-h-[62svh] items-end overflow-hidden grain">
+    // Full viewport, not a 62svh band. The band left a tall black section
+    // underneath it and the page read as "too black" — the fix is more
+    // photograph, not more gradient. The form now lives inside this section, so
+    // the whole first screen is the image.
+    <section className="relative flex min-h-[92svh] items-center overflow-hidden grain lg:min-h-screen">
       <div className="absolute inset-0">
         {frames.map((src, i) => (
           <div
@@ -113,20 +117,30 @@ export function CampaignHero({ children }: Props) {
       </div>
 
       {/*
-       * Two scrims, not one. The vertical gradient is `PageHero`'s, tuned one
-       * stop darker at the top because this band holds a CTA as well as an h1.
-       * The horizontal one darkens the side the copy sits on, so the text keeps
-       * its contrast against whichever frame is showing — the frames differ by
-       * about 40 points of luma, and a single scrim tuned for the fireplace
-       * frame leaves the cinema frame washed out. `bg-warm-radial` is the gold
-       * glow the home page already uses; it is what stops "dark" reading as
-       * "gloomy".
+       * Two scrims, and the split between them is what makes the photograph
+       * readable instead of merely dark.
+       *
+       * The HORIZONTAL one does the accessibility work. Copy sits in the left
+       * column, so that side stays at 92% ink and the ratio is deterministic:
+       * over a worst-case pure-white pixel, 92% #0A0A0A composites to #262626,
+       * and bone.100 on that is 12.6:1. The right side falls to 25% so the room
+       * is actually visible — the form that sits there is on an OPAQUE panel and
+       * needs no scrim of its own.
+       *
+       * The VERTICAL one is now mostly transparent through the middle. It was
+       * `from-80% via-55% to-100%`, which stacked with the horizontal scrim and
+       * buried the image under roughly 1.4 scrims' worth of ink at the bottom
+       * left. It now only darkens the top (so the wordmark holds) and the last
+       * stretch (so the section below joins without a seam).
+       *
+       * `bg-warm-radial` is the gold glow the home page hero already uses, and
+       * it is the single element that stops an ink page reading as a black one.
        */}
-      <div className="absolute inset-0 bg-gradient-to-b from-ink-950/80 via-ink-950/55 to-ink-950" />
-      <div className="absolute inset-0 bg-gradient-to-r from-ink-950/90 via-ink-950/50 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-b from-ink-950/45 via-transparent to-ink-950/95" />
+      <div className="absolute inset-0 bg-gradient-to-r from-ink-950/92 via-ink-950/70 to-ink-950/25" />
       <div className="absolute inset-0 bg-warm-radial" />
 
-      <div className="relative w-full container-luxe pt-32 pb-16">{children}</div>
+      <div className="relative w-full container-luxe pt-28 pb-16 lg:py-32">{children}</div>
     </section>
   );
 }

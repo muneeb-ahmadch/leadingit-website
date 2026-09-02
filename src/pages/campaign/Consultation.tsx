@@ -114,97 +114,68 @@ export function Consultation() {
       </div>
 
       <CampaignHero>
-        <div className="max-w-2xl">
-          <p className="eyebrow">{t('campaign.consultation.eyebrow')}</p>
-          <h1 className="mt-6 font-serif text-hero text-bone-100">
-            {t('campaign.consultation.headline')}
-          </h1>
-          <p className="mt-8 max-w-xl text-lg leading-relaxed text-bone-300">
-            {t('campaign.consultation.sub')}
-          </p>
-          {/* A same-page anchor, not a router link: `href()` is for real routes
-              and would rewrite this into a navigation. */}
-          <a href="#request" className="btn-gold mt-10">
-            <span>{t('campaign.consultation.heroCta')}</span>
-          </a>
-          {/* The objection-handler, under the button rather than inside the
-              paragraph. It is the line that earns the click and it should not
-              be the fourth sentence of a block somebody has to read first. */}
-          <p className="mt-6 text-sm text-bone-500">{t('campaign.consultation.heroNote')}</p>
-        </div>
-      </CampaignHero>
-
-      <section className="container-luxe py-20 lg:py-28">
         {/*
-          * `min-w-0` on both columns is load-bearing, not defensive habit. A grid
-          * item defaults to `min-width: auto`, so an item whose min-content is
-          * wider than the track overflows the grid instead of shrinking — and
-          * this column has exactly such a child: Cloudflare's stylesheet pins
-          * `.cf-turnstile` to a 300px minimum. Without this, the whole section
-          * rendered 39px wider than the viewport on a 375px screen, which is
-          * where most of this page's traffic lands.
+          * Copy left, form right, both inside the hero.
+          *
+          * This departs from `PageHero`'s "never put a form over a photograph"
+          * rule, and the departure is deliberate and narrow. That rule exists
+          * because contrast over a photograph is non-deterministic — it fails at
+          * some viewport nobody tested. Here the panel is **opaque** (`bg-ink-900`,
+          * not the translucent `glass-panel`), so nothing inside it composites
+          * against the image at all and its contrast is exactly the site's own.
+          * The rule's hazard is removed rather than accepted.
+          *
+          * The reason to take it on: this is a paid destination whose only job is
+          * the form. A form below the fold on the page you paid to send someone to
+          * is a form most of them never see.
           */}
-        <div className="grid gap-16 lg:grid-cols-[1fr_minmax(0,28rem)] lg:gap-24">
-          {/* ----------------------------------------------- what you are getting */}
-          <div className="min-w-0 max-w-2xl">
-            <ul className="grid gap-6">
+        <div className="grid items-center gap-12 lg:grid-cols-[1fr_minmax(0,26rem)] lg:gap-20">
+          {/* ------------------------------------------------------ the promise */}
+          <div className="min-w-0 max-w-xl">
+            <p className="eyebrow">{t('campaign.consultation.eyebrow')}</p>
+            <h1 className="mt-6 font-serif text-hero text-bone-100">
+              {t('campaign.consultation.headline')}
+            </h1>
+            <p className="mt-7 text-lg leading-relaxed text-bone-300">
+              {t('campaign.consultation.sub')}
+            </p>
+
+            <ul className="mt-10 grid gap-4">
               {proofPoints.map((point) => (
-                <li key={point} className="flex gap-5 text-bone-300">
-                  {/* A gold hairline, not an icon — the shipped system's own
-                      restraint, and `rule-gold` at this size would be a full
-                      bleed rather than a mark. */}
-                  <span aria-hidden="true" className="mt-3 h-px w-6 shrink-0 bg-gold" />
+                <li key={point} className="flex gap-4 text-sm text-bone-300">
+                  {/* A gold hairline, not an icon — the shipped system's own restraint. */}
+                  <span aria-hidden="true" className="mt-2.5 h-px w-5 shrink-0 bg-gold" />
                   <span>{point}</span>
                 </li>
               ))}
             </ul>
-
-            <div className="mt-16">
-              <h2 className="font-serif text-3xl text-bone-100">
-                {t('campaign.consultation.stepsTitle')}
-              </h2>
-              <ol className="mt-8 grid gap-5">
-                {steps.map((step, i) => (
-                  <li key={step} className="flex gap-5 text-bone-300">
-                    <span className="font-mono text-sm text-gold pt-1">
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <span>{step}</span>
-                  </li>
-                ))}
-              </ol>
-              <p className="mt-10 text-sm text-bone-500">
-                {t('campaign.consultation.showroomNote', { policy: SHOWROOM_VISIT_POLICY })}
-              </p>
-            </div>
           </div>
 
-          {/* -------------------------------------------------------- the form */}
-          <div id="request" className="min-w-0 lg:sticky lg:top-12 lg:self-start scroll-mt-8">
+          {/* --------------------------------------------------------- the form */}
+          <div id="request" className="min-w-0 scroll-mt-8">
             {/*
-              * Full-bleed on mobile (`-mx-6` cancels `container-luxe`'s `px-6`),
-              * inset from `sm:` up. The arithmetic is forced rather than
-              * stylistic: a 375px viewport minus the container's 48px leaves 327,
-              * and `p-8` would leave 263 — below Turnstile's 300px floor. Bleeding
-              * the panel to the viewport edge restores 327 of usable width, which
-              * clears it. The site's own /contact/ never hit this because its form
-              * is not inside a padded panel.
+              * Opaque, and full-bleed on mobile. The opacity is the contrast
+              * argument above. The bleed is arithmetic: a 375px viewport minus
+              * `container-luxe`'s 48px leaves 327, and Cloudflare pins
+              * `.cf-turnstile` to a 300px minimum — so any padding above 13px
+              * would overflow. Bleeding to the viewport edge restores 327 of
+              * usable width. Inset again from `sm:` up.
               */}
-            <div className="glass-panel -mx-6 p-6 sm:mx-0 sm:p-8 md:p-10">
+            <div className="-mx-6 border border-white/10 bg-ink-900 p-6 shadow-glow sm:mx-0 sm:p-7">
               {status === 'sent' || status === 'mailto' ? (
-                <div ref={resultRef} tabIndex={-1} className="py-6">
-                  <h2 className="font-serif text-3xl text-bone-100">
+                <div ref={resultRef} tabIndex={-1} className="py-4">
+                  <h2 className="font-serif text-2xl text-bone-100">
                     {status === 'sent'
                       ? t('contact.formSentTitle')
                       : t('contact.formSuccessTitle')}
                   </h2>
-                  <p className="mt-5 text-bone-300">
+                  <p className="mt-4 text-sm text-bone-300">
                     {status === 'sent'
                       ? t('campaign.consultation.sentBody')
                       : t('contact.formSuccessBody')}
                   </p>
                   {status === 'sent' && reference !== '' && (
-                    <p className="mt-6 font-mono text-sm text-gold">
+                    <p className="mt-5 font-mono text-xs text-gold">
                       {t('contact.formSentReference', { reference })}
                     </p>
                   )}
@@ -213,28 +184,28 @@ export function Consultation() {
 
               {showForm && (
                 <>
-                  <h2 className="font-serif text-3xl text-bone-100">
+                  <h2 className="font-serif text-2xl text-bone-100">
                     {t('campaign.consultation.formTitle')}
                   </h2>
-                  <p className="mt-4 text-sm text-bone-500">
+                  <p className="mt-2 text-sm text-bone-500">
                     {t('campaign.consultation.formIntro')}
                   </p>
 
-                  {/* `action`/`method` are never used by the JS path
-                      (handleSubmit calls preventDefault). They exist so a native
-                      submit — JS disabled, or a hydration failure — POSTs to the
-                      real endpoint instead of doing a default GET that clears
-                      the fields and sends nothing. */}
+                  {/* `action`/`method` are never used by the JS path (handleSubmit
+                      calls preventDefault). They exist so a native submit — JS
+                      disabled, or a hydration failure — POSTs to the real endpoint
+                      instead of a default GET that clears the fields and sends
+                      nothing. */}
                   <form
                     onSubmit={handleSubmit}
                     action="/api/enquiry.php"
                     method="post"
-                    className="mt-10 grid gap-8"
+                    className="mt-6 grid gap-5"
                   >
                     <input type="hidden" name="form_ts" value={formTs} readOnly />
 
                     <div>
-                      <label htmlFor="c-name" className="field-label">
+                      <label htmlFor="c-name" className="field-label !mb-1.5">
                         {t('contact.formName')}
                       </label>
                       <input
@@ -243,12 +214,12 @@ export function Consultation() {
                         type="text"
                         autoComplete="name"
                         required
-                        className="input-luxe"
+                        className="input-luxe !py-2"
                       />
                     </div>
 
                     <div>
-                      <label htmlFor="c-whatsapp" className="field-label">
+                      <label htmlFor="c-whatsapp" className="field-label !mb-1.5">
                         {t('contact.formWhatsapp')}
                       </label>
                       <input
@@ -259,12 +230,12 @@ export function Consultation() {
                         autoComplete="tel"
                         placeholder="+971 50 123 4567"
                         required
-                        className="input-luxe"
+                        className="input-luxe !py-2"
                       />
                     </div>
 
                     <div>
-                      <label htmlFor="c-email" className="field-label">
+                      <label htmlFor="c-email" className="field-label !mb-1.5">
                         {t('contact.formEmail')}
                       </label>
                       <input
@@ -273,21 +244,21 @@ export function Consultation() {
                         type="email"
                         autoComplete="email"
                         required
-                        className="input-luxe"
+                        className="input-luxe !py-2"
                       />
                     </div>
 
                     <div>
-                      <label htmlFor="c-message" className="field-label">
+                      <label htmlFor="c-message" className="field-label !mb-1.5">
                         {t('campaign.consultation.formMessage')}
                       </label>
                       <textarea
                         id="c-message"
                         name="message"
-                        rows={4}
+                        rows={2}
                         required
                         placeholder={t('campaign.consultation.formMessagePlaceholder')}
-                        className="input-luxe resize-none"
+                        className="input-luxe resize-none !py-2"
                       />
                     </div>
 
@@ -320,6 +291,10 @@ export function Consultation() {
                           : t('campaign.consultation.formSubmit')}
                       </span>
                     </button>
+
+                    <p className="text-xs text-bone-500">
+                      {t('campaign.consultation.heroNote')}
+                    </p>
                   </form>
                 </>
               )}
@@ -327,7 +302,7 @@ export function Consultation() {
               {/* The fast channel, offered on every state including success —
                   somebody who has just sent an enquiry and wants to talk now
                   should not have to go looking. */}
-              <div className="mt-10 border-t border-white/10 pt-8">
+              <div className="mt-6 border-t border-white/10 pt-5">
                 <a
                   href={whatsappHref(SITE_PREFILLS.consultation)}
                   target="_blank"
@@ -341,7 +316,37 @@ export function Consultation() {
             </div>
           </div>
         </div>
+      </CampaignHero>
+
+      {/*
+        * `ink-900`, not `ink-950`. This section used to be the page's pure-black
+        * floor and it is what the page was being judged on. One step up the ramp
+        * separates it from the hero's bottom stop and keeps the page from
+        * bottoming out.
+        */}
+      <section className="bg-ink-900 py-20 lg:py-24">
+        <div className="container-luxe">
+          <div className="max-w-2xl">
+            <h2 className="font-serif text-3xl text-bone-100">
+              {t('campaign.consultation.stepsTitle')}
+            </h2>
+            <ol className="mt-8 grid gap-5">
+              {steps.map((step, i) => (
+                <li key={step} className="flex gap-5 text-bone-300">
+                  <span className="font-mono text-sm text-gold pt-1">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span>{step}</span>
+                </li>
+              ))}
+            </ol>
+            <p className="mt-10 text-sm text-bone-500">
+              {t('campaign.consultation.showroomNote', { policy: SHOWROOM_VISIT_POLICY })}
+            </p>
+          </div>
+        </div>
       </section>
+
     </>
   );
 }
