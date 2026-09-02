@@ -3,6 +3,8 @@ import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Seo } from '@/seo/Seo';
 import { consultationMeta } from '@/seo/meta';
+import { CampaignHero, CAMPAIGN_HERO_LEAD, CAMPAIGN_HERO_SIZES } from '@/components/CampaignHero';
+import { buildLcpImagePreload } from '@/components/media/imageSrcSet';
 import { whatsappHref } from '@/lib/site';
 import { SHOWROOM_VISIT_POLICY } from '@/data/nap';
 import { SITE_PREFILLS } from '@/lib/prefill';
@@ -15,20 +17,30 @@ import { useEnquiryForm } from '@/features/enquiry/useEnquiryForm';
  * "Book a private consultation", "Book a consultation" or "Speak to a
  * specialist" (`lit-marketing-os/campaigns/cta-url-map.csv`).
  *
- * Design: light campaign surface, `docs/02-DESIGN-SOURCE-OF-TRUTH.md`
- * Amendment 1. Ratified 2026-09-02.
+ * Direction B, unchanged (`docs/02-DESIGN-SOURCE-OF-TRUTH.md` Amendment 2).
+ * The ads are dark and the site is dark, so the page is dark: there is no
+ * transition to bridge, which is the whole reason the light experiment was
+ * reversed.
+ *
+ * ## The form is NOT over the photograph, and that is deliberate
+ *
+ * `PageHero`'s docblock records the reason: "A CTA panel and body copy over a
+ * photograph is where WCAG 2.2 AA quietly fails at some viewport nobody
+ * tested." The band carries the eyebrow, the h1, one line and one anchor CTA;
+ * everything that has to be read or typed into sits below it on solid ink. The
+ * band is 62svh rather than `PageHero`'s 70svh so the panel below is already
+ * breaking the fold on a laptop.
  *
  * Deliberately NOT indexable and not in the nav or the sitemap — it is a paid
- * destination, not a page of the site. That is what keeps the amendment bounded
- * and the URL taxonomy untouched. `Seo` is therefore rendered with `noindex` and
- * **no JSON-LD nodes**: `scripts/validate-seo.mjs` requires exactly zero
+ * destination, not a page of the site. `Seo` is therefore rendered with
+ * `noindex` and **no JSON-LD nodes**: `scripts/validate-seo.mjs` requires zero
  * `ld+json` blocks on a non-indexable page.
  *
- * Every claim on this page is one the site already makes elsewhere. SAMA3 and
- * the four LitHome finishes are the strongest differentiators available and are
+ * Every claim here is one the site already makes elsewhere. SAMA3 and the four
+ * LitHome finishes are the strongest differentiators available and are
  * deliberately absent until Muneeb confirms them for publication (CLAUDE.md
- * rule 4) — they appear nowhere on the 124-page site today, so nothing here can
- * be the first place they ship.
+ * rule 4) — they appear nowhere on the 124-page site, so a campaign page must
+ * not be the first place they ship.
  */
 export function Consultation() {
   const { t } = useTranslation();
@@ -39,8 +51,8 @@ export function Consultation() {
    * Which creative sent this visitor. The page is prerendered without a query
    * string, so this starts empty and adopts the campaign context after mount —
    * identical first render either side of hydration. It never affects what is
-   * rendered, only what the notification email says, so a visitor who arrives
-   * without UTMs simply produces an enquiry with no source line.
+   * rendered, only what the notification email says, so a visitor arriving with
+   * no UTMs simply produces an enquiry with no source line.
    */
   const [sourceNote, setSourceNote] = useState('');
   useEffect(() => {
@@ -81,13 +93,18 @@ export function Consultation() {
             : '';
 
   const showForm = status === 'idle' || status === 'submitting' || status === 'error';
-
   const proofPoints = t('campaign.consultation.proof', { returnObjects: true }) as string[];
   const steps = t('campaign.consultation.steps', { returnObjects: true }) as string[];
 
   return (
     <>
-      <Seo meta={meta} noindex />
+      {/* Matches the lead frame of `CampaignHero` (`src`, `sizes`) — the only
+          image above the fold and the LCP candidate. */}
+      <Seo
+        meta={meta}
+        noindex
+        lcpImage={buildLcpImagePreload(CAMPAIGN_HERO_LEAD, CAMPAIGN_HERO_SIZES)}
+      />
 
       {/* Single source of submission status for assistive tech, mirroring the
           contact page: always present in the DOM so the region is registered
@@ -96,72 +113,98 @@ export function Consultation() {
         {liveMessage}
       </div>
 
-      <section className="container-luxe pt-10 pb-24 lg:pt-16">
-        <div className="grid gap-16 lg:grid-cols-[1fr_minmax(0,30rem)] lg:gap-24">
-          {/* ---------------------------------------------------- the promise */}
-          <div className="max-w-2xl">
-            <p className="text-eyebrow uppercase tracking-luxe text-copper-700 font-sans font-medium">
-              {t('campaign.consultation.eyebrow')}
-            </p>
+      <CampaignHero>
+        <div className="max-w-2xl">
+          <p className="eyebrow">{t('campaign.consultation.eyebrow')}</p>
+          <h1 className="mt-6 font-serif text-hero text-bone-100">
+            {t('campaign.consultation.headline')}
+          </h1>
+          <p className="mt-8 max-w-xl text-lg leading-relaxed text-bone-300">
+            {t('campaign.consultation.sub')}
+          </p>
+          {/* A same-page anchor, not a router link: `href()` is for real routes
+              and would rewrite this into a navigation. */}
+          <a href="#request" className="btn-gold mt-10">
+            <span>{t('campaign.consultation.heroCta')}</span>
+          </a>
+          {/* The objection-handler, under the button rather than inside the
+              paragraph. It is the line that earns the click and it should not
+              be the fourth sentence of a block somebody has to read first. */}
+          <p className="mt-6 text-sm text-bone-500">{t('campaign.consultation.heroNote')}</p>
+        </div>
+      </CampaignHero>
 
-            <h1 className="mt-6 font-serif text-hero text-ink-950">
-              {t('campaign.consultation.headline')}
-            </h1>
-
-            <p className="mt-8 text-lg leading-relaxed text-ink-800/85">
-              {t('campaign.consultation.sub')}
-            </p>
-
-            <div className="rule-copper mt-12" />
-
-            <ul className="mt-12 grid gap-6">
+      <section className="container-luxe py-20 lg:py-28">
+        {/*
+          * `min-w-0` on both columns is load-bearing, not defensive habit. A grid
+          * item defaults to `min-width: auto`, so an item whose min-content is
+          * wider than the track overflows the grid instead of shrinking — and
+          * this column has exactly such a child: Cloudflare's stylesheet pins
+          * `.cf-turnstile` to a 300px minimum. Without this, the whole section
+          * rendered 39px wider than the viewport on a 375px screen, which is
+          * where most of this page's traffic lands.
+          */}
+        <div className="grid gap-16 lg:grid-cols-[1fr_minmax(0,28rem)] lg:gap-24">
+          {/* ----------------------------------------------- what you are getting */}
+          <div className="min-w-0 max-w-2xl">
+            <ul className="grid gap-6">
               {proofPoints.map((point) => (
-                <li key={point} className="flex gap-4 text-ink-800/85">
-                  {/* A copper rule, not an icon: the light surface adds no new
-                      primitives, and a hairline reads quieter than a tick. */}
-                  <span aria-hidden="true" className="mt-3 h-px w-6 shrink-0 bg-copper-500" />
+                <li key={point} className="flex gap-5 text-bone-300">
+                  {/* A gold hairline, not an icon — the shipped system's own
+                      restraint, and `rule-gold` at this size would be a full
+                      bleed rather than a mark. */}
+                  <span aria-hidden="true" className="mt-3 h-px w-6 shrink-0 bg-gold" />
                   <span>{point}</span>
                 </li>
               ))}
             </ul>
 
             <div className="mt-16">
-              <h2 className="font-serif text-2xl text-ink-950">
+              <h2 className="font-serif text-3xl text-bone-100">
                 {t('campaign.consultation.stepsTitle')}
               </h2>
-              <ol className="mt-6 grid gap-4">
+              <ol className="mt-8 grid gap-5">
                 {steps.map((step, i) => (
-                  <li key={step} className="flex gap-5 text-ink-800/85">
-                    <span className="font-mono text-sm text-copper-700 pt-1">
+                  <li key={step} className="flex gap-5 text-bone-300">
+                    <span className="font-mono text-sm text-gold pt-1">
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     <span>{step}</span>
                   </li>
                 ))}
               </ol>
-              <p className="mt-8 text-sm text-ink-800/60">
+              <p className="mt-10 text-sm text-bone-500">
                 {t('campaign.consultation.showroomNote', { policy: SHOWROOM_VISIT_POLICY })}
               </p>
             </div>
           </div>
 
-          {/* ------------------------------------------------------- the form */}
-          <div className="lg:sticky lg:top-12 lg:self-start">
-            <div className="border border-ink-800/15 bg-white/40 p-8 md:p-10">
+          {/* -------------------------------------------------------- the form */}
+          <div id="request" className="min-w-0 lg:sticky lg:top-12 lg:self-start scroll-mt-8">
+            {/*
+              * Full-bleed on mobile (`-mx-6` cancels `container-luxe`'s `px-6`),
+              * inset from `sm:` up. The arithmetic is forced rather than
+              * stylistic: a 375px viewport minus the container's 48px leaves 327,
+              * and `p-8` would leave 263 — below Turnstile's 300px floor. Bleeding
+              * the panel to the viewport edge restores 327 of usable width, which
+              * clears it. The site's own /contact/ never hit this because its form
+              * is not inside a padded panel.
+              */}
+            <div className="glass-panel -mx-6 p-6 sm:mx-0 sm:p-8 md:p-10">
               {status === 'sent' || status === 'mailto' ? (
                 <div ref={resultRef} tabIndex={-1} className="py-6">
-                  <h2 className="font-serif text-3xl text-ink-950">
+                  <h2 className="font-serif text-3xl text-bone-100">
                     {status === 'sent'
                       ? t('contact.formSentTitle')
                       : t('contact.formSuccessTitle')}
                   </h2>
-                  <p className="mt-5 text-ink-800/85">
+                  <p className="mt-5 text-bone-300">
                     {status === 'sent'
                       ? t('campaign.consultation.sentBody')
                       : t('contact.formSuccessBody')}
                   </p>
                   {status === 'sent' && reference !== '' && (
-                    <p className="mt-6 font-mono text-sm text-copper-700">
+                    <p className="mt-6 font-mono text-sm text-gold">
                       {t('contact.formSentReference', { reference })}
                     </p>
                   )}
@@ -170,10 +213,10 @@ export function Consultation() {
 
               {showForm && (
                 <>
-                  <h2 className="font-serif text-3xl text-ink-950">
+                  <h2 className="font-serif text-3xl text-bone-100">
                     {t('campaign.consultation.formTitle')}
                   </h2>
-                  <p className="mt-4 text-sm text-ink-800/70">
+                  <p className="mt-4 text-sm text-bone-500">
                     {t('campaign.consultation.formIntro')}
                   </p>
 
@@ -191,7 +234,7 @@ export function Consultation() {
                     <input type="hidden" name="form_ts" value={formTs} readOnly />
 
                     <div>
-                      <label htmlFor="c-name" className="field-label-light">
+                      <label htmlFor="c-name" className="field-label">
                         {t('contact.formName')}
                       </label>
                       <input
@@ -200,12 +243,12 @@ export function Consultation() {
                         type="text"
                         autoComplete="name"
                         required
-                        className="input-luxe-light"
+                        className="input-luxe"
                       />
                     </div>
 
                     <div>
-                      <label htmlFor="c-whatsapp" className="field-label-light">
+                      <label htmlFor="c-whatsapp" className="field-label">
                         {t('contact.formWhatsapp')}
                       </label>
                       <input
@@ -216,12 +259,12 @@ export function Consultation() {
                         autoComplete="tel"
                         placeholder="+971 50 123 4567"
                         required
-                        className="input-luxe-light"
+                        className="input-luxe"
                       />
                     </div>
 
                     <div>
-                      <label htmlFor="c-email" className="field-label-light">
+                      <label htmlFor="c-email" className="field-label">
                         {t('contact.formEmail')}
                       </label>
                       <input
@@ -230,12 +273,12 @@ export function Consultation() {
                         type="email"
                         autoComplete="email"
                         required
-                        className="input-luxe-light"
+                        className="input-luxe"
                       />
                     </div>
 
                     <div>
-                      <label htmlFor="c-message" className="field-label-light">
+                      <label htmlFor="c-message" className="field-label">
                         {t('campaign.consultation.formMessage')}
                       </label>
                       <textarea
@@ -244,14 +287,14 @@ export function Consultation() {
                         rows={4}
                         required
                         placeholder={t('campaign.consultation.formMessagePlaceholder')}
-                        className="input-luxe-light resize-none"
+                        className="input-luxe resize-none"
                       />
                     </div>
 
-                    {/* Honeypot. Positioned off-screen rather than display:none
-                        or type="hidden" — both are trivially detected by
-                        scrapers that read field types. aria-hidden + tabindex=-1
-                        keep assistive tech and keyboard users away from it. */}
+                    {/* Honeypot. Off-screen rather than display:none or
+                        type="hidden" — both are trivially detected by scrapers
+                        that read field types. aria-hidden + tabindex=-1 keep
+                        assistive tech and keyboard users away from it. */}
                     <div
                       aria-hidden="true"
                       className="absolute -left-[9999px] top-0 h-0 w-0 overflow-hidden"
@@ -261,17 +304,21 @@ export function Consultation() {
                     </div>
 
                     {liveEndpoint && (
-                      <div className="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY} data-theme="light" />
+                      <div
+                        className="cf-turnstile"
+                        data-sitekey={TURNSTILE_SITE_KEY}
+                        data-theme="dark"
+                      />
                     )}
 
-                    {status === 'error' && (
-                      <p className="text-sm text-copper-700">{errorBody}</p>
-                    )}
+                    {status === 'error' && <p className="text-sm text-gold">{errorBody}</p>}
 
-                    <button type="submit" className="btn-ink w-full">
-                      {status === 'submitting'
-                        ? t('contact.formSubmitting')
-                        : t('campaign.consultation.formSubmit')}
+                    <button type="submit" className="btn-gold w-full justify-center">
+                      <span>
+                        {status === 'submitting'
+                          ? t('contact.formSubmitting')
+                          : t('campaign.consultation.formSubmit')}
+                      </span>
                     </button>
                   </form>
                 </>
@@ -280,15 +327,13 @@ export function Consultation() {
               {/* The fast channel, offered on every state including success —
                   somebody who has just sent an enquiry and wants to talk now
                   should not have to go looking. */}
-              <div className="mt-10 border-t border-ink-800/15 pt-8">
+              <div className="mt-10 border-t border-white/10 pt-8">
                 <a
                   href={whatsappHref(SITE_PREFILLS.consultation)}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => trackWhatsAppClick({ placement: 'contact-section' })}
-                  className="text-sm uppercase tracking-luxe text-ink-800
-                    underline underline-offset-8 decoration-copper-500
-                    transition-colors duration-300 hover:text-copper-700"
+                  className="btn-ghost"
                 >
                   {t('contact.whatsappCta')}
                 </a>

@@ -32,7 +32,7 @@ const MAX_SITE_BYTES = 800 * 1024 * 1024;
  * appeared or vanished instead of just "the number moved".
  *
  * `SITE` is the indexable site itself. `CAMPAIGN` counts the noindex landing
- * pages under `/go/` (docs/02-DESIGN-SOURCE-OF-TRUTH.md Amendment 1) — they are
+ * pages under `/go/` (docs/02-DESIGN-SOURCE-OF-TRUTH.md Amendment 2) — they are
  * prerendered like everything else but are not part of the site, so growing the
  * campaign set must never look like the site quietly gaining pages. Plus
  * `404.html`.

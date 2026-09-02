@@ -319,7 +319,9 @@
     "consultation": {
       "eyebrow": "Private consultation · Dubai",
       "headline": "Start with one room.",
-      "sub": "A conversation with an engineer, not a salesperson. What the room should do when you walk in, what it should never ask you to think about, and what a system like it involves. No obligation, and no site visit until you want one.",
+      "sub": "A conversation with an engineer, not a salesperson — about one room, and what it should do when you walk in.",
+      "heroNote": "No obligation. No site visit until you want one.",
+      "heroCta": "Request the consultation",
       "proof": [
         "Crestron systems supplied and installed in Dubai since 2018.",
         "A showroom in Business Bay, where you can watch a room respond before you commit to one.",
