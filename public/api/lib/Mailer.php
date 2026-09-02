@@ -91,7 +91,7 @@ final class Mailer
      * Never throws — the caller must be able to log and still answer the
      * visitor even when mail is down.
      *
-     * @param array{name: string, email: string, company: string, message: string, ip: string, submitted_at: string, reference: string} $s
+     * @param array{name: string, email: string, whatsapp: string, message: string, ip: string, submitted_at: string, reference: string} $s
      */
     public function sendNotification(array $s, ?string &$error = null): bool
     {
@@ -107,8 +107,12 @@ final class Mailer
             $mail->addReplyTo($s['email'], $s['name'] !== '' ? $s['name'] : $s['email']);
 
             $subject = 'Website enquiry — ' . ($s['name'] !== '' ? $s['name'] : $s['email']);
-            if ($s['company'] !== '') {
-                $subject .= ' (' . $s['company'] . ')';
+            // The number goes in the SUBJECT, not just the body: on a phone
+            // lock screen the notification preview is often all that is read,
+            // and a reachable number visible there is the difference between
+            // acting now and acting after opening a mail client.
+            if ($s['whatsapp'] !== '') {
+                $subject .= ' (' . $s['whatsapp'] . ')';
             }
             // Header injection is impossible here (PHPMailer strips CR/LF from
             // headers), but the value is sanitised upstream anyway.
@@ -161,7 +165,7 @@ final class Mailer
     }
 
     /**
-     * @param array{name: string, email: string, company: string, message: string, ip: string, submitted_at: string, reference: string} $s
+     * @param array{name: string, email: string, whatsapp: string, message: string, ip: string, submitted_at: string, reference: string} $s
      */
     private function notificationBody(array $s): string
     {
@@ -170,7 +174,8 @@ final class Mailer
             '',
             'Name:      ' . ($s['name'] !== '' ? $s['name'] : '(not given)'),
             'Email:     ' . $s['email'],
-            'Company:   ' . ($s['company'] !== '' ? $s['company'] : '(not given)'),
+            'WhatsApp:  ' . ($s['whatsapp'] !== '' ? $s['whatsapp'] : '(not given)'),
+            'Chat:      ' . self::whatsappLink($s['whatsapp']),
             'Submitted: ' . $s['submitted_at'],
             'Reference: ' . $s['reference'],
             '',
@@ -184,6 +189,38 @@ final class Mailer
         ];
 
         return implode("\r\n", $lines);
+    }
+
+    /**
+     * A tappable wa.me link, so the notification is one tap from the conversation.
+     * Speed to lead dies in the gap between reading a number and dialling it.
+     *
+     * Only an unambiguously international number is linked. A local "050 123 4567"
+     * is the same digit string in several countries, and wa.me given a guessed
+     * country code opens the WRONG conversation silently — a failure that looks
+     * like success. An unresolvable number is printed and not linked: a few
+     * seconds slower, never wrong.
+     */
+    private static function whatsappLink(string $number): string
+    {
+        $raw = trim($number);
+        if ($raw === '') {
+            return '(no number)';
+        }
+        if (str_starts_with($raw, '+')) {
+            $intl = substr($raw, 1);
+        } elseif (str_starts_with($raw, '00')) {
+            $intl = substr($raw, 2);
+        } else {
+            return '(no country code — dial manually)';
+        }
+        // "+44 (0)20 ..." — a parenthesised zero is a national trunk prefix that
+        // is dropped when dialling internationally. Keeping it yields a number
+        // that is one digit wrong, which resolves to nothing (or to somebody
+        // else). Strip it before the digits are extracted.
+        $intl = preg_replace('/\(\s*0\s*\)/', '', $intl) ?? $intl;
+        $digits = preg_replace('/\D+/', '', $intl) ?? '';
+        return $digits === '' ? '(no number)' : 'https://wa.me/' . $digits;
     }
 
     /**

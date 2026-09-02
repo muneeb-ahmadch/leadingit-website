@@ -103,10 +103,10 @@ export function Contact() {
    */
   const submitViaMailto = (data: FormData) => {
     const name = String(data.get('name') ?? '').trim();
-    const company = String(data.get('company') ?? '').trim();
+    const whatsapp = String(data.get('whatsapp') ?? '').trim();
     const body = String(data.get('message') ?? '').trim();
-    const subject = `Website enquiry${name ? ` — ${name}` : ''}${company ? ` (${company})` : ''}`;
-    const composed = `${body}\n\n— ${name}${company ? `, ${company}` : ''}`;
+    const subject = `Website enquiry${name ? ` — ${name}` : ''}${whatsapp ? ` (${whatsapp})` : ''}`;
+    const composed = `${body}\n\n— ${name}${whatsapp ? `\nWhatsApp: ${whatsapp}` : ''}`;
     window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(composed)}`;
     setStatus('mailto');
   };
@@ -124,7 +124,7 @@ export function Contact() {
     const payload = {
       name: String(data.get('name') ?? ''),
       email: String(data.get('email') ?? ''),
-      company: String(data.get('company') ?? ''),
+      whatsapp: String(data.get('whatsapp') ?? ''),
       message: String(data.get('message') ?? ''),
       hp_note: String(data.get('hp_note') ?? ''),
       form_ts: Number(formTs),
@@ -312,9 +312,27 @@ export function Contact() {
                     <input id="email" name="email" type="email" required className="input-luxe" />
                   </div>
                 </div>
+                {/* Required, and deliberately so. The 124 pages of this site
+                    all push visitors to WhatsApp because that is how business is
+                    actually conducted in this market — yet the form used to collect
+                    only email, the slowest channel we have. An enquiry without a
+                    number cannot be answered in thirty seconds. `type="tel"` +
+                    `inputMode` raise the numeric keypad on the phones most of this
+                    traffic arrives on. The placeholder steers to international
+                    format because a local "050…" cannot be resolved to a country
+                    without guessing (see Mailer::whatsappLink). */}
                 <div>
-                  <label htmlFor="company" className="field-label">{t('contact.formCompany')}</label>
-                  <input id="company" name="company" type="text" className="input-luxe" />
+                  <label htmlFor="whatsapp" className="field-label">{t('contact.formWhatsapp')}</label>
+                  <input
+                    id="whatsapp"
+                    name="whatsapp"
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    placeholder="+971 50 123 4567"
+                    required
+                    className="input-luxe"
+                  />
                 </div>
                 <div>
                   <label htmlFor="message" className="field-label">{t('contact.formMessage')}</label>
