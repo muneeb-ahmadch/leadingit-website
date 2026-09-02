@@ -393,6 +393,27 @@ export function contactMeta(): PageMeta {
 }
 
 /**
+ * `/go/consultation/` — the paid-traffic destination for the consultation
+ * creatives. `noindex`, so this metadata is never a search result; it exists
+ * because the length budget and the manifest apply to every route, and because
+ * the title is what a visitor sees in their browser tab and in a link preview
+ * when they send the page to a spouse or an architect. That second case is the
+ * only reason it is written with any care at all.
+ */
+export function consultationMeta(): PageMeta {
+  return {
+    // 46 chars.
+    title: `Private Automation Consultation — ${SITE_NAME}`,
+    // 139 chars. "Supplied and installed", never "authorized dealer" — no
+    // per-brand dealer wording is approved (OPEN-QUESTIONS #3).
+    description: `Book a private consultation with ${SITE_NAME}. Crestron systems supplied and installed in Dubai — tell us about the residence and an engineer replies.`,
+    path: '/go/consultation',
+    ogImage: DEFAULT_OG_IMAGE,
+    ogType: 'website',
+  };
+}
+
+/**
  * The 404 template. Prerendered and `noindex` — it is excluded from the sitemap
  * by `indexable: false` in the route manifest, but it still needs a real title
  * and description because `/404/` is a crawlable 200.

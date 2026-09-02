@@ -1,5 +1,6 @@
 import type { RouteRecord } from 'vite-react-ssg';
 import { Layout } from '@/components/layout/Layout';
+import { CampaignLayout } from '@/components/layout/CampaignLayout';
 import { KEYPAD_DESIGNER_PATH } from '@/seo/paths';
 
 /**
@@ -67,6 +68,25 @@ const brandPakistanStaticPaths: StaticPaths = import.meta.env.SSR
  * because it renders on every route.
  */
 export const routes: RouteRecord[] = [
+  /*
+   * Campaign landing pages sit OUTSIDE the site shell, in their own light
+   * layout with no navigation — `docs/02-DESIGN-SOURCE-OF-TRUTH.md` Amendment 1.
+   * Declared first so the `*` splat inside the main tree can never claim a
+   * `/go/*` path. They are `indexable: false` in the manifest and therefore
+   * absent from the sitemap, and nothing on the site links to them: the only
+   * way in is an ad.
+   */
+  {
+    element: <CampaignLayout />,
+    children: [
+      {
+        path: '/go/consultation',
+        lazy: async () => ({
+          Component: (await import('@/pages/campaign/Consultation')).Consultation,
+        }),
+      },
+    ],
+  },
   {
     element: <Layout />,
     children: [

@@ -21,6 +21,27 @@ export default {
           600: '#A88A45',
           700: '#8B7355', // bronze depth
         },
+        /*
+         * Campaign surfaces only — see `docs/02-DESIGN-SOURCE-OF-TRUTH.md`,
+         * Amendment 1. The site itself stays Direction B dark and never uses
+         * these.
+         *
+         * Sampled from LitHome's own catalogue (23 pages rendered and every
+         * pixel counted): `#B87333` is the most common saturated
+         * non-photographic colour in it. `700` is the same hue and saturation
+         * darkened on lightness alone, because the accent has to carry text:
+         *   gold  #C9A961 on bone -> 2.00  (fails everything)
+         *   500   #B87333 on bone -> 3.36  (large text only)
+         *   700   #845225 on bone -> 5.80  (AA)
+         * Gold is a dark-ground colour and copper is a light-ground one; they
+         * do not cross over. Do not use `copper` on the dark site — #845225 on
+         * ink.950 is 3.03.
+         */
+        copper: {
+          DEFAULT: '#B87333',
+          500: '#B87333',
+          700: '#845225',
+        },
         bone: {
           DEFAULT: '#F5F1E8',
           100: '#F5F1E8', // warm off-white text

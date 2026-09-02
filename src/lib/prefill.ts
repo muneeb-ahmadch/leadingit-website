@@ -99,6 +99,8 @@ export const SITE_PREFILLS = {
   brands: `${OPENING} — I'd like to know which brands you can supply for my project.`,
   litHome: `${OPENING} — I'd like LIT Home control for a villa in Dubai.`,
   contact: `${OPENING} — I'd like to talk about a project.`,
+  /** `/go/consultation/` — paid traffic, so it names the thing the ad promised. */
+  consultation: `${OPENING} — I saw your ad and I'd like to book a private consultation.`,
   notFound: `${OPENING} — I was looking for something on your site and couldn't find it.`,
   /** Trade lead: the designer is the one page that can name its own output. */
   keypadDesigner: `${OPENING} — I've configured a Black Nova keypad and I'd like a quotation for it. Quantity: `,

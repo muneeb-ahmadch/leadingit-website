@@ -58,6 +58,7 @@ import {
   brandMeta,
   brandPakistanMeta,
   brandsIndexMeta,
+  consultationMeta,
   contactMeta,
   homeMeta,
   keypadDesignerMeta,
@@ -94,6 +95,7 @@ export type RouteKind =
   | 'lit-home'
   | 'about'
   | 'contact'
+  | 'campaign'
   | 'not-found';
 
 export type RouteEntry = {
@@ -101,8 +103,10 @@ export type RouteEntry = {
   readonly path: string;
   readonly kind: RouteKind;
   /**
-   * `false` only for `/404`, which is prerendered (Apache needs a real file for
-   * `ErrorDocument`) and `noindex`, and must never enter the sitemap.
+   * `false` for `/404` (prerendered because Apache needs a real file for
+   * `ErrorDocument`) and for every `/go/*` campaign landing page (a paid
+   * destination, not a page of the site — `docs/02-DESIGN-SOURCE-OF-TRUTH.md`
+   * Amendment 1). Both are `noindex` and must never enter the sitemap.
    */
   readonly indexable: boolean;
   readonly meta: PageMeta;
@@ -163,6 +167,12 @@ export const STATIC_ROUTES: readonly RouteEntry[] = [
   { path: '/lit-home', kind: 'lit-home', indexable: true, meta: litHomeMeta() },
   { path: '/about', kind: 'about', indexable: true, meta: aboutMeta() },
   { path: '/contact', kind: 'contact', indexable: true, meta: contactMeta() },
+  // Campaign landing pages. `indexable: false` keeps them out of the sitemap;
+  // the page renders `<Seo noindex>` and passes NO JSON-LD nodes, because
+  // `scripts/validate-seo.mjs` requires zero `ld+json` blocks and zero hreflang
+  // alternates on a non-indexable page. They are also absent from the header,
+  // the footer and every internal link on the site — reachable only from an ad.
+  { path: '/go/consultation', kind: 'campaign', indexable: false, meta: consultationMeta() },
   { path: '/404', kind: 'not-found', indexable: false, meta: notFoundMeta() },
 ];
 
