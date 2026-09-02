@@ -27,7 +27,22 @@ const publicApiDir = resolve('public/api');
 /** Budgets are the ones locked in CLAUDE.md, not invented here. */
 const MAX_IMAGE_BYTES = 250 * 1024;
 const MAX_SITE_BYTES = 800 * 1024 * 1024;
-const EXPECTED_ROUTE_COUNT = 124; // 124 routes + 404.html = 125 emitted files
+/*
+ * Emitted-file budget, split by category so a mismatch says WHICH kind of page
+ * appeared or vanished instead of just "the number moved".
+ *
+ * `SITE` is the indexable site itself. `CAMPAIGN` counts the noindex landing
+ * pages under `/go/` (docs/02-DESIGN-SOURCE-OF-TRUTH.md Amendment 2) — they are
+ * prerendered like everything else but are not part of the site, so growing the
+ * campaign set must never look like the site quietly gaining pages. Plus
+ * `404.html`.
+ */
+const EXPECTED_SITE_ROUTES = 124;
+const EXPECTED_CAMPAIGN_ROUTES = 1;
+const EXPECTED_HTML_FILES = EXPECTED_SITE_ROUTES + EXPECTED_CAMPAIGN_ROUTES + 1;
+
+/** Paths under `dist/` whose pages MUST carry `noindex` — and nothing else may. */
+const CAMPAIGN_PREFIX = 'go/';
 
 /** Public by design — both are client-side values and belong in the build. */
 const GA4_MEASUREMENT_ID = 'G-G9GQ6YZNYV';
@@ -60,9 +75,9 @@ const rel = (f) => relative(distDir, f);
 
 // ---------------------------------------------------------------- 1. shape
 const htmlFiles = files.filter((f) => f.endsWith('.html'));
-check('shape', `${EXPECTED_ROUTE_COUNT} routes + 404 emitted`,
-  htmlFiles.length === EXPECTED_ROUTE_COUNT + 1,
-  `${htmlFiles.length} .html files (expected ${EXPECTED_ROUTE_COUNT + 1})`);
+check('shape', `${EXPECTED_SITE_ROUTES} routes + ${EXPECTED_CAMPAIGN_ROUTES} campaign + 404 emitted`,
+  htmlFiles.length === EXPECTED_HTML_FILES,
+  `${htmlFiles.length} .html files (expected ${EXPECTED_HTML_FILES})`);
 
 for (const required of ['index.html', '404.html', '.htaccess', 'sitemap.xml', 'robots.txt']) {
   check('shape', `${required} present`, existsSync(join(distDir, required)));
@@ -236,20 +251,42 @@ check('indexable', 'robots.txt does not blanket-disallow crawling', !blanketDisa
   blanketDisallow ? 'User-agent: * has Disallow: / — the site would be deindexed' : '');
 check('indexable', 'robots.txt declares the sitemap', /^\s*sitemap:\s*https:\/\//im.test(robots));
 
-// /404/ is noindex by design; every other emitted route must be indexable.
+/*
+ * Two assertions, not one. `/404/` and the `/go/` campaign pages are noindex by
+ * design; every other emitted route must be indexable. But the campaign pages
+ * are exactly the kind of page that is expensive to get wrong in the OTHER
+ * direction — a paid landing page that quietly loses its `noindex` competes with
+ * the real site for its own queries — so the exemption is paired with a positive
+ * check that each one still carries the tag. Widening the exemption without the
+ * pairing would turn this gate into a hole.
+ */
+const isNoindexByDesign = (r) =>
+  r === '404.html' || r.startsWith('404/') || r.startsWith(CAMPAIGN_PREFIX);
+
+/** Attribute-order agnostic: the emitted tag is `<meta data-rh="true" name="robots" ...>`,
+ * and a pattern anchored on `<meta name=` silently matches nothing. */
+const hasNoindex = (f) => {
+  const m = readFileSync(f, 'utf8')
+    .match(/<meta[^>]*name=["']robots["'][^>]*content=["']([^"']*)["']/i);
+  return Boolean(m && /noindex/i.test(m[1]));
+};
+
 const noindexed = [];
+const missingNoindex = [];
 for (const f of htmlFiles) {
   const r = rel(f);
-  if (r === '404.html' || r.startsWith('404/')) continue;
-  const body = readFileSync(f, 'utf8');
-  // Attribute-order agnostic: the emitted tag is `<meta data-rh="true" name="robots" ...>`,
-  // and a pattern anchored on `<meta name=` silently matches nothing.
-  const m = body.match(/<meta[^>]*name=["']robots["'][^>]*content=["']([^"']*)["']/i);
-  if (m && /noindex/i.test(m[1])) noindexed.push(r);
+  if (isNoindexByDesign(r)) {
+    if (r.startsWith(CAMPAIGN_PREFIX) && !hasNoindex(f)) missingNoindex.push(r);
+    continue;
+  }
+  if (hasNoindex(f)) noindexed.push(r);
 }
 check('indexable', 'no indexable route carries a noindex robots meta',
   noindexed.length === 0,
   noindexed.length ? `${noindexed.length} route(s): ${noindexed.slice(0, 5).join(', ')}` : '');
+check('indexable', 'every /go/ campaign page carries noindex',
+  missingNoindex.length === 0,
+  missingNoindex.length ? `${missingNoindex.length} route(s): ${missingNoindex.join(', ')}` : '');
 
 const noindexHeader = /X-Robots-Tag[^\n]*noindex/i.test(htaccess);
 check('indexable', '.htaccess sets no sitewide X-Robots-Tag noindex', !noindexHeader);
