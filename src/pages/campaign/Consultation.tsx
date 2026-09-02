@@ -129,7 +129,7 @@ export function Consultation() {
           * the form. A form below the fold on the page you paid to send someone to
           * is a form most of them never see.
           */}
-        <div className="grid items-center gap-12 lg:grid-cols-[1fr_minmax(0,26rem)] lg:gap-20">
+        <div className="grid items-center gap-12 lg:grid-cols-[1fr_minmax(0,34rem)] lg:gap-16">
           {/* ------------------------------------------------------ the promise */}
           <div className="min-w-0 max-w-xl">
             <p className="eyebrow">{t('campaign.consultation.eyebrow')}</p>
@@ -161,7 +161,7 @@ export function Consultation() {
               * would overflow. Bleeding to the viewport edge restores 327 of
               * usable width. Inset again from `sm:` up.
               */}
-            <div className="-mx-6 border border-white/10 bg-ink-900 p-6 shadow-glow sm:mx-0 sm:p-7">
+            <div className="-mx-6 border border-white/10 bg-ink-900 p-6 shadow-glow sm:mx-0 sm:p-8 lg:p-9">
               {status === 'sent' || status === 'mailto' ? (
                 <div ref={resultRef} tabIndex={-1} className="py-4">
                   <h2 className="font-serif text-2xl text-bone-100">
@@ -204,34 +204,42 @@ export function Consultation() {
                   >
                     <input type="hidden" name="form_ts" value={formTs} readOnly />
 
-                    <div>
-                      <label htmlFor="c-name" className="field-label !mb-1.5">
-                        {t('contact.formName')}
-                      </label>
-                      <input
-                        id="c-name"
-                        name="name"
-                        type="text"
-                        autoComplete="name"
-                        required
-                        className="input-luxe !py-2"
-                      />
-                    </div>
+                    {/* Name and WhatsApp share a row from `sm:` up. The wider
+                        panel would otherwise just stretch four inputs to 460px
+                        each, which reads as a longer form rather than a fuller
+                        one; pairing them makes the form physically shorter at
+                        the same width. Below `sm` they stack, because a 375px
+                        screen cannot hold two usable text inputs side by side. */}
+                    <div className="grid gap-5 sm:grid-cols-2 sm:items-end">
+                      <div>
+                        <label htmlFor="c-name" className="field-label !mb-1.5">
+                          {t('contact.formName')}
+                        </label>
+                        <input
+                          id="c-name"
+                          name="name"
+                          type="text"
+                          autoComplete="name"
+                          required
+                          className="input-luxe !py-2"
+                        />
+                      </div>
 
-                    <div>
-                      <label htmlFor="c-whatsapp" className="field-label !mb-1.5">
-                        {t('contact.formWhatsapp')}
-                      </label>
-                      <input
-                        id="c-whatsapp"
-                        name="whatsapp"
-                        type="tel"
-                        inputMode="tel"
-                        autoComplete="tel"
-                        placeholder="+971 50 123 4567"
-                        required
-                        className="input-luxe !py-2"
-                      />
+                      <div>
+                        <label htmlFor="c-whatsapp" className="field-label !mb-1.5">
+                          {t('campaign.consultation.formWhatsapp')}
+                        </label>
+                        <input
+                          id="c-whatsapp"
+                          name="whatsapp"
+                          type="tel"
+                          inputMode="tel"
+                          autoComplete="tel"
+                          placeholder="+971 50 123 4567"
+                          required
+                          className="input-luxe !py-2"
+                        />
+                      </div>
                     </div>
 
                     <div>
@@ -255,7 +263,7 @@ export function Consultation() {
                       <textarea
                         id="c-message"
                         name="message"
-                        rows={2}
+                        rows={3}
                         required
                         placeholder={t('campaign.consultation.formMessagePlaceholder')}
                         className="input-luxe resize-none !py-2"
