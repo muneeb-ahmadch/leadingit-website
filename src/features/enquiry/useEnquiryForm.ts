@@ -36,10 +36,15 @@ export type UseEnquiryFormOptions = {
   /** Address the `mailto` fallback composes to when Turnstile is unconfigured. */
   fallbackEmail: string;
   /**
-   * Appended to the message body as a single trailing line, e.g.
-   * `via consultation page · ad T2-07`. This is how a notification email says
-   * which creative produced the enquiry without a server-side schema change.
-   * Omit on surfaces that have no campaign context.
+   * Campaign context, e.g. `via the consultation page · ad: T2-07`. Sent as its
+   * OWN field and never mixed into the message.
+   *
+   * It used to be appended to the message body to avoid a server-side schema
+   * change. That was wrong, and a live end-to-end test is what exposed it: the
+   * acknowledgement email quotes the visitor's message back to them, so every
+   * enquirer was shown our internal ad tracking — "campaign: consultation ·
+   * ad: T2-07". Internal attribution must never be visible to the person who
+   * filled in the form.
    */
   sourceNote?: string;
 };
@@ -87,10 +92,6 @@ export function useEnquiryForm({ formName, fallbackEmail, sourceNote }: UseEnqui
     document.head.appendChild(script);
   }, [liveEndpoint]);
 
-  /** The visitor's message plus the campaign context line, if there is one. */
-  const composeMessage = (body: string) =>
-    sourceNote ? `${body}\n\n— ${sourceNote}` : body;
-
   /**
    * Composes a real email draft in the visitor's own mail client. Kept
    * deliberately: `/api/enquiry.php` REQUIRES a Turnstile token, so with no site
@@ -102,7 +103,9 @@ export function useEnquiryForm({ formName, fallbackEmail, sourceNote }: UseEnqui
     const whatsapp = String(data.get('whatsapp') ?? '').trim();
     const body = String(data.get('message') ?? '').trim();
     const subject = `Website enquiry${name ? ` — ${name}` : ''}${whatsapp ? ` (${whatsapp})` : ''}`;
-    const composed = `${composeMessage(body)}\n\n— ${name}${whatsapp ? `\nWhatsApp: ${whatsapp}` : ''}`;
+    // No campaign context here on purpose: this composes a draft in the
+    // VISITOR'S own mail client, so anything added is something they read.
+    const composed = `${body}\n\n— ${name}${whatsapp ? `\nWhatsApp: ${whatsapp}` : ''}`;
     window.location.href =
       `mailto:${fallbackEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(composed)}`;
     setStatus('mailto');
@@ -122,7 +125,8 @@ export function useEnquiryForm({ formName, fallbackEmail, sourceNote }: UseEnqui
       name: String(data.get('name') ?? ''),
       email: String(data.get('email') ?? ''),
       whatsapp: String(data.get('whatsapp') ?? ''),
-      message: composeMessage(String(data.get('message') ?? '')),
+      message: String(data.get('message') ?? ''),
+      source: sourceNote ?? '',
       hp_note: String(data.get('hp_note') ?? ''),
       form_ts: Number(formTs),
       'cf-turnstile-response': String(data.get('cf-turnstile-response') ?? ''),

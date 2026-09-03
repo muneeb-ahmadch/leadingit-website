@@ -192,5 +192,65 @@ while (ob_get_level() > $depth && @ob_end_flush() && ++$teardown < 100) {
 ok('discard loop terminates against a non-removable buffer', $iterations <= 100, "iterations=$iterations");
 ok('stray output is cleared even when the buffer cannot be closed', $leaked === '');
 
+/*
+ * ---------------------------------------------------------------------------
+ * Mail bodies: what the ENQUIRER is allowed to see.
+ *
+ * Added 2026-09-03 after a live end-to-end test caught a real leak. Campaign
+ * attribution was being appended to the visitor's own `message` field so the
+ * notification could report which ad produced the enquiry — but
+ * `acknowledgementBody()` quotes that message straight back to the enquirer.
+ * The first real test submission therefore told the customer
+ * "campaign: consultation · ad: T2-07".
+ *
+ * `source` is now its own field, printed only in the internal notification.
+ * These assertions exist so it can never drift back: the acknowledgement is the
+ * easiest place in the whole system to publish something internal by accident,
+ * and nothing else in this repo checks what it contains.
+ */
+require_once __DIR__ . '/../public/api/lib/Mailer.php';
+
+$mailer = new Mailer(['whatsapp_url' => 'https://wa.me/971585865222']);
+$submission = [
+    'name' => 'Test Person',
+    'email' => 'test@example.com',
+    'whatsapp' => '+971501234567',
+    'message' => 'A villa in Emirates Hills, under construction.',
+    'source' => 'via the consultation page \u{b7} campaign: consultation \u{b7} ad: T2-07',
+    'ip' => '203.0.113.7',
+    'submitted_at' => '2026-09-03T10:40:50+00:00',
+    'reference' => 'DEADBEEF',
+];
+$bodyOf = static function (string $method, array $s) use ($mailer): string {
+    return (new ReflectionMethod('Mailer', $method))->invoke($mailer, $s);
+};
+$notification = $bodyOf('notificationBody', $submission);
+$acknowledgement = $bodyOf('acknowledgementBody', $submission);
+
+echo "\nMail bodies (internal vs enquirer-facing)\n";
+ok('notification carries the campaign source', str_contains($notification, 'ad: T2-07'));
+ok('notification carries a tappable wa.me link', str_contains($notification, 'https://wa.me/971501234567'));
+ok(
+    'notification labels a direct enquiry honestly',
+    str_contains($bodyOf('notificationBody', array_merge($submission, ['source' => ''])), '(direct'),
+);
+ok('acknowledgement does NOT leak the campaign source', !str_contains($acknowledgement, 'ad: T2-07'));
+ok('acknowledgement does NOT leak the word "campaign:"', !str_contains($acknowledgement, 'campaign:'));
+ok('acknowledgement does NOT leak any utm parameter', !str_contains(strtolower($acknowledgement), 'utm_'));
+ok(
+    'acknowledgement still quotes the enquirer their own message',
+    str_contains($acknowledgement, 'A villa in Emirates Hills, under construction.'),
+);
+
+/*
+ * A local number cannot be resolved to a country without guessing, and a guessed
+ * country code opens the WRONG WhatsApp conversation silently — a failure that
+ * looks like success. It must be printed, not linked.
+ */
+ok(
+    'a local-format number is never turned into a wa.me link',
+    !str_contains($bodyOf('notificationBody', array_merge($submission, ['whatsapp' => '050 123 4567'])), 'wa.me/050'),
+);
+
 printf("\n%d passed, %d failed\n\n", $passed, $failed);
 exit($failed === 0 ? 0 : 1);
