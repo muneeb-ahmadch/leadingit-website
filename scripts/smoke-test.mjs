@@ -20,6 +20,9 @@
  * a bad upload is loud, not discovered by a customer.
  */
 
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { join, relative, resolve } from 'node:path';
+
 const argv = process.argv.slice(2);
 const arg = (name, fallback = null) =>
   argv.includes(name) ? argv[argv.indexOf(name) + 1] : fallback;
@@ -314,6 +317,123 @@ await run('served through Cloudflare', async () => {
   const server = r.headers.get('server') || '';
   return [Boolean(cf) || /cloudflare/i.test(server), `cf-cache-status=${cf ?? '(none)'} server=${server}`];
 }, { required: false, skip: localMode, skipReason: 'needs Cloudflare' });
+
+/*
+ * ---------------------------------------------------------------------------
+ * Upload integrity — every route, not a sample.
+ *
+ * Added 2026-09-03, the day after a deploy that passed every other gate and
+ * still shipped a broken site. The FTPS mirror truncated exactly one file — the
+ * root `index.html`, the last one written — to zero bytes. `.htaccess`'s
+ * `DirectoryIndex index.html` meant `/` answered 200 with an empty body.
+ *
+ * Four checks above caught it, but only because it happened to be the homepage.
+ * Every one of them was a *symptom* check ("does / have an h1", "does / have
+ * JSON-LD"), and the suite only names a handful of routes. Had the mirror
+ * truncated a product page or a brand hub instead, the deploy would have gone
+ * green and the first person to find out would have been a customer looking at
+ * a blank page.
+ *
+ * Nothing else in the pipeline covers this. `predeploy-verify.mjs` checks
+ * `dist/` *before* the upload; nothing verifies the bytes that actually landed.
+ * This closes that gap: fetch every prerendered route and compare it to the file
+ * that was supposed to be uploaded.
+ *
+ * Comparing CONTENT, not Content-Length. A length check would have caught the
+ * truncation, but not a corrupted upload that happens to preserve the size —
+ * and a mis-encoded save (mojibake through a File Manager editor) is a real
+ * failure mode on the manual-recovery path this very incident used.
+ *
+ * `404.html` is excluded: it is served as Apache's ErrorDocument, not at a URL
+ * of its own, so it has no route to fetch.
+ *
+ * ONE field is normalised away before comparing: `__VITE_REACT_SSG_HASH__`.
+ * `vite-react-ssg` stamps a fresh random run-id into every page on every build,
+ * so two builds of identical source differ on exactly that string and nothing
+ * else — which made the first version of this gate report 124/125 routes as
+ * corrupted the moment `dist/` was rebuilt after a deploy. It is a build-run
+ * nonce, not content, and it says nothing about whether the right bytes landed.
+ *
+ * Excluding it costs no coverage. A genuinely stale deploy still fails loudly:
+ * the hashed asset filenames (`/assets/app-<hash>.js`) are derived from content,
+ * so different source means different filenames means different bytes on the
+ * page. That is the signal this gate actually rests on.
+ */
+/** Blanks the per-build run-id so two builds of identical source compare equal. */
+const normalise = (html) =>
+  html.replace(/__VITE_REACT_SSG_HASH__ = '[^']*'/g, "__VITE_REACT_SSG_HASH__ = '<run-id>'");
+
+async function checkUploadIntegrity() {
+  const distDir = resolve('dist');
+  if (!existsSync(distDir)) {
+    return [true, 'no local dist/ to compare against — run after `npm run build`'];
+  }
+
+  const files = [];
+  (function walk(dir) {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const full = join(dir, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (entry.name.endsWith('.html')) files.push(full);
+    }
+  })(distDir);
+
+  const routes = files
+    .map((f) => ({ file: f, rel: relative(distDir, f).split('\\').join('/') }))
+    .filter((r) => r.rel !== '404.html')
+    .map((r) => ({
+      ...r,
+      url: r.rel === 'index.html' ? '/' : '/' + r.rel.replace(/index\.html$/, ''),
+    }));
+
+  if (routes.length === 0) return [false, 'dist/ contains no .html files'];
+
+  /*
+   * Six at a time. Sequential would put this gate at well over a minute on 126
+   * routes; unbounded would look like a burst to the host's anti-bot layer,
+   * which is the one thing on this server guaranteed to make a healthy site
+   * report as broken.
+   */
+  const CONCURRENCY = 6;
+  const bad = [];
+  let index = 0;
+  await Promise.all(
+    Array.from({ length: CONCURRENCY }, async () => {
+      while (index < routes.length) {
+        const route = routes[index++];
+        const expected = normalise(readFileSync(route.file, 'utf8'));
+        let res;
+        try {
+          res = await req(route.url);
+        } catch (e) {
+          bad.push(`${route.url} (request failed: ${e.message})`);
+          continue;
+        }
+        if (res.status !== 200) {
+          bad.push(`${route.url} (HTTP ${res.status})`);
+          continue;
+        }
+        const actual = normalise(res.body);
+        if (actual.length !== expected.length) {
+          bad.push(`${route.url} (${actual.length}B live vs ${expected.length}B built)`);
+        } else if (actual !== expected) {
+          bad.push(`${route.url} (same length, different bytes — corrupted or re-encoded)`);
+        }
+      }
+    }),
+  );
+
+  if (bad.length) {
+    const shown = bad.slice(0, 5).join(', ');
+    return [false, `${bad.length}/${routes.length} route(s) differ: ${shown}${bad.length > 5 ? ', …' : ''}`];
+  }
+  return [true, `${routes.length} routes byte-identical to dist/`];
+}
+
+await run('every prerendered route matches the build byte for byte', checkUploadIntegrity, {
+  skip: localMode,
+  skipReason: 'needs the live origin',
+});
 
 if (originIp) {
   await run(`origin reachable directly at ${originIp}`, async () => {
