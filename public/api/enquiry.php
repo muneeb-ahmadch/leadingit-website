@@ -228,6 +228,10 @@ $reference = strtoupper(bin2hex(random_bytes(4)));
 $name = contact_clean($input['name'] ?? '', 120);
 $email = contact_clean($input['email'] ?? '', 254);
 $whatsapp = contact_clean($input['whatsapp'] ?? '', 40);
+// Campaign attribution, set by the /go/ landing pages from their UTM query.
+// Never validated or required: it is our own telemetry, not something the
+// visitor supplies, and a missing value must never fail a real enquiry.
+$source = contact_clean($input['source'] ?? '', 200);
 $message = contact_clean($input['message'] ?? '', 5000);
 
 /** The submitted content, for logging on any path including a rejection. */
@@ -236,6 +240,7 @@ $submittedFields = [
     'email' => $email,
     'whatsapp' => $whatsapp,
     'message' => $message,
+    'source' => $source,
 ];
 
 $storageDir = $config['storage_dir'];
@@ -354,6 +359,7 @@ $submission = [
     'email' => $email,
     'whatsapp' => $whatsapp,
     'message' => $message,
+    'source' => $source,
     'ip' => $ip,
     'submitted_at' => $submittedAt,
     'reference' => $reference,

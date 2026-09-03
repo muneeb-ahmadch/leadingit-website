@@ -91,7 +91,7 @@ final class Mailer
      * Never throws — the caller must be able to log and still answer the
      * visitor even when mail is down.
      *
-     * @param array{name: string, email: string, whatsapp: string, message: string, ip: string, submitted_at: string, reference: string} $s
+     * @param array{name: string, email: string, whatsapp: string, message: string, source: string, ip: string, submitted_at: string, reference: string} $s
      */
     public function sendNotification(array $s, ?string &$error = null): bool
     {
@@ -165,7 +165,7 @@ final class Mailer
     }
 
     /**
-     * @param array{name: string, email: string, whatsapp: string, message: string, ip: string, submitted_at: string, reference: string} $s
+     * @param array{name: string, email: string, whatsapp: string, message: string, source: string, ip: string, submitted_at: string, reference: string} $s
      */
     private function notificationBody(array $s): string
     {
@@ -176,6 +176,9 @@ final class Mailer
             'Email:     ' . $s['email'],
             'WhatsApp:  ' . ($s['whatsapp'] !== '' ? $s['whatsapp'] : '(not given)'),
             'Chat:      ' . self::whatsappLink($s['whatsapp']),
+            // Internal only. `acknowledgementBody()` deliberately does not take
+            // this field — see the note on its @param.
+            'Source:    ' . (($s['source'] ?? '') !== '' ? $s['source'] : '(direct — no campaign)'),
             'Submitted: ' . $s['submitted_at'],
             'Reference: ' . $s['reference'],
             '',
@@ -230,6 +233,13 @@ final class Mailer
      * anywhere, and a softened version ("about two weeks") is the same promise
      * with deniability and is explicitly rejected. An auto-reply is the easiest
      * place in the system to leak a promise nobody approved.
+     *
+     * Takes name/email/message/reference and NOTHING else — in particular not
+     * `source`. This body quotes the visitor's own message back to them, so any
+     * internal field that reaches it is published to the enquirer. That is not
+     * hypothetical: campaign attribution was briefly appended to `message`
+     * itself, and a live test showed a real enquirer being told which ad they
+     * had been tracked from. Keep this parameter list narrow.
      *
      * @param array{name: string, email: string, message: string, reference: string} $s
      */
