@@ -2,6 +2,7 @@ import { Outlet, Link } from 'react-router-dom';
 import { href } from '@/seo/paths';
 import { NAP_ADDRESS_LINE, NAP_PHONE_DISPLAY } from '@/data/nap';
 import { SITE_NAME } from '@/lib/site';
+import { usePageViewTracking } from '@/lib/usePageViewTracking';
 
 /**
  * The shell for campaign landing pages (`/go/*`) — deliberately not `Layout`.
@@ -22,6 +23,12 @@ import { SITE_NAME } from '@/lib/site';
  * the photograph rather than on a bar above it.
  */
 export function CampaignLayout() {
+  // The campaign shell needs this more than the site shell does: every visitor
+  // here arrives on a tagged ad URL, and the page_view is the only thing that
+  // opens the session those UTM parameters attach to. Miss it and all 57
+  // creatives are unattributable.
+  usePageViewTracking();
+
   return (
     <div className="min-h-screen flex flex-col bg-ink-950 text-bone-300">
       {/* Same skip link as the site shell — WCAG 2.2 SC 2.4.1. There is far less
