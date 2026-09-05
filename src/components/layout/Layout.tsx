@@ -3,9 +3,15 @@ import { Outlet, useLocation } from 'react-router-dom';
 import type LenisType from 'lenis';
 import { Header } from './Header';
 import { Footer } from './Footer';
+import { usePageViewTracking } from '@/lib/usePageViewTracking';
 
 export function Layout() {
   const { pathname } = useLocation();
+
+  // GA4 page_view for the entry load and every route change. Without it no
+  // session is ever opened, so no traffic, no source/medium and no conversion
+  // rate exist for any page in this shell. See the hook for the full account.
+  usePageViewTracking();
 
   useEffect(() => {
     // Lenis overrides native scroll with a rAF-driven smoothing loop — a

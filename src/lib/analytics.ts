@@ -97,7 +97,13 @@ const CONSENT_DEFAULT: 'granted' | 'denied' = 'granted';
 
 declare global {
   interface Window {
-    dataLayer: unknown[][];
+    /**
+     * gtag.js's command queue. `unknown[]`, not `unknown[][]`: what gets pushed
+     * is an `arguments` object, never an array. See `ensureGtagLoaded()` — that
+     * distinction is the difference between this property receiving data and
+     * receiving nothing.
+     */
+    dataLayer: unknown[];
     gtag: (...args: unknown[]) => void;
   }
 }
@@ -117,8 +123,26 @@ function ensureGtagLoaded(): void {
   gtagLoaded = true;
 
   window.dataLayer = window.dataLayer || [];
-  window.gtag = function gtag(...args: unknown[]) {
-    window.dataLayer.push(args);
+  /*
+   * `arguments`, not a rest parameter. This is not a style choice and the two
+   * are not interchangeable: gtag.js walks the queue and only treats an entry
+   * as a command if it is an `arguments` object. Push a plain `Array` and every
+   * command is discarded — `consent`, `js`, `config` and every `event` alike —
+   * with no error, no console warning and no network request.
+   *
+   * That is what this function did from 2026-08-05 to 2026-09-05, and it is why
+   * the property received nothing in that time, including two real `form_submit`
+   * events from live enquiries. Proved on leadingit.me by running both variants
+   * on the same page against the same property: the array push produced zero
+   * requests to `/g/collect`, the `arguments` version produced one immediately.
+   *
+   * A rest parameter cannot be substituted back in. A rest parameter *is* an
+   * array, and an arrow function has no `arguments` object at all, so this has
+   * to stay a plain `function` reading `arguments` directly.
+   */
+  window.gtag = function gtag() {
+    // eslint-disable-next-line prefer-rest-params -- a rest parameter is an Array, and gtag.js discards Array queue entries. See above.
+    window.dataLayer.push(arguments);
   };
 
   // Consent Mode v2 — set before `js`/`config` so the first hit already carries it.
@@ -130,7 +154,17 @@ function ensureGtagLoaded(): void {
   });
 
   window.gtag('js', new Date());
-  window.gtag('config', GA4_MEASUREMENT_ID, { anonymize_ip: true });
+  /*
+   * `send_page_view: false` because `trackPageView()` sends every page_view
+   * explicitly, including the first one. This is a client-routed SPA: gtag's
+   * automatic page_view fires once, on whichever load happens to initialise the
+   * tag, and never again for a route change. Leaving it on would double-count
+   * the entry page and still miss the rest, so the app owns all of them.
+   */
+  window.gtag('config', GA4_MEASUREMENT_ID, {
+    anonymize_ip: true,
+    send_page_view: false,
+  });
 
   const script = document.createElement('script');
   script.async = true;
@@ -174,6 +208,43 @@ function sendEvent<T extends object>(eventName: string, params: T): void {
   }
 
   window.gtag('event', eventName, payload);
+}
+
+export interface PageViewParams {
+  /** Full URL including the query string. GA4 reads UTM parameters off this. */
+  page_location?: string;
+  /** Path plus query string. Defaults to the current one. */
+  page_path?: string;
+  /** Document title at the moment of the view. */
+  page_title?: string;
+}
+
+/**
+ * Fire once per page view — the initial load and every client-side route change.
+ *
+ * This is the event the whole measurement layer rests on, and it was missing
+ * entirely until 2026-09-05. **`page_view` is what opens a GA4 session, and the
+ * session is what carries the UTM parameters.** Without it there is no traffic,
+ * no source/medium, no landing-page report, and no conversion rate, because the
+ * denominator never exists — every tagged campaign URL measures nothing.
+ *
+ * Callers should use `usePageViewTracking()` rather than calling this directly;
+ * it owns the route-change wiring and the deduplication. This stays exported
+ * for the rare page that needs to declare a view of its own.
+ *
+ * Defaults read the live `window.location`, but every field is overridable: the
+ * hook captures the URL at the moment the route settles and passes it in, so a
+ * view is attributed to the URL that was actually on screen even if the visitor
+ * navigates again before the event is flushed.
+ */
+export function trackPageView(params: PageViewParams = {}): void {
+  if (typeof window === 'undefined' || typeof document === 'undefined') return;
+
+  sendEvent('page_view', {
+    page_location: params.page_location ?? window.location.href,
+    page_path: params.page_path ?? window.location.pathname + window.location.search,
+    page_title: params.page_title ?? document.title,
+  });
 }
 
 /**
