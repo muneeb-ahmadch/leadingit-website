@@ -149,7 +149,11 @@ final class Mailer
             $mail->addAddress($s['email'], $s['name'] !== '' ? $s['name'] : $s['email']);
             $mail->addReplyTo($this->config['contact_to']);
 
-            $mail->Subject = 'We received your enquiry — Leading IT';
+            // No em dash, and no brand suffix: the sender already displays as
+            // "Leading IT", so repeating it here only ate subject-line width in a
+            // mobile inbox. Standing copy rule, applies to every customer-facing
+            // string in this file.
+            $mail->Subject = 'We received your enquiry';
             $mail->isHTML(false);
             $mail->Body = $this->acknowledgementBody($s);
 
@@ -263,7 +267,9 @@ final class Mailer
             '',
             '--',
             'Leading IT',
-            'Premium Automation Distribution — Gulf & Pakistan',
+            // Middot, matching SITE_TAGLINE in src/lib/site.ts. The site and the
+            // email had drifted apart on the same line of copy.
+            'Premium Automation Distribution · Gulf & Pakistan',
             'https://leadingit.me',
             '',
             'Reference: ' . $s['reference'],
