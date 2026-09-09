@@ -3,6 +3,7 @@ import { href } from '@/seo/paths';
 import { NAP_ADDRESS_LINE, NAP_PHONE_DISPLAY } from '@/data/nap';
 import { SITE_NAME } from '@/lib/site';
 import { usePageViewTracking } from '@/lib/usePageViewTracking';
+import { trackPhoneClick } from '@/lib/analytics';
 
 /**
  * The shell for campaign landing pages (`/go/*`) — deliberately not `Layout`.
@@ -67,9 +68,20 @@ export function CampaignLayout() {
         <div className="flex flex-col gap-3 text-sm text-bone-500 md:flex-row md:justify-between">
           <p>{NAP_ADDRESS_LINE}</p>
           <p>
+            {/*
+             * This is the only `tel:` link on the entire site, and it sits on
+             * the one page paid traffic lands on. Until now it fired nothing:
+             * `trackPhoneClick` existed in the analytics layer and was never
+             * called from anywhere, so a visitor who arrived on an ad and tapped
+             * the number — the highest-intent thing a phone user can do here —
+             * converted invisibly. Fire-and-forget, no `preventDefault()`: the
+             * dial must still happen with JS disabled (see the non-blocking
+             * contract in `src/lib/analytics.ts`).
+             */}
             <a
               href={`tel:${NAP_PHONE_DISPLAY.replace(/\s/g, '')}`}
               className="transition-colors duration-300 hover:text-gold"
+              onClick={() => trackPhoneClick({ placement: 'campaign-footer' })}
             >
               {NAP_PHONE_DISPLAY}
             </a>
