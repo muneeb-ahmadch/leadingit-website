@@ -241,6 +241,19 @@ ok(
     'acknowledgement still quotes the enquirer their own message',
     str_contains($acknowledgement, 'A villa in Emirates Hills, under construction.'),
 );
+/*
+ * Standing copy rule: no em dash in anything a customer reads. It is not a
+ * stylistic preference, it is the single clearest tell that a machine wrote the
+ * text, and this email is the only thing the business sends an enquirer before
+ * a human replies. The rule was broken here once (the signature tagline and the
+ * subject line, both shipped, found 2026-09-09 by reading a real acknowledgement
+ * out loud) so it is now a test rather than an intention.
+ *
+ * Scoped to the body this function builds. The enquirer's own quoted message is
+ * their writing and is not held to this; the fixture above deliberately contains
+ * no em dash so the assertion reads only our copy.
+ */
+ok('acknowledgement contains no em dash (customer-facing copy rule)', !str_contains($acknowledgement, "\u{2014}"));
 
 /*
  * A local number cannot be resolved to a country without guessing, and a guessed
