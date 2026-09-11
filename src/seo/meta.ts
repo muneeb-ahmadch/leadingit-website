@@ -96,13 +96,13 @@ const RANGE_SUPPLY_SENTENCE = `Supplied as a complete range by ${SITE_NAME}, Dub
  * the FAQ in `src/data/brandContent.ts`, in the audience's words, without the
  * page ever claiming a channel status Leading IT has not confirmed in writing.
  */
-const BRAND_SUPPLY_SENTENCE = `Supplied and installed by ${SITE_NAME} — Dubai distributor for the UAE and Pakistan.`;
+const BRAND_SUPPLY_SENTENCE = `Supplied and installed by ${SITE_NAME}, Dubai distributor for the UAE and Pakistan.`;
 
 export function homeMeta(): PageMeta {
   return {
-    // 50 chars. Pairs the generic-sounding brand string with "Automation" and
+    // 49 chars. Pairs the generic-sounding brand string with "Automation" and
     // "Dubai" — brand-name defence needs both (docs/04 §8, N1).
-    title: `${SITE_NAME} — Premium Automation Distributor, Dubai`,
+    title: `${SITE_NAME}: Premium Automation Distributor, Dubai`,
     // 128 chars.
     // "Industrial" left this sentence 2026-08-05: Muneeb dropped that line of
     // business outright ("not doing this anymore" — document.md answers).
@@ -139,11 +139,11 @@ export function brandsIndexMeta(): PageMeta {
  */
 export function brandMeta(brand: Brand): PageMeta {
   return {
-    title: `${brand.name} Dubai & UAE — Supplied & Installed | ${SITE_NAME}`,
+    title: `${brand.name} Dubai & UAE: Supplied & Installed | ${SITE_NAME}`,
     // `<brand> — <tagline> <supply sentence>`. Every tagline in the catalog is a
     // complete sentence ending in a full stop, so this reads as prose. Worst
-    // case is Basalte at 145 chars; shortest is UandKSound at 115.
-    description: `${brand.name} — ${brand.tagline} ${BRAND_SUPPLY_SENTENCE}`,
+    // case is Basalte at 144 chars; shortest is UandKSound at 113.
+    description: `${brand.name}: ${brand.tagline} ${BRAND_SUPPLY_SENTENCE}`,
     path: `/brands/${brand.slug}`,
     ogImage: ownImage(brand.heroImage),
     ogType: 'website',
@@ -165,17 +165,17 @@ export function brandMeta(brand: Brand): PageMeta {
 export function productMeta(product: Product, brand: Brand): PageMeta {
   const base = `${brand.name} ${product.name}`;
   const suffix = ` | ${SITE_NAME} Dubai`;
-  const withType = `${base} — ${product.collection}`;
+  const withType = `${base}: ${product.collection}`;
   const title =
     withType.length + suffix.length <= TITLE_MAX_LENGTH
       ? `${withType}${suffix}`
       : `${base}${suffix}`;
 
   const isRange = isRangeProduct(product.brandSlug, product.slug);
-  // Worst case over the catalog: 139 chars (product) / 146 chars (range).
+  // Worst case over the catalog: 138 chars (product) / 145 chars (range).
   const description = isRange
-    ? `${base} — ${product.collection}. ${RANGE_SUPPLY_SENTENCE}`
-    : `${base} — ${product.collection}. ${PRODUCT_SUPPLY_SENTENCE}`;
+    ? `${base}: ${product.collection}. ${RANGE_SUPPLY_SENTENCE}`
+    : `${base}: ${product.collection}. ${PRODUCT_SUPPLY_SENTENCE}`;
 
   return {
     title,
@@ -277,7 +277,7 @@ function pakistanSupplySentence(brandName: string): string {
  */
 export function brandPakistanMeta(page: BrandPakistanPage): PageMeta {
   return {
-    title: `${page.brandName} in Pakistan — Supplied from Dubai | ${SITE_NAME}`,
+    title: `${page.brandName} in Pakistan: Supplied from Dubai | ${SITE_NAME}`,
     description: `${pakistanSupplySentence(page.brandName)} ${page.metaDetail}`,
     path: `/brands/${page.brandSlug}/pakistan`,
     // Deliberately the sitewide default rather than the brand's hero: an OG
@@ -306,7 +306,7 @@ export function brandPakistanMeta(page: BrandPakistanPage): PageMeta {
  */
 export function locationDubaiMeta(): PageMeta {
   return {
-    title: `${SITE_NAME} Dubai — Automation Showroom & Enquiries`,
+    title: `${SITE_NAME} Dubai: Automation Showroom & Enquiries`,
     description: `${SITE_NAME} runs one showroom, in Dubai. Home cinema, whole-home control, lighting, audio and hospitality automation, supplied across the UAE and Pakistan.`,
     path: '/locations/dubai',
     ogImage: DEFAULT_OG_IMAGE,
@@ -339,13 +339,13 @@ export function tradeMeta(): PageMeta {
 
 export function keypadDesignerMeta(): PageMeta {
   return {
-    // 53 chars. "configurator" and "designer" are both in the query set
+    // 52 chars. "configurator" and "designer" are both in the query set
     // (docs/04 §7, X2); the tool is genuinely free and on-site, so the claim
     // is defensible.
-    title: 'Black Nova Keypad Designer — Free Online Configurator',
-    // 139 chars. Describes only what the tool actually does today.
+    title: 'Black Nova Keypad Designer: Free Online Configurator',
+    // 138 chars. Describes only what the tool actually does today.
     description:
-      'Design a Black Nova keypad online — choose the ALBA, ARIA, ANY, AXES or Black Jack collection, layout, finish, engraving and RGB backlight.',
+      'Design a Black Nova keypad online. Choose the ALBA, ARIA, ANY, AXES or Black Jack collection, layout, finish, engraving and RGB backlight.',
     path: KEYPAD_DESIGNER_PATH,
     ogImage: DEFAULT_OG_IMAGE,
     ogType: 'website',
@@ -354,9 +354,9 @@ export function keypadDesignerMeta(): PageMeta {
 
 export function litHomeMeta(): PageMeta {
   return {
-    // 49 chars — no site-name suffix; adding one would overflow and the page is
+    // 48 chars — no site-name suffix; adding one would overflow and the page is
     // its own branded entity anyway.
-    title: 'LIT Home — One Interface for the Entire Residence',
+    title: 'LIT Home: One Interface for the Entire Residence',
     // 146 chars.
     description: `LIT Home is ${SITE_NAME}’s own control interface: lighting, climate, shading, audio, cinema and security in a single surface. Explore the live demo.`,
     path: '/lit-home',
@@ -367,8 +367,8 @@ export function litHomeMeta(): PageMeta {
 
 export function aboutMeta(): PageMeta {
   return {
-    // 46 chars.
-    title: `About ${SITE_NAME} — Engineers, Not a Sales Team`,
+    // 45 chars.
+    title: `About ${SITE_NAME}: Engineers, Not a Sales Team`,
     // 140 chars. The "60+ years of experience" line from the prototype is
     // deliberately dropped — it is unconfirmed (OQ #12) and an unverified claim
     // must not ship in a snippet.
@@ -381,9 +381,9 @@ export function aboutMeta(): PageMeta {
 
 export function contactMeta(): PageMeta {
   return {
-    // 52 chars. Names the two conversion channels, which are the point of the
+    // 51 chars. Names the two conversion channels, which are the point of the
     // page (email + WhatsApp).
-    title: `Contact ${SITE_NAME} — WhatsApp or Email Our Engineers`,
+    title: `Contact ${SITE_NAME}: WhatsApp or Email Our Engineers`,
     // 146 chars.
     description: `Tell ${SITE_NAME} about the residence, development or installation you have in mind. Our engineers reply personally by email or WhatsApp from Dubai.`,
     path: '/contact',
@@ -403,10 +403,11 @@ export function contactMeta(): PageMeta {
 export function consultationMeta(): PageMeta {
   return {
     // 46 chars.
-    title: `Private Automation Consultation — ${SITE_NAME}`,
-    // 139 chars. "Supplied and installed", never "authorized dealer" — no
-    // per-brand dealer wording is approved (OPEN-QUESTIONS #3).
-    description: `Book a private consultation with ${SITE_NAME}. Crestron systems supplied and installed in Dubai — tell us about the residence and an engineer replies.`,
+    title: `Private Automation Consultation | ${SITE_NAME}`,
+    // 140 chars. Crestron dealer wording approved by Muneeb 2026-09-09
+    // (OPEN-QUESTIONS #3, DEALER_CLAIM_ALLOWLIST in scripts/validate-seo.mjs).
+    // Crestron only: the other eight brands in #3 remain unconfirmed.
+    description: `Book a private consultation with ${SITE_NAME}, an authorized Crestron dealer in Dubai. Tell us about the residence and an engineer will reply.`,
     path: '/go/consultation',
     ogImage: DEFAULT_OG_IMAGE,
     ogType: 'website',
@@ -421,7 +422,7 @@ export function consultationMeta(): PageMeta {
 export function notFoundMeta(): PageMeta {
   return {
     // 27 chars.
-    title: `Page Not Found — ${SITE_NAME}`,
+    title: `Page Not Found | ${SITE_NAME}`,
     // 114 chars.
     description: `The page you were looking for is not here. Browse the brands ${SITE_NAME} distributes, or contact the team in Dubai.`,
     path: '/404',

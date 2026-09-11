@@ -86,11 +86,12 @@ export function CampaignLayout() {
               {NAP_PHONE_DISPLAY}
             </a>
             <span className="mx-3 opacity-40">·</span>
-            {/* The neutral wording, never "authorized dealer": no per-brand
-                dealer wording is approved (docs/OPEN-QUESTIONS.md #3 and the
-                2026-07-29 standing direction), and `validate-seo.mjs` fails the
-                build on the stronger phrase — which it did, on this file. */}
-            <span>Crestron supplied and installed in Dubai</span>
+            {/* The exact line the ads carry, so a visitor who clicked on it finds
+                it here. Crestron only: approved by Muneeb 2026-09-09
+                (docs/OPEN-QUESTIONS.md #3, DEALER_CLAIM_ALLOWLIST in
+                scripts/validate-seo.mjs). The other eight brands in #3 are still
+                unconfirmed and the build still fails on their dealer wording. */}
+            <span>Authorized Crestron Dealer · Dubai</span>
           </p>
         </div>
       </footer>

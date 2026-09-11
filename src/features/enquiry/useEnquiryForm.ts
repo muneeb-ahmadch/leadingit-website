@@ -102,10 +102,10 @@ export function useEnquiryForm({ formName, fallbackEmail, sourceNote }: UseEnqui
     const name = String(data.get('name') ?? '').trim();
     const whatsapp = String(data.get('whatsapp') ?? '').trim();
     const body = String(data.get('message') ?? '').trim();
-    const subject = `Website enquiry${name ? ` — ${name}` : ''}${whatsapp ? ` (${whatsapp})` : ''}`;
+    const subject = `Website enquiry${name ? ` from ${name}` : ''}${whatsapp ? ` (${whatsapp})` : ''}`;
     // No campaign context here on purpose: this composes a draft in the
     // VISITOR'S own mail client, so anything added is something they read.
-    const composed = `${body}\n\n— ${name}${whatsapp ? `\nWhatsApp: ${whatsapp}` : ''}`;
+    const composed = `${body}\n\n${name}${whatsapp ? `\nWhatsApp: ${whatsapp}` : ''}`;
     window.location.href =
       `mailto:${fallbackEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(composed)}`;
     setStatus('mailto');

@@ -272,13 +272,13 @@
     "formSubmit": "Send enquiry",
     "formSubmitting": "Sending…",
     "formSuccessTitle": "One more step.",
-    "formSuccessBody": "Your enquiry has opened as a draft in your mail app — press send and it will reach our engineers. If no draft opened, write to us at services@leadingit.me or message us on WhatsApp.",
+    "formSuccessBody": "Your enquiry has opened as a draft in your mail app. Press send and it will reach our engineers. If no draft opened, write to us at services@leadingit.me or message us on WhatsApp.",
     "formSentTitle": "Thank you.",
     "formSentBody": "Your enquiry has reached our engineers. Someone will reply to you directly.",
     "noScriptBody": "This form needs JavaScript to guard against spam. With it switched off, email or WhatsApp reach the same team just as quickly:",
     "formSentReference": "Reference {{reference}}",
     "formErrorTitle": "That did not send.",
-    "formErrorBody": "Something went wrong at our end and your enquiry did not reach us. Please email services@leadingit.me or message us on WhatsApp — both reach the same team.",
+    "formErrorBody": "Something went wrong at our end and your enquiry did not reach us. Please email services@leadingit.me or message us on WhatsApp. Both reach the same team.",
     "formRateLimitedBody": "That is a few enquiries in a short time. Please wait a moment and try again, or message us on WhatsApp.",
     "formStaleBody": "This form has been open a while. Please reload the page and send it again.",
     "formCaptchaBody": "The verification did not complete. Please reload the page and try again.",
@@ -319,17 +319,17 @@
     "consultation": {
       "eyebrow": "Private consultation · Dubai",
       "headline": "Start with one room.",
-      "sub": "A conversation with an engineer, not a salesperson — about one room, and what it should do when you walk in.",
+      "sub": "Talk to an engineer about one room, and what it should do when you walk in.",
       "heroNote": "No obligation. No site visit until you want one.",
       "proof": [
-        "Crestron systems supplied and installed in Dubai since 2018.",
+        "Authorized Crestron dealer, supplying and installing in Dubai since 2018.",
         "A showroom in Business Bay, where you can watch a room respond before you commit to one.",
-        "One integration partner from drawings to handover — not a chain of them."
+        "One team from the first drawings to handover."
       ],
       "stepsTitle": "What happens next",
       "steps": [
         "You send four details. That is the whole form.",
-        "An engineer reads it and replies personally — on WhatsApp, if that is easier than email.",
+        "An engineer reads it and replies personally, on WhatsApp if that suits you better than email.",
         "If it is useful, we arrange a showroom visit or a call with your drawings in front of us."
       ],
       "showroomNote": "Showroom: International Business Tower, Business Bay. {{policy}}.",
@@ -337,7 +337,7 @@
       "formIntro": "Four details. We reply on WhatsApp first.",
       "formWhatsapp": "WhatsApp number",
       "formMessage": "What are you working on?",
-      "formMessagePlaceholder": "A villa in Emirates Hills, under construction — lighting and climate to start.",
+      "formMessagePlaceholder": "A villa in Emirates Hills, under construction. Lighting and climate to start.",
       "formSubmit": "Request consultation",
       "sentBody": "Your enquiry has reached our engineers. We will reply on the WhatsApp number you gave us."
     }
