@@ -721,14 +721,40 @@ function checkNoPakistanPhoneInBodyCopy() {
 const DEALER_CLAIM_PATTERN =
   /\b(authorized|authorised|official|exclusive|sole|certified|appointed|approved)\b(?:\s+[\p{L}\p{N}&'-]+){0,3}?\s+(dealer|distributor|reseller|partner)s?\b/giu;
 
+/**
+ * Per-brand exceptions to DEALER_CLAIM_PATTERN, same shape and same discipline
+ * as CLAIM_ALLOWLIST below: an exact lowercased phrase plus the record that
+ * confirms it. OPEN-QUESTIONS #3 asks the authorisation question separately for
+ * nine brands (Crestron, Blustream, Basalte, Black Nova, Marantz, Denon,
+ * U&K Sound, Polk Audio, JVC), so it is answered one brand at a time and the
+ * gate stays closed on the other eight. Deleting the check instead would let
+ * an unconfirmed "Authorized Basalte Dealer" ship on a brand hub with nothing
+ * to catch it.
+ *
+ * A brand name in the phrase is what makes an entry safe. Never allowlist a
+ * brandless phrase such as "authorized dealer" — it would match on every page
+ * for every manufacturer at once, which is the whole thing this gate exists to
+ * prevent.
+ */
+const DEALER_CLAIM_ALLOWLIST = [
+  // Crestron only. Muneeb confirmed Leading IT's authorised Crestron dealer
+  // status on 2026-09-09, which is the confirmation CLAUDE.md rule 4 asks for.
+  // This also closes the mismatch that had all 57 paid creatives carrying
+  // "Authorized Crestron Dealer" while the site was forbidden the phrase, so
+  // the ad's strongest credibility line had no echo on the page it clicked to.
+  { phrase: 'authorized crestron dealer', ref: 'docs/OPEN-QUESTIONS.md #3 (Crestron, confirmed 2026-09-09)' },
+  { phrase: 'authorised crestron dealer', ref: 'docs/OPEN-QUESTIONS.md #3 (Crestron, confirmed 2026-09-09)' },
+];
+
 function checkNoDealerClaims() {
   for (const page of pages) {
     const found = new Set([...page.html.matchAll(DEALER_CLAIM_PATTERN)].map((m) => m[0].toLowerCase()));
     for (const phrase of found) {
+      if (DEALER_CLAIM_ALLOWLIST.some((entry) => entry.phrase === phrase)) continue;
       error(
         'dealer-claim',
         relFileOf(page),
-        `found the gated phrase "${phrase}" in emitted HTML — dealer authorisation wording is gated on docs/OPEN-QUESTIONS.md #3 until written per-brand confirmation exists.`,
+        `found the gated phrase "${phrase}" in emitted HTML — dealer authorisation wording is gated on docs/OPEN-QUESTIONS.md #3 until written per-brand confirmation exists for that brand. If confirmation now exists, add the exact lowercased phrase (brand name included) to DEALER_CLAIM_ALLOWLIST in scripts/validate-seo.mjs, citing the record.`,
       );
     }
   }
