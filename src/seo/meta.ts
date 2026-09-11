@@ -404,9 +404,10 @@ export function consultationMeta(): PageMeta {
   return {
     // 46 chars.
     title: `Private Automation Consultation — ${SITE_NAME}`,
-    // 139 chars. "Supplied and installed", never "authorized dealer" — no
-    // per-brand dealer wording is approved (OPEN-QUESTIONS #3).
-    description: `Book a private consultation with ${SITE_NAME}. Crestron systems supplied and installed in Dubai — tell us about the residence and an engineer replies.`,
+    // 140 chars. Crestron dealer wording approved by Muneeb 2026-09-09
+    // (OPEN-QUESTIONS #3, DEALER_CLAIM_ALLOWLIST in scripts/validate-seo.mjs).
+    // Crestron only: the other eight brands in #3 remain unconfirmed.
+    description: `Book a private consultation with ${SITE_NAME}, an authorized Crestron dealer in Dubai. Tell us about the residence and an engineer will reply.`,
     path: '/go/consultation',
     ogImage: DEFAULT_OG_IMAGE,
     ogType: 'website',
